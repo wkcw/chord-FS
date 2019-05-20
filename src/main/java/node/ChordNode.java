@@ -7,9 +7,9 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.HashMap;
 
-public class ChordNode<K, V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
+public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
 
-    private HashMap<K, V> hashMap;
+    private HashMap<Integer, V> hashMap;
     private int[] fingerTable;
     private int successor;
     private int predecessor;
@@ -19,11 +19,11 @@ public class ChordNode<K, V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBa
         fingerTable = new int[lenFingerTable];
     }
 
-    public V get(K key){
+    public V get(int key){
         return hashMap.get(key);
     }
 
-    public void put(K key, V value){
+    public void put(int key, V value){
         hashMap.put(key, value);
     }
 
@@ -34,6 +34,7 @@ public class ChordNode<K, V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBa
 
     @Override
     public void findSuccessor(FindSuccessorRequest request, StreamObserver<FindSuccessorResponse> responseObserver) {
+        if(request.)
     }
 
     public void create(){

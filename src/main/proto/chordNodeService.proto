@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package chord;
 
+option java_multiple_files = true;
+option java_outer_classname = "ChordNodeProto";
+option objc_class_prefix = "CN";
+
 service ChordNodeService{
     rpc Notify(Identifier) returns  (NotifyResponse){}
     rpc FindSuccessor(FindSuccessorRequest) returns (FindSuccessorResponse){}

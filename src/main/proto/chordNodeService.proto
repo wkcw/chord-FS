@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package chord;
+
+service ChordNodeService{
+    rpc Notify(Identifier) returns  (NotifyResponse){}
+    rpc FindSuccessor(FindSuccessorRequest) returns (FindSuccessorResponse){}
+}
+
+message NotifyRequest {
+    Identifier identifier = 1;
+}
+
+message NotifyResponse {
+    string address = 1;
+    int32 virtualID = 2;
+}
+
+message FindSuccessorRequest {
+    int32 key = 1;
+}
+
+message FindSuccessorResponse {
+    Identifier identifier = 1;
+}
+
+message Identifier {
+    string address = 1;
+    int32 virtualID = 2;
+}

@@ -5,9 +5,10 @@ package chord;
 option java_multiple_files = true;
 option java_outer_classname = "ChordNodeProto";
 option objc_class_prefix = "CN";
+option java_package = "net.grpc.chord";
 
 service ChordNodeService{
-    rpc Notify(Identifier) returns  (NotifyResponse){}
+    rpc Notify(NotifyRequest) returns  (NotifyResponse){}
     rpc FindSuccessor(FindSuccessorRequest) returns (FindSuccessorResponse){}
 }
 
@@ -17,11 +18,11 @@ message NotifyRequest {
 
 message NotifyResponse {
     string address = 1;
-    int32 virtualID = 2;
+    int32 id = 2;
 }
 
 message FindSuccessorRequest {
-    int32 key = 1;
+    int32 id = 1;
 }
 
 message FindSuccessorResponse {
@@ -29,6 +30,7 @@ message FindSuccessorResponse {
 }
 
 message Identifier {
-    string address = 1;
-    int32 virtualID = 2;
+    string ip = 1;
+    int32 port = 2;
+    int32 id = 3;
 }

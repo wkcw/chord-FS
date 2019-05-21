@@ -1,10 +1,18 @@
-package net;
+package net.grpc.chord;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
+import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
+import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
@@ -19,30 +27,30 @@ public final class ChordNodeServiceGrpc {
   public static final String SERVICE_NAME = "chord.ChordNodeService";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<chord.ChordNodeServiceOuterClass.Identifier,
-      chord.ChordNodeServiceOuterClass.NotifyResponse> getNotifyMethod;
+  private static volatile io.grpc.MethodDescriptor<NotifyRequest,
+      NotifyResponse> getNotifyMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Notify",
-      requestType = chord.ChordNodeServiceOuterClass.Identifier.class,
-      responseType = chord.ChordNodeServiceOuterClass.NotifyResponse.class,
+      requestType = NotifyRequest.class,
+      responseType = NotifyResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<chord.ChordNodeServiceOuterClass.Identifier,
-      chord.ChordNodeServiceOuterClass.NotifyResponse> getNotifyMethod() {
-    io.grpc.MethodDescriptor<chord.ChordNodeServiceOuterClass.Identifier, chord.ChordNodeServiceOuterClass.NotifyResponse> getNotifyMethod;
+  public static io.grpc.MethodDescriptor<NotifyRequest,
+      NotifyResponse> getNotifyMethod() {
+    io.grpc.MethodDescriptor<NotifyRequest, NotifyResponse> getNotifyMethod;
     if ((getNotifyMethod = ChordNodeServiceGrpc.getNotifyMethod) == null) {
       synchronized (ChordNodeServiceGrpc.class) {
         if ((getNotifyMethod = ChordNodeServiceGrpc.getNotifyMethod) == null) {
-          ChordNodeServiceGrpc.getNotifyMethod = getNotifyMethod =
-              io.grpc.MethodDescriptor.<chord.ChordNodeServiceOuterClass.Identifier, chord.ChordNodeServiceOuterClass.NotifyResponse>newBuilder()
+          ChordNodeServiceGrpc.getNotifyMethod = getNotifyMethod = 
+              io.grpc.MethodDescriptor.<NotifyRequest, NotifyResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "chord.ChordNodeService", "Notify"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  chord.ChordNodeServiceOuterClass.Identifier.getDefaultInstance()))
+                  NotifyRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  chord.ChordNodeServiceOuterClass.NotifyResponse.getDefaultInstance()))
+                  NotifyResponse.getDefaultInstance()))
                   .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("Notify"))
                   .build();
           }
@@ -51,30 +59,30 @@ public final class ChordNodeServiceGrpc {
      return getNotifyMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<chord.ChordNodeServiceOuterClass.FindSuccessorRequest,
-      chord.ChordNodeServiceOuterClass.FindSuccessorResponse> getFindSuccessorMethod;
+  private static volatile io.grpc.MethodDescriptor<FindSuccessorRequest,
+      FindSuccessorResponse> getFindSuccessorMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "FindSuccessor",
-      requestType = chord.ChordNodeServiceOuterClass.FindSuccessorRequest.class,
-      responseType = chord.ChordNodeServiceOuterClass.FindSuccessorResponse.class,
+      requestType = FindSuccessorRequest.class,
+      responseType = FindSuccessorResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<chord.ChordNodeServiceOuterClass.FindSuccessorRequest,
-      chord.ChordNodeServiceOuterClass.FindSuccessorResponse> getFindSuccessorMethod() {
-    io.grpc.MethodDescriptor<chord.ChordNodeServiceOuterClass.FindSuccessorRequest, chord.ChordNodeServiceOuterClass.FindSuccessorResponse> getFindSuccessorMethod;
+  public static io.grpc.MethodDescriptor<FindSuccessorRequest,
+      FindSuccessorResponse> getFindSuccessorMethod() {
+    io.grpc.MethodDescriptor<FindSuccessorRequest, FindSuccessorResponse> getFindSuccessorMethod;
     if ((getFindSuccessorMethod = ChordNodeServiceGrpc.getFindSuccessorMethod) == null) {
       synchronized (ChordNodeServiceGrpc.class) {
         if ((getFindSuccessorMethod = ChordNodeServiceGrpc.getFindSuccessorMethod) == null) {
-          ChordNodeServiceGrpc.getFindSuccessorMethod = getFindSuccessorMethod =
-              io.grpc.MethodDescriptor.<chord.ChordNodeServiceOuterClass.FindSuccessorRequest, chord.ChordNodeServiceOuterClass.FindSuccessorResponse>newBuilder()
+          ChordNodeServiceGrpc.getFindSuccessorMethod = getFindSuccessorMethod = 
+              io.grpc.MethodDescriptor.<FindSuccessorRequest, FindSuccessorResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "chord.ChordNodeService", "FindSuccessor"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  chord.ChordNodeServiceOuterClass.FindSuccessorRequest.getDefaultInstance()))
+                  FindSuccessorRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  chord.ChordNodeServiceOuterClass.FindSuccessorResponse.getDefaultInstance()))
+                  FindSuccessorResponse.getDefaultInstance()))
                   .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("FindSuccessor"))
                   .build();
           }
@@ -112,15 +120,15 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public void notify(chord.ChordNodeServiceOuterClass.Identifier request,
-        io.grpc.stub.StreamObserver<chord.ChordNodeServiceOuterClass.NotifyResponse> responseObserver) {
+    public void notify(NotifyRequest request,
+                       io.grpc.stub.StreamObserver<NotifyResponse> responseObserver) {
       asyncUnimplementedUnaryCall(getNotifyMethod(), responseObserver);
     }
 
     /**
      */
-    public void findSuccessor(chord.ChordNodeServiceOuterClass.FindSuccessorRequest request,
-        io.grpc.stub.StreamObserver<chord.ChordNodeServiceOuterClass.FindSuccessorResponse> responseObserver) {
+    public void findSuccessor(FindSuccessorRequest request,
+                              io.grpc.stub.StreamObserver<FindSuccessorResponse> responseObserver) {
       asyncUnimplementedUnaryCall(getFindSuccessorMethod(), responseObserver);
     }
 
@@ -130,15 +138,15 @@ public final class ChordNodeServiceGrpc {
             getNotifyMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                chord.ChordNodeServiceOuterClass.Identifier,
-                chord.ChordNodeServiceOuterClass.NotifyResponse>(
+                NotifyRequest,
+                NotifyResponse>(
                   this, METHODID_NOTIFY)))
           .addMethod(
             getFindSuccessorMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                chord.ChordNodeServiceOuterClass.FindSuccessorRequest,
-                chord.ChordNodeServiceOuterClass.FindSuccessorResponse>(
+                FindSuccessorRequest,
+                FindSuccessorResponse>(
                   this, METHODID_FIND_SUCCESSOR)))
           .build();
     }
@@ -164,16 +172,16 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public void notify(chord.ChordNodeServiceOuterClass.Identifier request,
-        io.grpc.stub.StreamObserver<chord.ChordNodeServiceOuterClass.NotifyResponse> responseObserver) {
+    public void notify(NotifyRequest request,
+                       io.grpc.stub.StreamObserver<NotifyResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getNotifyMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void findSuccessor(chord.ChordNodeServiceOuterClass.FindSuccessorRequest request,
-        io.grpc.stub.StreamObserver<chord.ChordNodeServiceOuterClass.FindSuccessorResponse> responseObserver) {
+    public void findSuccessor(FindSuccessorRequest request,
+                              io.grpc.stub.StreamObserver<FindSuccessorResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getFindSuccessorMethod(), getCallOptions()), request, responseObserver);
     }
@@ -199,14 +207,14 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public chord.ChordNodeServiceOuterClass.NotifyResponse notify(chord.ChordNodeServiceOuterClass.Identifier request) {
+    public NotifyResponse notify(NotifyRequest request) {
       return blockingUnaryCall(
           getChannel(), getNotifyMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public chord.ChordNodeServiceOuterClass.FindSuccessorResponse findSuccessor(chord.ChordNodeServiceOuterClass.FindSuccessorRequest request) {
+    public FindSuccessorResponse findSuccessor(FindSuccessorRequest request) {
       return blockingUnaryCall(
           getChannel(), getFindSuccessorMethod(), getCallOptions(), request);
     }
@@ -232,16 +240,16 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<chord.ChordNodeServiceOuterClass.NotifyResponse> notify(
-        chord.ChordNodeServiceOuterClass.Identifier request) {
+    public com.google.common.util.concurrent.ListenableFuture<NotifyResponse> notify(
+        NotifyRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getNotifyMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<chord.ChordNodeServiceOuterClass.FindSuccessorResponse> findSuccessor(
-        chord.ChordNodeServiceOuterClass.FindSuccessorRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<FindSuccessorResponse> findSuccessor(
+        FindSuccessorRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getFindSuccessorMethod(), getCallOptions()), request);
     }
@@ -268,12 +276,12 @@ public final class ChordNodeServiceGrpc {
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
         case METHODID_NOTIFY:
-          serviceImpl.notify((chord.ChordNodeServiceOuterClass.Identifier) request,
-              (io.grpc.stub.StreamObserver<chord.ChordNodeServiceOuterClass.NotifyResponse>) responseObserver);
+          serviceImpl.notify((NotifyRequest) request,
+              (io.grpc.stub.StreamObserver<NotifyResponse>) responseObserver);
           break;
         case METHODID_FIND_SUCCESSOR:
-          serviceImpl.findSuccessor((chord.ChordNodeServiceOuterClass.FindSuccessorRequest) request,
-              (io.grpc.stub.StreamObserver<chord.ChordNodeServiceOuterClass.FindSuccessorResponse>) responseObserver);
+          serviceImpl.findSuccessor((FindSuccessorRequest) request,
+              (io.grpc.stub.StreamObserver<FindSuccessorResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -297,7 +305,7 @@ public final class ChordNodeServiceGrpc {
 
     @Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
-      return chord.ChordNodeServiceOuterClass.getDescriptor();
+      return ChordNodeProto.getDescriptor();
     }
 
     @Override

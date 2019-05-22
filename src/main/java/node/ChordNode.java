@@ -9,13 +9,18 @@ public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase 
 
     private HashMap<Integer, V> hashMap;
     private int selfId;
+    private String selfIp;
+    private int selfPort;
     private int[] fingerTable;
     private Identifier successor;
     private Identifier predecessor;
 
-    public ChordNode(int lenFingerTable){
+    public ChordNode(int selfId, String selfIp, int selfPort, int lenFingerTable){
         hashMap = new HashMap<>();
         fingerTable = new int[lenFingerTable];
+        this.selfId = selfId;
+        this.selfIp = selfIp;
+        this.selfPort = selfPort;
     }
 
     public V get(int key){
@@ -38,21 +43,27 @@ public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase 
     @Override
     public void findSuccessor(FindSuccessorRequest request, StreamObserver<FindSuccessorResponse> responseObserver) {
         if(request.getId() > selfId && request.getId() <= successor.getId()){
-            FindSuccessorResponse findSuccessorResponse = FindSuccessorResponse.newBuilder().setIdentifier(successor).build();
-            responseObserver.onNext(findSuccessorResponse);
+            FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(successor).build();
+            responseObserver.onNext(response);
         }else{
             int searchedId = request.getId();
             ChordNodeClient successorClient = new ChordNodeClient(successor.getIp(), successor.getPort());
-            Identifier successorClient.findSuccessor(searchedId);
+            Identifier searchedIdentifier = successorClient.findSuccessor(searchedId);
+            FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(searchedIdentifier).build();
+            responseObserver.onNext(response);
         }
+        responseObserver.onCompleted();
     }
 
     public void create(){
-
+        predecessor = null;
+        successor = Identifier.newBuilder().setId(selfId).setIp(selfIp).setPort(selfPort).build();
     }
 
-    public void join(){
-
+    public void join(Identifier knownNodeIdentifier){
+        predecessor = null;
+        ChordNodeClient knownNodeClient = new ChordNodeClient(knownNodeIdentifier.getIp(), knownNodeIdentifier.getPort());
+        successor = knownNodeClient.findSuccessor(selfId);
     }
 
     public void stablize(){}

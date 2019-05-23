@@ -82,12 +82,15 @@ public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase 
 
             }
         }
-
-
     }
 
     public void checkPredecessor(){
-
+        if (this.predecessor != null) {
+            ChordNodeClient client = new ChordNodeClient(this.predecessor.getIP(), this.predecessor.getPort());
+            if (!client.ping()) {
+                this.predecessor = null;
+            }
+        }
     }
 
     public boolean inRange(int id, int curID, int sucID) {

@@ -29,7 +29,7 @@ public class ChordNodeClient {
     }
 
     public Identifier findSuccessor(int id){
-        FindSuccessorRequest request = FindSuccessorRequest.newBuilder().setId(id).build();
+        FindSuccessorRequest request = FindSuccessorRequest.newBuilder().setID(id).build();
         FindSuccessorResponse findSuccessorResponse;
         try {
             findSuccessorResponse = blockingStub.findSuccessor(request);
@@ -41,8 +41,8 @@ public class ChordNodeClient {
     }
 
     public boolean ping(){
-        NullRequest request = NullRequest.newBuilder().build();
-        NullResponse pingResponse;
+        PingRequest request = PingRequest.newBuilder().build();
+        PingResponse pingResponse;
         try {
             pingResponse = blockingStub.ping(request);
         } catch (StatusRuntimeException e) {
@@ -52,15 +52,39 @@ public class ChordNodeClient {
         return true;
     }
 
-    public void notify(Identifier identifier){
+    public boolean notify(Identifier identifier){
         NotifyRequest request = NotifyRequest.newBuilder().setIdentifier(identifier).build();
         NotifyResponse notifyResponse;
         try {
             notifyResponse = blockingStub.notify(request);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-            return;
+            return false;
         }
-        return;
+        return true;
+    }
+
+    public Identifier tellmePredecessor(){
+        TellmePredecessorRequest request = TellmePredecessorRequest.newBuilder().build();
+        TellmePredecessorResponse response;
+        try {
+            response = blockingStub.tellmePredecessor(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return null;
+        }
+        return response.getIdentifier();
+    }
+
+    public boolean transferData(String hashmapJsonString){
+        TransferDataRequest request = TransferDataRequest.newBuilder().setDataJson(hashmapJsonString).build();
+        TransferDataResponse response;
+        try{
+            response = blockingStub.transferData(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
     }
 }

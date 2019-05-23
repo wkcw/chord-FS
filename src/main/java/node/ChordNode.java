@@ -1,15 +1,17 @@
 package node;
 
+import common.JsonUtil;
 import io.grpc.stub.StreamObserver;
 import net.grpc.chord.*;
-
 import java.util.HashMap;
 
-public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
+public class ChordNode extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
 
-    private HashMap<Integer, V> hashMap;
+    private static final String TAG = ChordNode.class.getName();
+
+    private HashMap<Integer, String> hashMap;
     private int selfID;
-    private static int ringSize = 5;
+    private static int ringSizeExp = 5;
     private String selfIP;
     private int selfPort;
     private int[] fingerTable;
@@ -22,13 +24,14 @@ public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase 
         this.selfID = selfID;
         this.selfIP = selfIP;
         this.selfPort = selfPort;
+        this.successor = Identifier.newBuilder().build();
     }
 
-    public V get(int key){
+    public String get(int key){
         return hashMap.get(key);
     }
 
-    public void put(int key, V value){
+    public void put(int key, String value){
         hashMap.put(key, value);
     }
 
@@ -60,24 +63,25 @@ public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase 
 
     public void create(){
         predecessor = null;
-        successor = Identifier.newBuilder().setID(selfId).setIP(selfIP).setPort(selfPort).build();
+        successor = Identifier.newBuilder().setID(selfID).setIP(selfIP).setPort(selfPort).build();
     }
 
     public void join(Identifier knownNodeIdentifier){
         predecessor = null;
         ChordNodeClient knownNodeClient = new ChordNodeClient(knownNodeIdentifier.getIP(), knownNodeIdentifier.getPort());
-        successor = knownNodeClient.findSuccessor(selfId);
+        successor = knownNodeClient.findSuccessor(selfID);
     }
 
     public void stablize() {
         if (this.successor != null) {
-            Identifier predecessor = this.successor.getPredecessor();
+            ChordNodeClient successorClient = new ChordNodeClient(successor.getIP(), successor.getPort());
+            Identifier successorPredecessor = successorClient.tellmePredecessor();
 
-            if (predecessor != null && inRange(predecessor.getID(), selfID, this.successor.getID())) {
-                ChordNodeClient successorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
-                if (successorClient.ping()) {
-                    this.successor = this.predecessor;
-                    successorClient.notify(predecessor);
+            if (successorPredecessor != null && inRange(successorPredecessor.getID(), selfID, this.successor.getID())) {
+                ChordNodeClient successorPredecessorClient = new ChordNodeClient(successorPredecessor.getIP(), successorPredecessor.getPort());
+                if (successorPredecessorClient.ping()) {
+                    this.successor = predecessor;
+                    successorPredecessorClient.notify(this.generateSelfIdentifier());
                 }
 
             }
@@ -110,9 +114,41 @@ public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase 
     }
 
     @Override
-    public void ping(NullRequest request, StreamObserver<NullResponse> responseObserver) {
-        NullResponse response = NullResponse.newBuilder().build();
+    public void ping(PingRequest request, StreamObserver<PingResponse> responseObserver) {
+        PingResponse response = PingResponse.newBuilder().build();
         responseObserver.onNext(response);
     }
+
+    @Override
+    public void tellmePredecessor(TellmePredecessorRequest request, StreamObserver<TellmePredecessorResponse> responseObserver) {
+        TellmePredecessorResponse response = TellmePredecessorResponse.newBuilder().setIdentifier(predecessor).build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+
+    }
+
+    @Override
+    public void transferData(TransferDataRequest request, StreamObserver<TransferDataResponse> responseObserver) {
+        String dataJsonString = request.getDataJson();
+        HashMap<Integer, String> dataHashMap = JsonUtil.deserilizable(dataJsonString);
+        hashMap.putAll(dataHashMap);
+        TransferDataResponse response = TransferDataResponse.newBuilder().build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    private Identifier generateSelfIdentifier(){
+        Identifier identifier = Identifier.newBuilder().setID(selfID).setIP(selfIP)
+                .setPort(selfPort).setPredecessor(predecessor).setSuccessor(successor).build();
+        return identifier;
+    }
+
+    public void start(){
+
+    }
+
+
+
+
 
 }

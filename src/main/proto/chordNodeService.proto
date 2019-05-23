@@ -11,13 +11,14 @@ service ChordNodeService{
     rpc Notify(NotifyRequest) returns  (NotifyResponse){}
     rpc FindSuccessor(FindSuccessorRequest) returns (FindSuccessorResponse){}
     rpc TellmePredecessor(TellmePredecessorRequest) returns (TellmePredecessorResponse){}
-    rpc Ping(NullRequest) returns (NullResponse){}
+    rpc Ping(PingRequest) returns (PingResponse){}
+    rpc TransferData(TransferDataRequest) returns (TransferDataResponse){}
 }
 
-message NullRequest {
+message PingRequest {
 }
 
-message NullResponse {
+message PingResponse {
 }
 
 message NotifyRequest {
@@ -38,11 +39,17 @@ message FindSuccessorResponse {
 }
 
 message TellmePredecessorRequest {
-    int32 ID = 1;
 }
 
 message TellmePredecessorResponse {
     Identifier identifier = 1;
+}
+
+message TransferDataRequest {
+    string dataJson = 1;
+}
+
+message TransferDataResponse {
 }
 
 message Identifier {

@@ -60,13 +60,13 @@ public class ChordNode<V> extends ChordNodeServiceGrpc.ChordNodeServiceImplBase 
 
     public void create(){
         predecessor = null;
-        successor = Identifier.newBuilder().setID(selfId).setIP(selfIP).setPort(selfPort).build();
+        successor = Identifier.newBuilder().setID(selfID).setIP(selfIP).setPort(selfPort).build();
     }
 
     public void join(Identifier knownNodeIdentifier){
         predecessor = null;
         ChordNodeClient knownNodeClient = new ChordNodeClient(knownNodeIdentifier.getIP(), knownNodeIdentifier.getPort());
-        successor = knownNodeClient.findSuccessor(selfId);
+        successor = knownNodeClient.findSuccessor(selfID);
     }
 
     public void stablize() {

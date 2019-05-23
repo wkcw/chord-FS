@@ -4,18 +4,18 @@
 package net.grpc.chord;
 
 /**
- * Protobuf type {@code chord.FindSuccessorResponse}
+ * Protobuf type {@code chord.TellmePredecessorRequest}
  */
-public  final class FindSuccessorResponse extends
+public  final class TellmePredecessorRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:chord.FindSuccessorResponse)
-    FindSuccessorResponseOrBuilder {
+    // @@protoc_insertion_point(message_implements:chord.TellmePredecessorRequest)
+    TellmePredecessorRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use FindSuccessorResponse.newBuilder() to construct.
-  private FindSuccessorResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use TellmePredecessorRequest.newBuilder() to construct.
+  private TellmePredecessorRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private FindSuccessorResponse() {
+  private TellmePredecessorRequest() {
   }
 
   @Override
@@ -23,7 +23,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private FindSuccessorResponse(
+  private TellmePredecessorRequest(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -42,17 +42,9 @@ private static final long serialVersionUID = 0L;
           case 0:
             done = true;
             break;
-          case 10: {
-            Identifier.Builder subBuilder = null;
-            if (identifier_ != null) {
-              subBuilder = identifier_.toBuilder();
-            }
-            identifier_ = input.readMessage(Identifier.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(identifier_);
-              identifier_ = subBuilder.buildPartial();
-            }
+          case 8: {
 
+            iD_ = input.readInt32();
             break;
           }
           default: {
@@ -76,36 +68,24 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return ChordNodeProto.internal_static_chord_FindSuccessorResponse_descriptor;
+    return ChordNodeProto.internal_static_chord_TellmePredecessorRequest_descriptor;
   }
 
   @Override
   protected FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return ChordNodeProto.internal_static_chord_FindSuccessorResponse_fieldAccessorTable
+    return ChordNodeProto.internal_static_chord_TellmePredecessorRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            FindSuccessorResponse.class, Builder.class);
+            TellmePredecessorRequest.class, Builder.class);
   }
 
-  public static final int IDENTIFIER_FIELD_NUMBER = 1;
-  private Identifier identifier_;
+  public static final int ID_FIELD_NUMBER = 1;
+  private int iD_;
   /**
-   * <code>.chord.Identifier identifier = 1;</code>
+   * <code>int32 ID = 1;</code>
    */
-  public boolean hasIdentifier() {
-    return identifier_ != null;
-  }
-  /**
-   * <code>.chord.Identifier identifier = 1;</code>
-   */
-  public Identifier getIdentifier() {
-    return identifier_ == null ? Identifier.getDefaultInstance() : identifier_;
-  }
-  /**
-   * <code>.chord.Identifier identifier = 1;</code>
-   */
-  public IdentifierOrBuilder getIdentifierOrBuilder() {
-    return getIdentifier();
+  public int getID() {
+    return iD_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -122,8 +102,8 @@ private static final long serialVersionUID = 0L;
   @Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (identifier_ != null) {
-      output.writeMessage(1, getIdentifier());
+    if (iD_ != 0) {
+      output.writeInt32(1, iD_);
     }
     unknownFields.writeTo(output);
   }
@@ -134,9 +114,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (identifier_ != null) {
+    if (iD_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getIdentifier());
+        .computeInt32Size(1, iD_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -148,16 +128,13 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof FindSuccessorResponse)) {
+    if (!(obj instanceof TellmePredecessorRequest)) {
       return super.equals(obj);
     }
-    FindSuccessorResponse other = (FindSuccessorResponse) obj;
+    TellmePredecessorRequest other = (TellmePredecessorRequest) obj;
 
-    if (hasIdentifier() != other.hasIdentifier()) return false;
-    if (hasIdentifier()) {
-      if (!getIdentifier()
-          .equals(other.getIdentifier())) return false;
-    }
+    if (getID()
+        != other.getID()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -169,78 +146,76 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasIdentifier()) {
-      hash = (37 * hash) + IDENTIFIER_FIELD_NUMBER;
-      hash = (53 * hash) + getIdentifier().hashCode();
-    }
+    hash = (37 * hash) + ID_FIELD_NUMBER;
+    hash = (53 * hash) + getID();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static FindSuccessorResponse parseFrom(byte[] data)
+  public static TellmePredecessorRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static FindSuccessorResponse parseFrom(java.io.InputStream input)
+  public static TellmePredecessorRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static FindSuccessorResponse parseDelimitedFrom(java.io.InputStream input)
+  public static TellmePredecessorRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static FindSuccessorResponse parseDelimitedFrom(
+  public static TellmePredecessorRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static FindSuccessorResponse parseFrom(
+  public static TellmePredecessorRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -253,7 +228,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(FindSuccessorResponse prototype) {
+  public static Builder newBuilder(TellmePredecessorRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @Override
@@ -269,26 +244,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code chord.FindSuccessorResponse}
+   * Protobuf type {@code chord.TellmePredecessorRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:chord.FindSuccessorResponse)
-      FindSuccessorResponseOrBuilder {
+      // @@protoc_insertion_point(builder_implements:chord.TellmePredecessorRequest)
+      TellmePredecessorRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ChordNodeProto.internal_static_chord_FindSuccessorResponse_descriptor;
+      return ChordNodeProto.internal_static_chord_TellmePredecessorRequest_descriptor;
     }
 
     @Override
     protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ChordNodeProto.internal_static_chord_FindSuccessorResponse_fieldAccessorTable
+      return ChordNodeProto.internal_static_chord_TellmePredecessorRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              FindSuccessorResponse.class, Builder.class);
+              TellmePredecessorRequest.class, Builder.class);
     }
 
-    // Construct using net.grpc.chord.FindSuccessorResponse.newBuilder()
+    // Construct using net.grpc.chord.TellmePredecessorRequest.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -306,29 +281,25 @@ private static final long serialVersionUID = 0L;
     @Override
     public Builder clear() {
       super.clear();
-      if (identifierBuilder_ == null) {
-        identifier_ = null;
-      } else {
-        identifier_ = null;
-        identifierBuilder_ = null;
-      }
+      iD_ = 0;
+
       return this;
     }
 
     @Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return ChordNodeProto.internal_static_chord_FindSuccessorResponse_descriptor;
+      return ChordNodeProto.internal_static_chord_TellmePredecessorRequest_descriptor;
     }
 
     @Override
-    public FindSuccessorResponse getDefaultInstanceForType() {
-      return FindSuccessorResponse.getDefaultInstance();
+    public TellmePredecessorRequest getDefaultInstanceForType() {
+      return TellmePredecessorRequest.getDefaultInstance();
     }
 
     @Override
-    public FindSuccessorResponse build() {
-      FindSuccessorResponse result = buildPartial();
+    public TellmePredecessorRequest build() {
+      TellmePredecessorRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -336,13 +307,9 @@ private static final long serialVersionUID = 0L;
     }
 
     @Override
-    public FindSuccessorResponse buildPartial() {
-      FindSuccessorResponse result = new FindSuccessorResponse(this);
-      if (identifierBuilder_ == null) {
-        result.identifier_ = identifier_;
-      } else {
-        result.identifier_ = identifierBuilder_.build();
-      }
+    public TellmePredecessorRequest buildPartial() {
+      TellmePredecessorRequest result = new TellmePredecessorRequest(this);
+      result.iD_ = iD_;
       onBuilt();
       return result;
     }
@@ -381,18 +348,18 @@ private static final long serialVersionUID = 0L;
     }
     @Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof FindSuccessorResponse) {
-        return mergeFrom((FindSuccessorResponse)other);
+      if (other instanceof TellmePredecessorRequest) {
+        return mergeFrom((TellmePredecessorRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(FindSuccessorResponse other) {
-      if (other == FindSuccessorResponse.getDefaultInstance()) return this;
-      if (other.hasIdentifier()) {
-        mergeIdentifier(other.getIdentifier());
+    public Builder mergeFrom(TellmePredecessorRequest other) {
+      if (other == TellmePredecessorRequest.getDefaultInstance()) return this;
+      if (other.getID() != 0) {
+        setID(other.getID());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -409,11 +376,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      FindSuccessorResponse parsedMessage = null;
+      TellmePredecessorRequest parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (FindSuccessorResponse) e.getUnfinishedMessage();
+        parsedMessage = (TellmePredecessorRequest) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -423,121 +390,30 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private Identifier identifier_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        Identifier, Identifier.Builder, IdentifierOrBuilder> identifierBuilder_;
+    private int iD_ ;
     /**
-     * <code>.chord.Identifier identifier = 1;</code>
+     * <code>int32 ID = 1;</code>
      */
-    public boolean hasIdentifier() {
-      return identifierBuilder_ != null || identifier_ != null;
+    public int getID() {
+      return iD_;
     }
     /**
-     * <code>.chord.Identifier identifier = 1;</code>
+     * <code>int32 ID = 1;</code>
      */
-    public Identifier getIdentifier() {
-      if (identifierBuilder_ == null) {
-        return identifier_ == null ? Identifier.getDefaultInstance() : identifier_;
-      } else {
-        return identifierBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.chord.Identifier identifier = 1;</code>
-     */
-    public Builder setIdentifier(Identifier value) {
-      if (identifierBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        identifier_ = value;
-        onChanged();
-      } else {
-        identifierBuilder_.setMessage(value);
-      }
+    public Builder setID(int value) {
 
-      return this;
-    }
-    /**
-     * <code>.chord.Identifier identifier = 1;</code>
-     */
-    public Builder setIdentifier(
-        Identifier.Builder builderForValue) {
-      if (identifierBuilder_ == null) {
-        identifier_ = builderForValue.build();
-        onChanged();
-      } else {
-        identifierBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.chord.Identifier identifier = 1;</code>
-     */
-    public Builder mergeIdentifier(Identifier value) {
-      if (identifierBuilder_ == null) {
-        if (identifier_ != null) {
-          identifier_ =
-            Identifier.newBuilder(identifier_).mergeFrom(value).buildPartial();
-        } else {
-          identifier_ = value;
-        }
-        onChanged();
-      } else {
-        identifierBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.chord.Identifier identifier = 1;</code>
-     */
-    public Builder clearIdentifier() {
-      if (identifierBuilder_ == null) {
-        identifier_ = null;
-        onChanged();
-      } else {
-        identifier_ = null;
-        identifierBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.chord.Identifier identifier = 1;</code>
-     */
-    public Identifier.Builder getIdentifierBuilder() {
-
+      iD_ = value;
       onChanged();
-      return getIdentifierFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>.chord.Identifier identifier = 1;</code>
+     * <code>int32 ID = 1;</code>
      */
-    public IdentifierOrBuilder getIdentifierOrBuilder() {
-      if (identifierBuilder_ != null) {
-        return identifierBuilder_.getMessageOrBuilder();
-      } else {
-        return identifier_ == null ?
-            Identifier.getDefaultInstance() : identifier_;
-      }
-    }
-    /**
-     * <code>.chord.Identifier identifier = 1;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        Identifier, Identifier.Builder, IdentifierOrBuilder>
-        getIdentifierFieldBuilder() {
-      if (identifierBuilder_ == null) {
-        identifierBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            Identifier, Identifier.Builder, IdentifierOrBuilder>(
-                getIdentifier(),
-                getParentForChildren(),
-                isClean());
-        identifier_ = null;
-      }
-      return identifierBuilder_;
+    public Builder clearID() {
+
+      iD_ = 0;
+      onChanged();
+      return this;
     }
     @Override
     public final Builder setUnknownFields(
@@ -552,41 +428,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:chord.FindSuccessorResponse)
+    // @@protoc_insertion_point(builder_scope:chord.TellmePredecessorRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:chord.FindSuccessorResponse)
-  private static final FindSuccessorResponse DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:chord.TellmePredecessorRequest)
+  private static final TellmePredecessorRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new FindSuccessorResponse();
+    DEFAULT_INSTANCE = new TellmePredecessorRequest();
   }
 
-  public static FindSuccessorResponse getDefaultInstance() {
+  public static TellmePredecessorRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<FindSuccessorResponse>
-      PARSER = new com.google.protobuf.AbstractParser<FindSuccessorResponse>() {
+  private static final com.google.protobuf.Parser<TellmePredecessorRequest>
+      PARSER = new com.google.protobuf.AbstractParser<TellmePredecessorRequest>() {
     @Override
-    public FindSuccessorResponse parsePartialFrom(
+    public TellmePredecessorRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new FindSuccessorResponse(input, extensionRegistry);
+      return new TellmePredecessorRequest(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<FindSuccessorResponse> parser() {
+  public static com.google.protobuf.Parser<TellmePredecessorRequest> parser() {
     return PARSER;
   }
 
   @Override
-  public com.google.protobuf.Parser<FindSuccessorResponse> getParserForType() {
+  public com.google.protobuf.Parser<TellmePredecessorRequest> getParserForType() {
     return PARSER;
   }
 
   @Override
-  public FindSuccessorResponse getDefaultInstanceForType() {
+  public TellmePredecessorRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

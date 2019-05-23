@@ -1,18 +1,10 @@
 package net.grpc.chord;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
@@ -41,7 +33,7 @@ public final class ChordNodeServiceGrpc {
     if ((getNotifyMethod = ChordNodeServiceGrpc.getNotifyMethod) == null) {
       synchronized (ChordNodeServiceGrpc.class) {
         if ((getNotifyMethod = ChordNodeServiceGrpc.getNotifyMethod) == null) {
-          ChordNodeServiceGrpc.getNotifyMethod = getNotifyMethod = 
+          ChordNodeServiceGrpc.getNotifyMethod = getNotifyMethod =
               io.grpc.MethodDescriptor.<NotifyRequest, NotifyResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
@@ -73,7 +65,7 @@ public final class ChordNodeServiceGrpc {
     if ((getFindSuccessorMethod = ChordNodeServiceGrpc.getFindSuccessorMethod) == null) {
       synchronized (ChordNodeServiceGrpc.class) {
         if ((getFindSuccessorMethod = ChordNodeServiceGrpc.getFindSuccessorMethod) == null) {
-          ChordNodeServiceGrpc.getFindSuccessorMethod = getFindSuccessorMethod = 
+          ChordNodeServiceGrpc.getFindSuccessorMethod = getFindSuccessorMethod =
               io.grpc.MethodDescriptor.<FindSuccessorRequest, FindSuccessorResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
@@ -89,6 +81,70 @@ public final class ChordNodeServiceGrpc {
         }
      }
      return getFindSuccessorMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<TellmePredecessorRequest,
+      TellmePredecessorResponse> getTellmePredecessorMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "TellmePredecessor",
+      requestType = TellmePredecessorRequest.class,
+      responseType = TellmePredecessorResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<TellmePredecessorRequest,
+      TellmePredecessorResponse> getTellmePredecessorMethod() {
+    io.grpc.MethodDescriptor<TellmePredecessorRequest, TellmePredecessorResponse> getTellmePredecessorMethod;
+    if ((getTellmePredecessorMethod = ChordNodeServiceGrpc.getTellmePredecessorMethod) == null) {
+      synchronized (ChordNodeServiceGrpc.class) {
+        if ((getTellmePredecessorMethod = ChordNodeServiceGrpc.getTellmePredecessorMethod) == null) {
+          ChordNodeServiceGrpc.getTellmePredecessorMethod = getTellmePredecessorMethod =
+              io.grpc.MethodDescriptor.<TellmePredecessorRequest, TellmePredecessorResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "chord.ChordNodeService", "TellmePredecessor"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  TellmePredecessorRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  TellmePredecessorResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("TellmePredecessor"))
+                  .build();
+          }
+        }
+     }
+     return getTellmePredecessorMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<NullRequest,
+      NullResponse> getPingMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "Ping",
+      requestType = NullRequest.class,
+      responseType = NullResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<NullRequest,
+      NullResponse> getPingMethod() {
+    io.grpc.MethodDescriptor<NullRequest, NullResponse> getPingMethod;
+    if ((getPingMethod = ChordNodeServiceGrpc.getPingMethod) == null) {
+      synchronized (ChordNodeServiceGrpc.class) {
+        if ((getPingMethod = ChordNodeServiceGrpc.getPingMethod) == null) {
+          ChordNodeServiceGrpc.getPingMethod = getPingMethod =
+              io.grpc.MethodDescriptor.<NullRequest, NullResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "chord.ChordNodeService", "Ping"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  NullRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  NullResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("Ping"))
+                  .build();
+          }
+        }
+     }
+     return getPingMethod;
   }
 
   /**
@@ -132,6 +188,20 @@ public final class ChordNodeServiceGrpc {
       asyncUnimplementedUnaryCall(getFindSuccessorMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void tellmePredecessor(TellmePredecessorRequest request,
+                                  io.grpc.stub.StreamObserver<TellmePredecessorResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getTellmePredecessorMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void ping(NullRequest request,
+                     io.grpc.stub.StreamObserver<NullResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getPingMethod(), responseObserver);
+    }
+
     @Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -148,6 +218,20 @@ public final class ChordNodeServiceGrpc {
                 FindSuccessorRequest,
                 FindSuccessorResponse>(
                   this, METHODID_FIND_SUCCESSOR)))
+          .addMethod(
+            getTellmePredecessorMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                TellmePredecessorRequest,
+                TellmePredecessorResponse>(
+                  this, METHODID_TELLME_PREDECESSOR)))
+          .addMethod(
+            getPingMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                NullRequest,
+                NullResponse>(
+                  this, METHODID_PING)))
           .build();
     }
   }
@@ -185,6 +269,22 @@ public final class ChordNodeServiceGrpc {
       asyncUnaryCall(
           getChannel().newCall(getFindSuccessorMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void tellmePredecessor(TellmePredecessorRequest request,
+                                  io.grpc.stub.StreamObserver<TellmePredecessorResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getTellmePredecessorMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void ping(NullRequest request,
+                     io.grpc.stub.StreamObserver<NullResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getPingMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -217,6 +317,20 @@ public final class ChordNodeServiceGrpc {
     public FindSuccessorResponse findSuccessor(FindSuccessorRequest request) {
       return blockingUnaryCall(
           getChannel(), getFindSuccessorMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public TellmePredecessorResponse tellmePredecessor(TellmePredecessorRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getTellmePredecessorMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public NullResponse ping(NullRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getPingMethod(), getCallOptions(), request);
     }
   }
 
@@ -253,10 +367,28 @@ public final class ChordNodeServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getFindSuccessorMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<TellmePredecessorResponse> tellmePredecessor(
+        TellmePredecessorRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getTellmePredecessorMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<NullResponse> ping(
+        NullRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getPingMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_NOTIFY = 0;
   private static final int METHODID_FIND_SUCCESSOR = 1;
+  private static final int METHODID_TELLME_PREDECESSOR = 2;
+  private static final int METHODID_PING = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -282,6 +414,14 @@ public final class ChordNodeServiceGrpc {
         case METHODID_FIND_SUCCESSOR:
           serviceImpl.findSuccessor((FindSuccessorRequest) request,
               (io.grpc.stub.StreamObserver<FindSuccessorResponse>) responseObserver);
+          break;
+        case METHODID_TELLME_PREDECESSOR:
+          serviceImpl.tellmePredecessor((TellmePredecessorRequest) request,
+              (io.grpc.stub.StreamObserver<TellmePredecessorResponse>) responseObserver);
+          break;
+        case METHODID_PING:
+          serviceImpl.ping((NullRequest) request,
+              (io.grpc.stub.StreamObserver<NullResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -346,6 +486,8 @@ public final class ChordNodeServiceGrpc {
               .setSchemaDescriptor(new ChordNodeServiceFileDescriptorSupplier())
               .addMethod(getNotifyMethod())
               .addMethod(getFindSuccessorMethod())
+              .addMethod(getTellmePredecessorMethod())
+              .addMethod(getPingMethod())
               .build();
         }
       }

@@ -44,7 +44,7 @@ private static final long serialVersionUID = 0L;
             break;
           case 8: {
 
-            id_ = input.readInt32();
+            iD_ = input.readInt32();
             break;
           }
           default: {
@@ -80,12 +80,12 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int ID_FIELD_NUMBER = 1;
-  private int id_;
+  private int iD_;
   /**
-   * <code>int32 id = 1;</code>
+   * <code>int32 ID = 1;</code>
    */
-  public int getId() {
-    return id_;
+  public int getID() {
+    return iD_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -102,8 +102,8 @@ private static final long serialVersionUID = 0L;
   @Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (id_ != 0) {
-      output.writeInt32(1, id_);
+    if (iD_ != 0) {
+      output.writeInt32(1, iD_);
     }
     unknownFields.writeTo(output);
   }
@@ -114,9 +114,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (id_ != 0) {
+    if (iD_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, id_);
+        .computeInt32Size(1, iD_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -133,8 +133,8 @@ private static final long serialVersionUID = 0L;
     }
     FindSuccessorRequest other = (FindSuccessorRequest) obj;
 
-    if (getId()
-        != other.getId()) return false;
+    if (getID()
+        != other.getID()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -147,7 +147,7 @@ private static final long serialVersionUID = 0L;
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + getId();
+    hash = (53 * hash) + getID();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -281,7 +281,7 @@ private static final long serialVersionUID = 0L;
     @Override
     public Builder clear() {
       super.clear();
-      id_ = 0;
+      iD_ = 0;
 
       return this;
     }
@@ -309,7 +309,7 @@ private static final long serialVersionUID = 0L;
     @Override
     public FindSuccessorRequest buildPartial() {
       FindSuccessorRequest result = new FindSuccessorRequest(this);
-      result.id_ = id_;
+      result.iD_ = iD_;
       onBuilt();
       return result;
     }
@@ -358,8 +358,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(FindSuccessorRequest other) {
       if (other == FindSuccessorRequest.getDefaultInstance()) return this;
-      if (other.getId() != 0) {
-        setId(other.getId());
+      if (other.getID() != 0) {
+        setID(other.getID());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -390,28 +390,28 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int id_ ;
+    private int iD_ ;
     /**
-     * <code>int32 id = 1;</code>
+     * <code>int32 ID = 1;</code>
      */
-    public int getId() {
-      return id_;
+    public int getID() {
+      return iD_;
     }
     /**
-     * <code>int32 id = 1;</code>
+     * <code>int32 ID = 1;</code>
      */
-    public Builder setId(int value) {
-      
-      id_ = value;
+    public Builder setID(int value) {
+
+      iD_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 id = 1;</code>
+     * <code>int32 ID = 1;</code>
      */
-    public Builder clearId() {
-      
-      id_ = 0;
+    public Builder clearID() {
+
+      iD_ = 0;
       onChanged();
       return this;
     }

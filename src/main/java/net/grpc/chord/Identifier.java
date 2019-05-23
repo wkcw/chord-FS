@@ -16,7 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private Identifier() {
-    ip_ = "";
+    iP_ = "";
   }
 
   @Override
@@ -46,7 +46,7 @@ private static final long serialVersionUID = 0L;
           case 10: {
             String s = input.readStringRequireUtf8();
 
-            ip_ = s;
+            iP_ = s;
             break;
           }
           case 16: {
@@ -56,7 +56,33 @@ private static final long serialVersionUID = 0L;
           }
           case 24: {
 
-            id_ = input.readInt32();
+            iD_ = input.readInt32();
+            break;
+          }
+          case 34: {
+            Builder subBuilder = null;
+            if (predecessor_ != null) {
+              subBuilder = predecessor_.toBuilder();
+            }
+            predecessor_ = input.readMessage(Identifier.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(predecessor_);
+              predecessor_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
+          case 42: {
+            Builder subBuilder = null;
+            if (successor_ != null) {
+              subBuilder = successor_.toBuilder();
+            }
+            successor_ = input.readMessage(Identifier.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(successor_);
+              successor_ = subBuilder.buildPartial();
+            }
+
             break;
           }
           default: {
@@ -92,33 +118,33 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int IP_FIELD_NUMBER = 1;
-  private volatile Object ip_;
+  private volatile Object iP_;
   /**
-   * <code>string ip = 1;</code>
+   * <code>string IP = 1;</code>
    */
-  public String getIp() {
-    Object ref = ip_;
+  public String getIP() {
+    Object ref = iP_;
     if (ref instanceof String) {
       return (String) ref;
     } else {
-      com.google.protobuf.ByteString bs = 
+      com.google.protobuf.ByteString bs =
           (com.google.protobuf.ByteString) ref;
       String s = bs.toStringUtf8();
-      ip_ = s;
+      iP_ = s;
       return s;
     }
   }
   /**
-   * <code>string ip = 1;</code>
+   * <code>string IP = 1;</code>
    */
   public com.google.protobuf.ByteString
-      getIpBytes() {
-    Object ref = ip_;
+      getIPBytes() {
+    Object ref = iP_;
     if (ref instanceof String) {
-      com.google.protobuf.ByteString b = 
+      com.google.protobuf.ByteString b =
           com.google.protobuf.ByteString.copyFromUtf8(
               (String) ref);
-      ip_ = b;
+      iP_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -135,12 +161,54 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int ID_FIELD_NUMBER = 3;
-  private int id_;
+  private int iD_;
   /**
-   * <code>int32 id = 3;</code>
+   * <code>int32 ID = 3;</code>
    */
-  public int getId() {
-    return id_;
+  public int getID() {
+    return iD_;
+  }
+
+  public static final int PREDECESSOR_FIELD_NUMBER = 4;
+  private Identifier predecessor_;
+  /**
+   * <code>.chord.Identifier predecessor = 4;</code>
+   */
+  public boolean hasPredecessor() {
+    return predecessor_ != null;
+  }
+  /**
+   * <code>.chord.Identifier predecessor = 4;</code>
+   */
+  public Identifier getPredecessor() {
+    return predecessor_ == null ? Identifier.getDefaultInstance() : predecessor_;
+  }
+  /**
+   * <code>.chord.Identifier predecessor = 4;</code>
+   */
+  public IdentifierOrBuilder getPredecessorOrBuilder() {
+    return getPredecessor();
+  }
+
+  public static final int SUCCESSOR_FIELD_NUMBER = 5;
+  private Identifier successor_;
+  /**
+   * <code>.chord.Identifier successor = 5;</code>
+   */
+  public boolean hasSuccessor() {
+    return successor_ != null;
+  }
+  /**
+   * <code>.chord.Identifier successor = 5;</code>
+   */
+  public Identifier getSuccessor() {
+    return successor_ == null ? Identifier.getDefaultInstance() : successor_;
+  }
+  /**
+   * <code>.chord.Identifier successor = 5;</code>
+   */
+  public IdentifierOrBuilder getSuccessorOrBuilder() {
+    return getSuccessor();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -157,14 +225,20 @@ private static final long serialVersionUID = 0L;
   @Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getIpBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, ip_);
+    if (!getIPBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, iP_);
     }
     if (port_ != 0) {
       output.writeInt32(2, port_);
     }
-    if (id_ != 0) {
-      output.writeInt32(3, id_);
+    if (iD_ != 0) {
+      output.writeInt32(3, iD_);
+    }
+    if (predecessor_ != null) {
+      output.writeMessage(4, getPredecessor());
+    }
+    if (successor_ != null) {
+      output.writeMessage(5, getSuccessor());
     }
     unknownFields.writeTo(output);
   }
@@ -175,16 +249,24 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getIpBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, ip_);
+    if (!getIPBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, iP_);
     }
     if (port_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, port_);
     }
-    if (id_ != 0) {
+    if (iD_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, id_);
+        .computeInt32Size(3, iD_);
+    }
+    if (predecessor_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getPredecessor());
+    }
+    if (successor_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getSuccessor());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -201,12 +283,22 @@ private static final long serialVersionUID = 0L;
     }
     Identifier other = (Identifier) obj;
 
-    if (!getIp()
-        .equals(other.getIp())) return false;
+    if (!getIP()
+        .equals(other.getIP())) return false;
     if (getPort()
         != other.getPort()) return false;
-    if (getId()
-        != other.getId()) return false;
+    if (getID()
+        != other.getID()) return false;
+    if (hasPredecessor() != other.hasPredecessor()) return false;
+    if (hasPredecessor()) {
+      if (!getPredecessor()
+          .equals(other.getPredecessor())) return false;
+    }
+    if (hasSuccessor() != other.hasSuccessor()) return false;
+    if (hasSuccessor()) {
+      if (!getSuccessor()
+          .equals(other.getSuccessor())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -219,11 +311,19 @@ private static final long serialVersionUID = 0L;
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + IP_FIELD_NUMBER;
-    hash = (53 * hash) + getIp().hashCode();
+    hash = (53 * hash) + getIP().hashCode();
     hash = (37 * hash) + PORT_FIELD_NUMBER;
     hash = (53 * hash) + getPort();
     hash = (37 * hash) + ID_FIELD_NUMBER;
-    hash = (53 * hash) + getId();
+    hash = (53 * hash) + getID();
+    if (hasPredecessor()) {
+      hash = (37 * hash) + PREDECESSOR_FIELD_NUMBER;
+      hash = (53 * hash) + getPredecessor().hashCode();
+    }
+    if (hasSuccessor()) {
+      hash = (37 * hash) + SUCCESSOR_FIELD_NUMBER;
+      hash = (53 * hash) + getSuccessor().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -357,12 +457,24 @@ private static final long serialVersionUID = 0L;
     @Override
     public Builder clear() {
       super.clear();
-      ip_ = "";
+      iP_ = "";
 
       port_ = 0;
 
-      id_ = 0;
+      iD_ = 0;
 
+      if (predecessorBuilder_ == null) {
+        predecessor_ = null;
+      } else {
+        predecessor_ = null;
+        predecessorBuilder_ = null;
+      }
+      if (successorBuilder_ == null) {
+        successor_ = null;
+      } else {
+        successor_ = null;
+        successorBuilder_ = null;
+      }
       return this;
     }
 
@@ -389,9 +501,19 @@ private static final long serialVersionUID = 0L;
     @Override
     public Identifier buildPartial() {
       Identifier result = new Identifier(this);
-      result.ip_ = ip_;
+      result.iP_ = iP_;
       result.port_ = port_;
-      result.id_ = id_;
+      result.iD_ = iD_;
+      if (predecessorBuilder_ == null) {
+        result.predecessor_ = predecessor_;
+      } else {
+        result.predecessor_ = predecessorBuilder_.build();
+      }
+      if (successorBuilder_ == null) {
+        result.successor_ = successor_;
+      } else {
+        result.successor_ = successorBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -440,15 +562,21 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(Identifier other) {
       if (other == Identifier.getDefaultInstance()) return this;
-      if (!other.getIp().isEmpty()) {
-        ip_ = other.ip_;
+      if (!other.getIP().isEmpty()) {
+        iP_ = other.iP_;
         onChanged();
       }
       if (other.getPort() != 0) {
         setPort(other.getPort());
       }
-      if (other.getId() != 0) {
-        setId(other.getId());
+      if (other.getID() != 0) {
+        setID(other.getID());
+      }
+      if (other.hasPredecessor()) {
+        mergePredecessor(other.getPredecessor());
+      }
+      if (other.hasSuccessor()) {
+        mergeSuccessor(other.getSuccessor());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -479,71 +607,71 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private Object ip_ = "";
+    private Object iP_ = "";
     /**
-     * <code>string ip = 1;</code>
+     * <code>string IP = 1;</code>
      */
-    public String getIp() {
-      Object ref = ip_;
+    public String getIP() {
+      Object ref = iP_;
       if (!(ref instanceof String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         String s = bs.toStringUtf8();
-        ip_ = s;
+        iP_ = s;
         return s;
       } else {
         return (String) ref;
       }
     }
     /**
-     * <code>string ip = 1;</code>
+     * <code>string IP = 1;</code>
      */
     public com.google.protobuf.ByteString
-        getIpBytes() {
-      Object ref = ip_;
+        getIPBytes() {
+      Object ref = iP_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (String) ref);
-        ip_ = b;
+        iP_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <code>string ip = 1;</code>
+     * <code>string IP = 1;</code>
      */
-    public Builder setIp(
+    public Builder setIP(
         String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  
-      ip_ = value;
+
+      iP_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string ip = 1;</code>
+     * <code>string IP = 1;</code>
      */
-    public Builder clearIp() {
-      
-      ip_ = getDefaultInstance().getIp();
+    public Builder clearIP() {
+
+      iP_ = getDefaultInstance().getIP();
       onChanged();
       return this;
     }
     /**
-     * <code>string ip = 1;</code>
+     * <code>string IP = 1;</code>
      */
-    public Builder setIpBytes(
+    public Builder setIPBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-      
-      ip_ = value;
+
+      iP_ = value;
       onChanged();
       return this;
     }
@@ -559,7 +687,7 @@ private static final long serialVersionUID = 0L;
      * <code>int32 port = 2;</code>
      */
     public Builder setPort(int value) {
-      
+
       port_ = value;
       onChanged();
       return this;
@@ -568,36 +696,270 @@ private static final long serialVersionUID = 0L;
      * <code>int32 port = 2;</code>
      */
     public Builder clearPort() {
-      
+
       port_ = 0;
       onChanged();
       return this;
     }
 
-    private int id_ ;
+    private int iD_ ;
     /**
-     * <code>int32 id = 3;</code>
+     * <code>int32 ID = 3;</code>
      */
-    public int getId() {
-      return id_;
+    public int getID() {
+      return iD_;
     }
     /**
-     * <code>int32 id = 3;</code>
+     * <code>int32 ID = 3;</code>
      */
-    public Builder setId(int value) {
-      
-      id_ = value;
+    public Builder setID(int value) {
+
+      iD_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 id = 3;</code>
+     * <code>int32 ID = 3;</code>
      */
-    public Builder clearId() {
-      
-      id_ = 0;
+    public Builder clearID() {
+
+      iD_ = 0;
       onChanged();
       return this;
+    }
+
+    private Identifier predecessor_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        Identifier, Builder, IdentifierOrBuilder> predecessorBuilder_;
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public boolean hasPredecessor() {
+      return predecessorBuilder_ != null || predecessor_ != null;
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public Identifier getPredecessor() {
+      if (predecessorBuilder_ == null) {
+        return predecessor_ == null ? Identifier.getDefaultInstance() : predecessor_;
+      } else {
+        return predecessorBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public Builder setPredecessor(Identifier value) {
+      if (predecessorBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        predecessor_ = value;
+        onChanged();
+      } else {
+        predecessorBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public Builder setPredecessor(
+        Builder builderForValue) {
+      if (predecessorBuilder_ == null) {
+        predecessor_ = builderForValue.build();
+        onChanged();
+      } else {
+        predecessorBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public Builder mergePredecessor(Identifier value) {
+      if (predecessorBuilder_ == null) {
+        if (predecessor_ != null) {
+          predecessor_ =
+            Identifier.newBuilder(predecessor_).mergeFrom(value).buildPartial();
+        } else {
+          predecessor_ = value;
+        }
+        onChanged();
+      } else {
+        predecessorBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public Builder clearPredecessor() {
+      if (predecessorBuilder_ == null) {
+        predecessor_ = null;
+        onChanged();
+      } else {
+        predecessor_ = null;
+        predecessorBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public Builder getPredecessorBuilder() {
+
+      onChanged();
+      return getPredecessorFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    public IdentifierOrBuilder getPredecessorOrBuilder() {
+      if (predecessorBuilder_ != null) {
+        return predecessorBuilder_.getMessageOrBuilder();
+      } else {
+        return predecessor_ == null ?
+            Identifier.getDefaultInstance() : predecessor_;
+      }
+    }
+    /**
+     * <code>.chord.Identifier predecessor = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        Identifier, Builder, IdentifierOrBuilder>
+        getPredecessorFieldBuilder() {
+      if (predecessorBuilder_ == null) {
+        predecessorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            Identifier, Builder, IdentifierOrBuilder>(
+                getPredecessor(),
+                getParentForChildren(),
+                isClean());
+        predecessor_ = null;
+      }
+      return predecessorBuilder_;
+    }
+
+    private Identifier successor_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        Identifier, Builder, IdentifierOrBuilder> successorBuilder_;
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public boolean hasSuccessor() {
+      return successorBuilder_ != null || successor_ != null;
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public Identifier getSuccessor() {
+      if (successorBuilder_ == null) {
+        return successor_ == null ? Identifier.getDefaultInstance() : successor_;
+      } else {
+        return successorBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public Builder setSuccessor(Identifier value) {
+      if (successorBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        successor_ = value;
+        onChanged();
+      } else {
+        successorBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public Builder setSuccessor(
+        Builder builderForValue) {
+      if (successorBuilder_ == null) {
+        successor_ = builderForValue.build();
+        onChanged();
+      } else {
+        successorBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public Builder mergeSuccessor(Identifier value) {
+      if (successorBuilder_ == null) {
+        if (successor_ != null) {
+          successor_ =
+            Identifier.newBuilder(successor_).mergeFrom(value).buildPartial();
+        } else {
+          successor_ = value;
+        }
+        onChanged();
+      } else {
+        successorBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public Builder clearSuccessor() {
+      if (successorBuilder_ == null) {
+        successor_ = null;
+        onChanged();
+      } else {
+        successor_ = null;
+        successorBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public Builder getSuccessorBuilder() {
+
+      onChanged();
+      return getSuccessorFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    public IdentifierOrBuilder getSuccessorOrBuilder() {
+      if (successorBuilder_ != null) {
+        return successorBuilder_.getMessageOrBuilder();
+      } else {
+        return successor_ == null ?
+            Identifier.getDefaultInstance() : successor_;
+      }
+    }
+    /**
+     * <code>.chord.Identifier successor = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        Identifier, Builder, IdentifierOrBuilder>
+        getSuccessorFieldBuilder() {
+      if (successorBuilder_ == null) {
+        successorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            Identifier, Builder, IdentifierOrBuilder>(
+                getSuccessor(),
+                getParentForChildren(),
+                isClean());
+        successor_ = null;
+      }
+      return successorBuilder_;
     }
     @Override
     public final Builder setUnknownFields(

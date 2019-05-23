@@ -18,7 +18,7 @@ public interface NotifyResponseOrBuilder extends
       getAddressBytes();
 
   /**
-   * <code>int32 id = 2;</code>
+   * <code>int32 ID = 2;</code>
    */
-  int getId();
+  int getID();
 }

@@ -11,6 +11,13 @@ service ChordNodeService{
     rpc Notify(NotifyRequest) returns  (NotifyResponse){}
     rpc FindSuccessor(FindSuccessorRequest) returns (FindSuccessorResponse){}
     rpc TellmePredecessor(TellmePredecessorRequest) returns (TellmePredecessorResponse){}
+    rpc Ping(NullRequest) returns (NullResponse){}
+}
+
+message NullRequest {
+}
+
+message NullResponse {
 }
 
 message NotifyRequest {
@@ -19,11 +26,11 @@ message NotifyRequest {
 
 message NotifyResponse {
     string address = 1;
-    int32 id = 2;
+    int32 ID = 2;
 }
 
 message FindSuccessorRequest {
-    int32 id = 1;
+    int32 ID = 1;
 }
 
 message FindSuccessorResponse {
@@ -31,7 +38,7 @@ message FindSuccessorResponse {
 }
 
 message TellmePredecessorRequest {
-     int32 id = 1;
+    int32 ID = 1;
 }
 
 message TellmePredecessorResponse {
@@ -39,7 +46,9 @@ message TellmePredecessorResponse {
 }
 
 message Identifier {
-    string ip = 1;
+    string IP = 1;
     int32 port = 2;
-    int32 id = 3;
+    int32 ID = 3;
+    Identifier predecessor=4;
+    Identifier successor=5;
 }

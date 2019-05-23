@@ -40,6 +40,18 @@ public class ChordNodeClient {
         return findSuccessorResponse.getIdentifier();
     }
 
+    public boolean ping(){
+        NullRequest request = NullRequest.newBuilder().build();
+        NullResponse pingResponse;
+        try {
+            pingResponse = blockingStub.ping(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
     public void notify(Identifier identifier){
         NotifyRequest request = NotifyRequest.newBuilder().setIdentifier(identifier).build();
         NotifyResponse notifyResponse;

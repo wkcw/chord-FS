@@ -508,7 +508,7 @@ private static final long serialVersionUID = 0L;
      * <code>.chord.Identifier identifier = 1;</code>
      */
     public Identifier.Builder getIdentifierBuilder() {
-      
+
       onChanged();
       return getIdentifierFieldBuilder().getBuilder();
     }

@@ -3,8 +3,8 @@
 
 package net.grpc.chord;
 
-public interface FindSuccessorRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:chord.FindSuccessorRequest)
+public interface TellmePredecessorRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:chord.TellmePredecessorRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

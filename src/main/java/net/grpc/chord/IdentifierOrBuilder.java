@@ -8,14 +8,14 @@ public interface IdentifierOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string ip = 1;</code>
+   * <code>string IP = 1;</code>
    */
-  String getIp();
+  String getIP();
   /**
-   * <code>string ip = 1;</code>
+   * <code>string IP = 1;</code>
    */
   com.google.protobuf.ByteString
-      getIpBytes();
+      getIPBytes();
 
   /**
    * <code>int32 port = 2;</code>
@@ -23,7 +23,33 @@ public interface IdentifierOrBuilder extends
   int getPort();
 
   /**
-   * <code>int32 id = 3;</code>
+   * <code>int32 ID = 3;</code>
    */
-  int getId();
+  int getID();
+
+  /**
+   * <code>.chord.Identifier predecessor = 4;</code>
+   */
+  boolean hasPredecessor();
+  /**
+   * <code>.chord.Identifier predecessor = 4;</code>
+   */
+  Identifier getPredecessor();
+  /**
+   * <code>.chord.Identifier predecessor = 4;</code>
+   */
+  IdentifierOrBuilder getPredecessorOrBuilder();
+
+  /**
+   * <code>.chord.Identifier successor = 5;</code>
+   */
+  boolean hasSuccessor();
+  /**
+   * <code>.chord.Identifier successor = 5;</code>
+   */
+  Identifier getSuccessor();
+  /**
+   * <code>.chord.Identifier successor = 5;</code>
+   */
+  IdentifierOrBuilder getSuccessorOrBuilder();
 }

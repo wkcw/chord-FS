@@ -4,6 +4,8 @@ import common.JsonUtil;
 import io.grpc.stub.StreamObserver;
 import net.grpc.chord.*;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChordNode extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
 
@@ -143,12 +145,41 @@ public class ChordNode extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
         return identifier;
     }
 
-    public void start(){
+    public void start(int id, String ip, int port){
+        create();
+        if (id != -1) {
+            Identifier identifier = Identifier.newBuilder().setID(id).setIP(ip).setPort(port).build();
+            join(identifier);
+        }
+
+        Timer timer = new Timer();
+
+        StabilizeTask stabilizeTask = new StabilizeTask();
+        timer.schedule(stabilizeTask, 1000, 1000);
+
+        CheckPredecessorTask checkPredecessorTask = new CheckPredecessorTask();
+        timer.schedule(checkPredecessorTask, 1000, 1000);
 
     }
 
 
+    class StabilizeTask extends TimerTask {
+        public void run() {
+            stablize();
+        }
+    }
 
+    class CheckPredecessorTask extends TimerTask {
+        public void run() {
+            stablize();
+        }
+    }
+
+    public static void main(String[] args) {
+        ChordNode chordNode = new ChordNode(0, "localhost", 9700, 5);
+
+        chordNode.start(-1, null, -1);
+    }
 
 
 }

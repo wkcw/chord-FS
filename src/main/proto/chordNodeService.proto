@@ -81,6 +81,4 @@ message Identifier {
     string IP = 1;
     int32 port = 2;
     int32 ID = 3;
-    Identifier predecessor=4;
-    Identifier successor=5;
 }

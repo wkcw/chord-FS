@@ -5,6 +5,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import net.grpc.chord.*;
 
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,16 +65,31 @@ public class ChordNodeClient {
         return true;
     }
 
-    public Identifier tellmePredecessor(){
-        TellmePredecessorRequest request = TellmePredecessorRequest.newBuilder().build();
-        TellmePredecessorResponse response;
+    public Identifier inquirePredecessor(){
+        InquirePredecessorRequest request = InquirePredecessorRequest.newBuilder().build();
+        InquirePredecessorResponse response;
         try {
-            response = blockingStub.tellmePredecessor(request);
+            response = blockingStub.inquirePredecessor(request);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
             return null;
         }
         return response.getIdentifier();
+    }
+
+    public List<Identifier> inquireSuccessorsList() {
+        InquireSuccessorsListRequest request = InquireSuccessorsListRequest.newBuilder().build();
+        InquireSuccessorsListResponse response;
+
+        try {
+            response = blockingStub.inquireSuccessorsList(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+
+            return null;
+        }
+
+        return response.getSuccessorsListList();
     }
 
     public boolean transferData(String hashmapJsonString){

@@ -34,7 +34,6 @@ public class ChordNodeServer {
         server.start();
         chordNodeService.start(knownID, knownIP, knownPort);
         logger.info("Server started, listening on " + port);
-
     }
 
 
@@ -51,7 +50,6 @@ public class ChordNodeServer {
         private int selfPort;
         private Identifier[] fingerTable;
         private Identifier[] successorsList;
-        private Identifier successor;
         private Identifier predecessor;
         private int next;
 
@@ -92,20 +90,20 @@ public class ChordNodeServer {
         public void findSuccessor(FindSuccessorRequest request, StreamObserver<FindSuccessorResponse> responseObserver) {
             Identifier successor = this.successor();
 
-            if(this.inRange(request.getID(), selfID, successor.getID())){
+            if (predecessor != null && this.inRange(request.getID(), predecessor.getID(), selfID)) {
+                FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(generateSelfIdentifier()).build();
+                responseObserver.onNext(response);
+            } else if (successor != null && ((selfID == successor.getID() && this.inRange(request.getID(), selfID + 1,
+                    successor.getID())) || this.inRange(request.getID(), selfID, successor.getID()))) {
                 FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(successor).build();
                 responseObserver.onNext(response);
             } else{
                 int searchedID = request.getID();
+                Identifier nextIdentifier = closestPrecedingFinger(searchedID);
 
-                Identifier searchedIdentifier = closestPrecedingFinger(searchedID);
-
-                if (searchedIdentifier.getID() == -1) {
-                    logger.info("Creating client for findSuccessor");
-                    Identifier nextNode = this.fingerTable[ringSizeExp - 1];
-                    ChordNodeClient client = new ChordNodeClient(nextNode.getIP(), nextNode.getPort());
-                    searchedIdentifier = client.findSuccessor(searchedID);
-                }
+                ChordNodeClient client = new ChordNodeClient(nextIdentifier.getIP(), nextIdentifier.getPort());
+                Identifier searchedIdentifier = client.findSuccessor(searchedID);
+                client.close();
 
                 FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(searchedIdentifier).build();
                 responseObserver.onNext(response);
@@ -115,14 +113,16 @@ public class ChordNodeServer {
 
         public void create(){
             predecessor = null;
-            successor = Identifier.newBuilder().setID(selfID).setIP(selfIP).setPort(selfPort).build();
+            this.fingerTable[0] = Identifier.newBuilder().setID(selfID).setIP(selfIP).setPort(selfPort).build();
         }
 
         public void join(Identifier knownNodeIdentifier){
             predecessor = null;
             logger.info("Creating client for join");
             ChordNodeClient knownNodeClient = new ChordNodeClient(knownNodeIdentifier.getIP(), knownNodeIdentifier.getPort());
-            successor = knownNodeClient.findSuccessor(selfID);
+
+            this.fingerTable[0] = knownNodeClient.findSuccessor(selfID);
+            knownNodeClient.close();
         }
 
         public void stabilize() {
@@ -138,23 +138,30 @@ public class ChordNodeServer {
                 Identifier successorPredecessor = successorClient.tellmePredecessor();
 
                 if (!successorPredecessor.getIP().equals("") && inRange(successorPredecessor.getID(), selfID, successor.getID())) {
+                    successorClient.close();
+
                     successorClient = new ChordNodeClient(successorPredecessor.getIP(), successorPredecessor.getPort());
                     if (successorClient.ping()) {
                         this.fingerTable[0] = successorPredecessor;
+                    } else  {
+                        successorClient = new ChordNodeClient(successor.getIP(), successor.getPort());
                     }
                 }
                 successorClient.notify(this.generateSelfIdentifier());
+
+                successorClient.close();
             }
         }
 
         public Identifier successor() {
-            for (int i = 0;i < sucListSize;i++) {
-                Identifier curSuccessor = this.successorsList[i];
-                ChordNodeClient client = new ChordNodeClient(curSuccessor.getIP(), curSuccessor.getPort());
-                if (client.ping()) return curSuccessor;
-            }
-
-            return generateSelfIdentifier();
+//            for (int i = 0;i < sucListSize;i++) {
+//                Identifier curSuccessor = this.successorsList[i];
+//                ChordNodeClient client = new ChordNodeClient(curSuccessor.getIP(), curSuccessor.getPort());
+//                if (client.ping()) return curSuccessor;
+//            }
+//
+//            return generateSelfIdentifier();
+            return this.fingerTable[0];
         }
 
         public void checkPredecessor(){
@@ -164,18 +171,20 @@ public class ChordNodeServer {
                 if (!client.ping()) {
                     this.predecessor = null;
                 }
+
+                client.close();
             }
         }
 
-        public boolean inRange(int id, int curID, int sucID) {
-            if (curID < sucID) {
-                if (id > curID && id <= sucID) {
+        public boolean inRange(int id, int leftID, int rightID) {
+            if (leftID < rightID) {
+                if (id > leftID && id <= rightID) {
                     return true;
                 } else {
                     return false;
                 }
             } else {
-                if (id > curID || id <= sucID) {
+                if (id > leftID || id <= rightID) {
                     return true;
                 } else {
                     return false;
@@ -202,7 +211,7 @@ public class ChordNodeServer {
             }
             else {
                 String value = hashMap.get(key);
-                GetResponse response = GetResponse.newBuilder().setRet(ReturnCode.SUCCESS).build();
+                GetResponse response = GetResponse.newBuilder().setValue(value).setRet(ReturnCode.SUCCESS).build();
                 responseObserver.onNext(response);
             }
             responseObserver.onCompleted();
@@ -263,17 +272,31 @@ public class ChordNodeServer {
             CheckPredecessorTask checkPredecessorTask = new CheckPredecessorTask();
             timer.schedule(checkPredecessorTask, 1000, 1000);
 
+            FixFingersTask fixFingersTask = new FixFingersTask();
+            timer.schedule(fixFingersTask, 1000, 500);
+        }
+
+        private void printFingerTable() {
+            logger.info("||index || value");
+
+            for (int i = 0;i < ringSizeExp;i++) {
+                if (this.fingerTable[i] == null) {
+                    System.out.println(String.format("||   %d   || null", i));
+                } else {
+                    System.out.println(String.format("||   %d   || %d", i, fingerTable[i].getID()));
+                }
+            }
         }
 
 
         public Identifier closestPrecedingFinger(int id) {
             for (int i = ringSizeExp - 1;i >= 0;i--) {
+                if (fingerTable[i] == null) {
+                    continue;
+                }
+
                 if (inRange(fingerTable[i].getID(), selfID, id)) {
-                    if (i == ringSizeExp - 1) {
-                        return Identifier.newBuilder().setID(-1).build();
-                    } else {
-                        return fingerTable[i + 1];
-                    }
+                    return fingerTable[i];
                 }
             }
 
@@ -283,23 +306,26 @@ public class ChordNodeServer {
         public void fixFingers() {
             this.next = (this.next + 1) % ringSizeExp;
 
-            ChordNodeClient successorClient = new ChordNodeClient(successor.getIP(), successor.getPort());
-            Identifier searchedIdentifier = successorClient.findSuccessor((selfID + 1 << this.next) % (1 << ringSizeExp));
-            FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(searchedIdentifier).build();
+            ChordNodeClient successorClient = new ChordNodeClient(selfIP, selfPort);
+            Identifier searchedIdentifier = successorClient.findSuccessor((selfID + (1 << this.next)) % (1 << ringSizeExp));
 
-            this.fingerTable[this.next] = response.getIdentifier();
+            successorClient.close();
+
+            this.fingerTable[this.next] = searchedIdentifier;
+
+            printFingerTable();
         }
 
-        public void FixSuccessors() {
-
-        }
+//        public void FixSuccessors() {
+//
+//        }
 
 
 
         class StabilizeTask extends TimerTask {
             public void run() {
                 stabilize();
-                logger.info(String.format("Successor : %d", successor.getID()));
+                logger.info(String.format("Successor : %d", successor().getID()));
             }
         }
 
@@ -310,7 +336,7 @@ public class ChordNodeServer {
             }
         }
 
-        class FixTableTask extends TimerTask {
+        class FixFingersTask extends TimerTask {
             public void run() {
                 fixFingers();
                 logger.info(String.format("Predecessor : %d", predecessor == null ? -1 : predecessor.getID()));

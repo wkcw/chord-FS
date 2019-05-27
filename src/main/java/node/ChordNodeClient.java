@@ -87,4 +87,8 @@ public class ChordNodeClient {
         }
         return true;
     }
+
+    public void close() {
+        this.channel.shutdownNow();
+    }
 }

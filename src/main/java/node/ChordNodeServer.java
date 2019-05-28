@@ -1,5 +1,6 @@
 package node;
 
+import common.Hasher;
 import common.JsonUtil;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -49,6 +50,7 @@ public class ChordNodeServer {
         private Identifier[] successorsList;
         private Identifier predecessor;
         private int next;
+        private Hasher hasher;
 
         public ChordNodeService(int selfID, String selfIP, int selfPort){
             hashMap = new HashMap<>();
@@ -57,6 +59,14 @@ public class ChordNodeServer {
             this.selfID = selfID;
             this.selfIP = selfIP;
             this.selfPort = selfPort;
+            this.hasher = new Hasher();
+        }
+
+        @Override
+        public void leave(LeaveRequest request, StreamObserver<LeaveResponse> responseObserver) {
+            Identifier successor = this.getAliveSuccessor();
+
+//            ChordNodeClient successorClient = new ChordNodeClient()
         }
 
         @Override
@@ -225,8 +235,15 @@ public class ChordNodeServer {
         public void put(PutRequest request, StreamObserver<PutResponse> responseObserver) {
             int key = request.getKey();
             String value = request.getValue();
-            hashMap.put(key, value);
-            PutResponse response = PutResponse.newBuilder().setRet(ReturnCode.SUCCESS).build();
+            PutResponse response;
+
+            if (!inRange(hasher.hash(key), predecessor.getID(), selfID)) {
+                response = PutResponse.newBuilder().setRet(ReturnCode.FAILURE).build();
+            } else {
+                hashMap.put(key, value);
+                response = PutResponse.newBuilder().setRet(ReturnCode.SUCCESS).build();
+            }
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
@@ -245,8 +262,6 @@ public class ChordNodeServer {
             }
             responseObserver.onCompleted();
         }
-
-
 
         @Override
         public void ping(PingRequest request, StreamObserver<PingResponse> responseObserver) {

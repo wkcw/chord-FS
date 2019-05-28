@@ -10,16 +10,31 @@ option java_package = "net.grpc.chord";
 service ChordNodeService{
     rpc Notify(NotifyRequest) returns  (NotifyResponse){}
     rpc FindSuccessor(FindSuccessorRequest) returns (FindSuccessorResponse){}
-    rpc TellmePredecessor(TellmePredecessorRequest) returns (TellmePredecessorResponse){}
+    rpc InquirePredecessor(InquirePredecessorRequest) returns (InquirePredecessorResponse){}
     rpc Ping(PingRequest) returns (PingResponse){}
     rpc TransferData(TransferDataRequest) returns (TransferDataResponse){}
     rpc Put(PutRequest) returns (PutResponse) {}
     rpc Get(GetRequest) returns (GetResponse) {}
+    rpc InquireSuccessorsList(InquireSuccessorsListRequest) returns (InquireSuccessorsListResponse) {}
+    rpc Leave(LeaveRequest) returns (LeaveResponse) {}
 }
 
 enum ReturnCode {
     SUCCESS = 0;
     FAILURE = 1;
+}
+
+message LeaveRequest {
+}
+
+message LeaveResponse {
+}
+
+message InquireSuccessorsListRequest {
+}
+
+message InquireSuccessorsListResponse {
+    repeated Identifier successorsList = 1;
 }
 
 message PutRequest {
@@ -63,10 +78,10 @@ message FindSuccessorResponse {
     Identifier identifier = 1;
 }
 
-message TellmePredecessorRequest {
+message InquirePredecessorRequest {
 }
 
-message TellmePredecessorResponse {
+message InquirePredecessorResponse {
     Identifier identifier = 1;
 }
 
@@ -81,6 +96,4 @@ message Identifier {
     string IP = 1;
     int32 port = 2;
     int32 ID = 3;
-    Identifier predecessor=4;
-    Identifier successor=5;
 }

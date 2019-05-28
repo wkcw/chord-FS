@@ -15,6 +15,26 @@ public final class ChordNodeProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_chord_LeaveRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_chord_LeaveRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_chord_LeaveResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_chord_LeaveResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_chord_InquireSuccessorsListRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_chord_InquireSuccessorsListRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_chord_InquireSuccessorsListResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_chord_InquireSuccessorsListResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_chord_PutRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -65,15 +85,15 @@ public final class ChordNodeProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_chord_FindSuccessorResponse_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_chord_TellmePredecessorRequest_descriptor;
+    internal_static_chord_InquirePredecessorRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_chord_TellmePredecessorRequest_fieldAccessorTable;
+      internal_static_chord_InquirePredecessorRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_chord_TellmePredecessorResponse_descriptor;
+    internal_static_chord_InquirePredecessorResponse_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_chord_TellmePredecessorResponse_fieldAccessorTable;
+      internal_static_chord_InquirePredecessorResponse_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_chord_TransferDataRequest_descriptor;
   static final 
@@ -98,37 +118,44 @@ public final class ChordNodeProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026chordNodeService.proto\022\005chord\"(\n\nPutRe" +
-      "quest\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\t\"-\n\013Put" +
-      "Response\022\036\n\003ret\030\001 \001(\0162\021.chord.ReturnCode" +
-      "\"\031\n\nGetRequest\022\013\n\003key\030\001 \001(\005\"<\n\013GetRespon" +
-      "se\022\036\n\003ret\030\001 \001(\0162\021.chord.ReturnCode\022\r\n\005va" +
-      "lue\030\002 \001(\t\"\r\n\013PingRequest\"\016\n\014PingResponse" +
-      "\"6\n\rNotifyRequest\022%\n\nidentifier\030\001 \001(\0132\021." +
-      "chord.Identifier\"-\n\016NotifyResponse\022\017\n\007ad" +
-      "dress\030\001 \001(\t\022\n\n\002ID\030\002 \001(\005\"\"\n\024FindSuccessor" +
-      "Request\022\n\n\002ID\030\001 \001(\005\">\n\025FindSuccessorResp" +
-      "onse\022%\n\nidentifier\030\001 \001(\0132\021.chord.Identif" +
-      "ier\"\032\n\030TellmePredecessorRequest\"B\n\031Tellm" +
-      "ePredecessorResponse\022%\n\nidentifier\030\001 \001(\013" +
-      "2\021.chord.Identifier\"\'\n\023TransferDataReque" +
-      "st\022\020\n\010dataJson\030\001 \001(\t\"\026\n\024TransferDataResp" +
-      "onse\"2\n\nIdentifier\022\n\n\002IP\030\001 \001(\t\022\014\n\004port\030\002" +
-      " \001(\005\022\n\n\002ID\030\003 \001(\005*&\n\nReturnCode\022\013\n\007SUCCES" +
-      "S\020\000\022\013\n\007FAILURE\020\0012\321\003\n\020ChordNodeService\0227\n" +
-      "\006Notify\022\024.chord.NotifyRequest\032\025.chord.No" +
-      "tifyResponse\"\000\022L\n\rFindSuccessor\022\033.chord." +
-      "FindSuccessorRequest\032\034.chord.FindSuccess" +
-      "orResponse\"\000\022X\n\021TellmePredecessor\022\037.chor" +
-      "d.TellmePredecessorRequest\032 .chord.Tellm" +
-      "ePredecessorResponse\"\000\0221\n\004Ping\022\022.chord.P" +
-      "ingRequest\032\023.chord.PingResponse\"\000\022I\n\014Tra" +
-      "nsferData\022\032.chord.TransferDataRequest\032\033." +
-      "chord.TransferDataResponse\"\000\022.\n\003Put\022\021.ch" +
-      "ord.PutRequest\032\022.chord.PutResponse\"\000\022.\n\003" +
-      "Get\022\021.chord.GetRequest\032\022.chord.GetRespon" +
-      "se\"\000B\'\n\016net.grpc.chordB\016ChordNodeProtoP\001" +
-      "\242\002\002CNb\006proto3"
+      "\n\026chordNodeService.proto\022\005chord\"\016\n\014Leave" +
+      "Request\"\017\n\rLeaveResponse\"\036\n\034InquireSucce" +
+      "ssorsListRequest\"J\n\035InquireSuccessorsLis" +
+      "tResponse\022)\n\016successorsList\030\001 \003(\0132\021.chor" +
+      "d.Identifier\"(\n\nPutRequest\022\013\n\003key\030\001 \001(\005\022" +
+      "\r\n\005value\030\002 \001(\t\"-\n\013PutResponse\022\036\n\003ret\030\001 \001" +
+      "(\0162\021.chord.ReturnCode\"\031\n\nGetRequest\022\013\n\003k" +
+      "ey\030\001 \001(\005\"<\n\013GetResponse\022\036\n\003ret\030\001 \001(\0162\021.c" +
+      "hord.ReturnCode\022\r\n\005value\030\002 \001(\t\"\r\n\013PingRe" +
+      "quest\"\016\n\014PingResponse\"6\n\rNotifyRequest\022%" +
+      "\n\nidentifier\030\001 \001(\0132\021.chord.Identifier\"-\n" +
+      "\016NotifyResponse\022\017\n\007address\030\001 \001(\t\022\n\n\002ID\030\002" +
+      " \001(\005\"\"\n\024FindSuccessorRequest\022\n\n\002ID\030\001 \001(\005" +
+      "\">\n\025FindSuccessorResponse\022%\n\nidentifier\030" +
+      "\001 \001(\0132\021.chord.Identifier\"\033\n\031InquirePrede" +
+      "cessorRequest\"C\n\032InquirePredecessorRespo" +
+      "nse\022%\n\nidentifier\030\001 \001(\0132\021.chord.Identifi" +
+      "er\"\'\n\023TransferDataRequest\022\020\n\010dataJson\030\001 " +
+      "\001(\t\"\026\n\024TransferDataResponse\"2\n\nIdentifie" +
+      "r\022\n\n\002IP\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\022\n\n\002ID\030\003 \001(\005*" +
+      "&\n\nReturnCode\022\013\n\007SUCCESS\020\000\022\013\n\007FAILURE\020\0012" +
+      "\360\004\n\020ChordNodeService\0227\n\006Notify\022\024.chord.N" +
+      "otifyRequest\032\025.chord.NotifyResponse\"\000\022L\n" +
+      "\rFindSuccessor\022\033.chord.FindSuccessorRequ" +
+      "est\032\034.chord.FindSuccessorResponse\"\000\022[\n\022I" +
+      "nquirePredecessor\022 .chord.InquirePredece" +
+      "ssorRequest\032!.chord.InquirePredecessorRe" +
+      "sponse\"\000\0221\n\004Ping\022\022.chord.PingRequest\032\023.c" +
+      "hord.PingResponse\"\000\022I\n\014TransferData\022\032.ch" +
+      "ord.TransferDataRequest\032\033.chord.Transfer" +
+      "DataResponse\"\000\022.\n\003Put\022\021.chord.PutRequest" +
+      "\032\022.chord.PutResponse\"\000\022.\n\003Get\022\021.chord.Ge" +
+      "tRequest\032\022.chord.GetResponse\"\000\022d\n\025Inquir" +
+      "eSuccessorsList\022#.chord.InquireSuccessor" +
+      "sListRequest\032$.chord.InquireSuccessorsLi" +
+      "stResponse\"\000\0224\n\005Leave\022\023.chord.LeaveReque" +
+      "st\032\024.chord.LeaveResponse\"\000B\'\n\016net.grpc.c" +
+      "hordB\016ChordNodeProtoP\001\242\002\002CNb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -142,92 +169,116 @@ public final class ChordNodeProto {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_chord_PutRequest_descriptor =
+    internal_static_chord_LeaveRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_chord_LeaveRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_chord_LeaveRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_chord_LeaveResponse_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_chord_LeaveResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_chord_LeaveResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_chord_InquireSuccessorsListRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_chord_InquireSuccessorsListRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_chord_InquireSuccessorsListRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_chord_InquireSuccessorsListResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_chord_InquireSuccessorsListResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_chord_InquireSuccessorsListResponse_descriptor,
+        new java.lang.String[] { "SuccessorsList", });
+    internal_static_chord_PutRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_chord_PutRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_PutRequest_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_chord_PutResponse_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_chord_PutResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_PutResponse_descriptor,
         new java.lang.String[] { "Ret", });
     internal_static_chord_GetRequest_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_chord_GetRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_GetRequest_descriptor,
         new java.lang.String[] { "Key", });
     internal_static_chord_GetResponse_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_chord_GetResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_GetResponse_descriptor,
         new java.lang.String[] { "Ret", "Value", });
     internal_static_chord_PingRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_chord_PingRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_PingRequest_descriptor,
         new java.lang.String[] { });
     internal_static_chord_PingResponse_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_chord_PingResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_PingResponse_descriptor,
         new java.lang.String[] { });
     internal_static_chord_NotifyRequest_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_chord_NotifyRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_NotifyRequest_descriptor,
         new java.lang.String[] { "Identifier", });
     internal_static_chord_NotifyResponse_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_chord_NotifyResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_NotifyResponse_descriptor,
         new java.lang.String[] { "Address", "ID", });
     internal_static_chord_FindSuccessorRequest_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_chord_FindSuccessorRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_FindSuccessorRequest_descriptor,
         new java.lang.String[] { "ID", });
     internal_static_chord_FindSuccessorResponse_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_chord_FindSuccessorResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_FindSuccessorResponse_descriptor,
         new java.lang.String[] { "Identifier", });
-    internal_static_chord_TellmePredecessorRequest_descriptor =
-      getDescriptor().getMessageTypes().get(10);
-    internal_static_chord_TellmePredecessorRequest_fieldAccessorTable = new
+    internal_static_chord_InquirePredecessorRequest_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_chord_InquirePredecessorRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_chord_TellmePredecessorRequest_descriptor,
+        internal_static_chord_InquirePredecessorRequest_descriptor,
         new java.lang.String[] { });
-    internal_static_chord_TellmePredecessorResponse_descriptor =
-      getDescriptor().getMessageTypes().get(11);
-    internal_static_chord_TellmePredecessorResponse_fieldAccessorTable = new
+    internal_static_chord_InquirePredecessorResponse_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_chord_InquirePredecessorResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_chord_TellmePredecessorResponse_descriptor,
+        internal_static_chord_InquirePredecessorResponse_descriptor,
         new java.lang.String[] { "Identifier", });
     internal_static_chord_TransferDataRequest_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_chord_TransferDataRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_TransferDataRequest_descriptor,
         new java.lang.String[] { "DataJson", });
     internal_static_chord_TransferDataResponse_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_chord_TransferDataResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_TransferDataResponse_descriptor,
         new java.lang.String[] { });
     internal_static_chord_Identifier_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_chord_Identifier_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_chord_Identifier_descriptor,

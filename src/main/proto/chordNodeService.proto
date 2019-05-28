@@ -16,11 +16,18 @@ service ChordNodeService{
     rpc Put(PutRequest) returns (PutResponse) {}
     rpc Get(GetRequest) returns (GetResponse) {}
     rpc InquireSuccessorsList(InquireSuccessorsListRequest) returns (InquireSuccessorsListResponse) {}
+    rpc Leave(LeaveRequest) returns (LeaveResponse) {}
 }
 
 enum ReturnCode {
     SUCCESS = 0;
     FAILURE = 1;
+}
+
+message LeaveRequest {
+}
+
+message LeaveResponse {
 }
 
 message InquireSuccessorsListRequest {
@@ -31,7 +38,7 @@ message InquireSuccessorsListResponse {
 }
 
 message PutRequest {
-    int32 key = 1;
+    string key = 1;
     string value = 2;
 }
 
@@ -40,7 +47,7 @@ message PutResponse {
 }
 
 message GetRequest {
-    int32 key = 1;
+    string key = 1;
 }
 
 message GetResponse {

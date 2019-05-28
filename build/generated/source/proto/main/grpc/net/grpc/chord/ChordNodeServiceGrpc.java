@@ -91,36 +91,36 @@ public final class ChordNodeServiceGrpc {
      return getFindSuccessorMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<net.grpc.chord.TellmePredecessorRequest,
-      net.grpc.chord.TellmePredecessorResponse> getTellmePredecessorMethod;
+  private static volatile io.grpc.MethodDescriptor<net.grpc.chord.InquirePredecessorRequest,
+      net.grpc.chord.InquirePredecessorResponse> getInquirePredecessorMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "TellmePredecessor",
-      requestType = net.grpc.chord.TellmePredecessorRequest.class,
-      responseType = net.grpc.chord.TellmePredecessorResponse.class,
+      fullMethodName = SERVICE_NAME + '/' + "InquirePredecessor",
+      requestType = net.grpc.chord.InquirePredecessorRequest.class,
+      responseType = net.grpc.chord.InquirePredecessorResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<net.grpc.chord.TellmePredecessorRequest,
-      net.grpc.chord.TellmePredecessorResponse> getTellmePredecessorMethod() {
-    io.grpc.MethodDescriptor<net.grpc.chord.TellmePredecessorRequest, net.grpc.chord.TellmePredecessorResponse> getTellmePredecessorMethod;
-    if ((getTellmePredecessorMethod = ChordNodeServiceGrpc.getTellmePredecessorMethod) == null) {
+  public static io.grpc.MethodDescriptor<net.grpc.chord.InquirePredecessorRequest,
+      net.grpc.chord.InquirePredecessorResponse> getInquirePredecessorMethod() {
+    io.grpc.MethodDescriptor<net.grpc.chord.InquirePredecessorRequest, net.grpc.chord.InquirePredecessorResponse> getInquirePredecessorMethod;
+    if ((getInquirePredecessorMethod = ChordNodeServiceGrpc.getInquirePredecessorMethod) == null) {
       synchronized (ChordNodeServiceGrpc.class) {
-        if ((getTellmePredecessorMethod = ChordNodeServiceGrpc.getTellmePredecessorMethod) == null) {
-          ChordNodeServiceGrpc.getTellmePredecessorMethod = getTellmePredecessorMethod = 
-              io.grpc.MethodDescriptor.<net.grpc.chord.TellmePredecessorRequest, net.grpc.chord.TellmePredecessorResponse>newBuilder()
+        if ((getInquirePredecessorMethod = ChordNodeServiceGrpc.getInquirePredecessorMethod) == null) {
+          ChordNodeServiceGrpc.getInquirePredecessorMethod = getInquirePredecessorMethod = 
+              io.grpc.MethodDescriptor.<net.grpc.chord.InquirePredecessorRequest, net.grpc.chord.InquirePredecessorResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
-                  "chord.ChordNodeService", "TellmePredecessor"))
+                  "chord.ChordNodeService", "InquirePredecessor"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  net.grpc.chord.TellmePredecessorRequest.getDefaultInstance()))
+                  net.grpc.chord.InquirePredecessorRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  net.grpc.chord.TellmePredecessorResponse.getDefaultInstance()))
-                  .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("TellmePredecessor"))
+                  net.grpc.chord.InquirePredecessorResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("InquirePredecessor"))
                   .build();
           }
         }
      }
-     return getTellmePredecessorMethod;
+     return getInquirePredecessorMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<net.grpc.chord.PingRequest,
@@ -251,6 +251,70 @@ public final class ChordNodeServiceGrpc {
      return getGetMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<net.grpc.chord.InquireSuccessorsListRequest,
+      net.grpc.chord.InquireSuccessorsListResponse> getInquireSuccessorsListMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "InquireSuccessorsList",
+      requestType = net.grpc.chord.InquireSuccessorsListRequest.class,
+      responseType = net.grpc.chord.InquireSuccessorsListResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<net.grpc.chord.InquireSuccessorsListRequest,
+      net.grpc.chord.InquireSuccessorsListResponse> getInquireSuccessorsListMethod() {
+    io.grpc.MethodDescriptor<net.grpc.chord.InquireSuccessorsListRequest, net.grpc.chord.InquireSuccessorsListResponse> getInquireSuccessorsListMethod;
+    if ((getInquireSuccessorsListMethod = ChordNodeServiceGrpc.getInquireSuccessorsListMethod) == null) {
+      synchronized (ChordNodeServiceGrpc.class) {
+        if ((getInquireSuccessorsListMethod = ChordNodeServiceGrpc.getInquireSuccessorsListMethod) == null) {
+          ChordNodeServiceGrpc.getInquireSuccessorsListMethod = getInquireSuccessorsListMethod = 
+              io.grpc.MethodDescriptor.<net.grpc.chord.InquireSuccessorsListRequest, net.grpc.chord.InquireSuccessorsListResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "chord.ChordNodeService", "InquireSuccessorsList"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  net.grpc.chord.InquireSuccessorsListRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  net.grpc.chord.InquireSuccessorsListResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("InquireSuccessorsList"))
+                  .build();
+          }
+        }
+     }
+     return getInquireSuccessorsListMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<net.grpc.chord.LeaveRequest,
+      net.grpc.chord.LeaveResponse> getLeaveMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "Leave",
+      requestType = net.grpc.chord.LeaveRequest.class,
+      responseType = net.grpc.chord.LeaveResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<net.grpc.chord.LeaveRequest,
+      net.grpc.chord.LeaveResponse> getLeaveMethod() {
+    io.grpc.MethodDescriptor<net.grpc.chord.LeaveRequest, net.grpc.chord.LeaveResponse> getLeaveMethod;
+    if ((getLeaveMethod = ChordNodeServiceGrpc.getLeaveMethod) == null) {
+      synchronized (ChordNodeServiceGrpc.class) {
+        if ((getLeaveMethod = ChordNodeServiceGrpc.getLeaveMethod) == null) {
+          ChordNodeServiceGrpc.getLeaveMethod = getLeaveMethod = 
+              io.grpc.MethodDescriptor.<net.grpc.chord.LeaveRequest, net.grpc.chord.LeaveResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "chord.ChordNodeService", "Leave"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  net.grpc.chord.LeaveRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  net.grpc.chord.LeaveResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new ChordNodeServiceMethodDescriptorSupplier("Leave"))
+                  .build();
+          }
+        }
+     }
+     return getLeaveMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -294,9 +358,9 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public void tellmePredecessor(net.grpc.chord.TellmePredecessorRequest request,
-        io.grpc.stub.StreamObserver<net.grpc.chord.TellmePredecessorResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getTellmePredecessorMethod(), responseObserver);
+    public void inquirePredecessor(net.grpc.chord.InquirePredecessorRequest request,
+        io.grpc.stub.StreamObserver<net.grpc.chord.InquirePredecessorResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getInquirePredecessorMethod(), responseObserver);
     }
 
     /**
@@ -327,6 +391,20 @@ public final class ChordNodeServiceGrpc {
       asyncUnimplementedUnaryCall(getGetMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void inquireSuccessorsList(net.grpc.chord.InquireSuccessorsListRequest request,
+        io.grpc.stub.StreamObserver<net.grpc.chord.InquireSuccessorsListResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getInquireSuccessorsListMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void leave(net.grpc.chord.LeaveRequest request,
+        io.grpc.stub.StreamObserver<net.grpc.chord.LeaveResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getLeaveMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -344,12 +422,12 @@ public final class ChordNodeServiceGrpc {
                 net.grpc.chord.FindSuccessorResponse>(
                   this, METHODID_FIND_SUCCESSOR)))
           .addMethod(
-            getTellmePredecessorMethod(),
+            getInquirePredecessorMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                net.grpc.chord.TellmePredecessorRequest,
-                net.grpc.chord.TellmePredecessorResponse>(
-                  this, METHODID_TELLME_PREDECESSOR)))
+                net.grpc.chord.InquirePredecessorRequest,
+                net.grpc.chord.InquirePredecessorResponse>(
+                  this, METHODID_INQUIRE_PREDECESSOR)))
           .addMethod(
             getPingMethod(),
             asyncUnaryCall(
@@ -378,6 +456,20 @@ public final class ChordNodeServiceGrpc {
                 net.grpc.chord.GetRequest,
                 net.grpc.chord.GetResponse>(
                   this, METHODID_GET)))
+          .addMethod(
+            getInquireSuccessorsListMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                net.grpc.chord.InquireSuccessorsListRequest,
+                net.grpc.chord.InquireSuccessorsListResponse>(
+                  this, METHODID_INQUIRE_SUCCESSORS_LIST)))
+          .addMethod(
+            getLeaveMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                net.grpc.chord.LeaveRequest,
+                net.grpc.chord.LeaveResponse>(
+                  this, METHODID_LEAVE)))
           .build();
     }
   }
@@ -418,10 +510,10 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public void tellmePredecessor(net.grpc.chord.TellmePredecessorRequest request,
-        io.grpc.stub.StreamObserver<net.grpc.chord.TellmePredecessorResponse> responseObserver) {
+    public void inquirePredecessor(net.grpc.chord.InquirePredecessorRequest request,
+        io.grpc.stub.StreamObserver<net.grpc.chord.InquirePredecessorResponse> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(getTellmePredecessorMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getInquirePredecessorMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -454,6 +546,22 @@ public final class ChordNodeServiceGrpc {
         io.grpc.stub.StreamObserver<net.grpc.chord.GetResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getGetMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void inquireSuccessorsList(net.grpc.chord.InquireSuccessorsListRequest request,
+        io.grpc.stub.StreamObserver<net.grpc.chord.InquireSuccessorsListResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getInquireSuccessorsListMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void leave(net.grpc.chord.LeaveRequest request,
+        io.grpc.stub.StreamObserver<net.grpc.chord.LeaveResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getLeaveMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -491,9 +599,9 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public net.grpc.chord.TellmePredecessorResponse tellmePredecessor(net.grpc.chord.TellmePredecessorRequest request) {
+    public net.grpc.chord.InquirePredecessorResponse inquirePredecessor(net.grpc.chord.InquirePredecessorRequest request) {
       return blockingUnaryCall(
-          getChannel(), getTellmePredecessorMethod(), getCallOptions(), request);
+          getChannel(), getInquirePredecessorMethod(), getCallOptions(), request);
     }
 
     /**
@@ -522,6 +630,20 @@ public final class ChordNodeServiceGrpc {
     public net.grpc.chord.GetResponse get(net.grpc.chord.GetRequest request) {
       return blockingUnaryCall(
           getChannel(), getGetMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public net.grpc.chord.InquireSuccessorsListResponse inquireSuccessorsList(net.grpc.chord.InquireSuccessorsListRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getInquireSuccessorsListMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public net.grpc.chord.LeaveResponse leave(net.grpc.chord.LeaveRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getLeaveMethod(), getCallOptions(), request);
     }
   }
 
@@ -561,10 +683,10 @@ public final class ChordNodeServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<net.grpc.chord.TellmePredecessorResponse> tellmePredecessor(
-        net.grpc.chord.TellmePredecessorRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<net.grpc.chord.InquirePredecessorResponse> inquirePredecessor(
+        net.grpc.chord.InquirePredecessorRequest request) {
       return futureUnaryCall(
-          getChannel().newCall(getTellmePredecessorMethod(), getCallOptions()), request);
+          getChannel().newCall(getInquirePredecessorMethod(), getCallOptions()), request);
     }
 
     /**
@@ -598,15 +720,33 @@ public final class ChordNodeServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getGetMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<net.grpc.chord.InquireSuccessorsListResponse> inquireSuccessorsList(
+        net.grpc.chord.InquireSuccessorsListRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getInquireSuccessorsListMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<net.grpc.chord.LeaveResponse> leave(
+        net.grpc.chord.LeaveRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getLeaveMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_NOTIFY = 0;
   private static final int METHODID_FIND_SUCCESSOR = 1;
-  private static final int METHODID_TELLME_PREDECESSOR = 2;
+  private static final int METHODID_INQUIRE_PREDECESSOR = 2;
   private static final int METHODID_PING = 3;
   private static final int METHODID_TRANSFER_DATA = 4;
   private static final int METHODID_PUT = 5;
   private static final int METHODID_GET = 6;
+  private static final int METHODID_INQUIRE_SUCCESSORS_LIST = 7;
+  private static final int METHODID_LEAVE = 8;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -633,9 +773,9 @@ public final class ChordNodeServiceGrpc {
           serviceImpl.findSuccessor((net.grpc.chord.FindSuccessorRequest) request,
               (io.grpc.stub.StreamObserver<net.grpc.chord.FindSuccessorResponse>) responseObserver);
           break;
-        case METHODID_TELLME_PREDECESSOR:
-          serviceImpl.tellmePredecessor((net.grpc.chord.TellmePredecessorRequest) request,
-              (io.grpc.stub.StreamObserver<net.grpc.chord.TellmePredecessorResponse>) responseObserver);
+        case METHODID_INQUIRE_PREDECESSOR:
+          serviceImpl.inquirePredecessor((net.grpc.chord.InquirePredecessorRequest) request,
+              (io.grpc.stub.StreamObserver<net.grpc.chord.InquirePredecessorResponse>) responseObserver);
           break;
         case METHODID_PING:
           serviceImpl.ping((net.grpc.chord.PingRequest) request,
@@ -652,6 +792,14 @@ public final class ChordNodeServiceGrpc {
         case METHODID_GET:
           serviceImpl.get((net.grpc.chord.GetRequest) request,
               (io.grpc.stub.StreamObserver<net.grpc.chord.GetResponse>) responseObserver);
+          break;
+        case METHODID_INQUIRE_SUCCESSORS_LIST:
+          serviceImpl.inquireSuccessorsList((net.grpc.chord.InquireSuccessorsListRequest) request,
+              (io.grpc.stub.StreamObserver<net.grpc.chord.InquireSuccessorsListResponse>) responseObserver);
+          break;
+        case METHODID_LEAVE:
+          serviceImpl.leave((net.grpc.chord.LeaveRequest) request,
+              (io.grpc.stub.StreamObserver<net.grpc.chord.LeaveResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -716,11 +864,13 @@ public final class ChordNodeServiceGrpc {
               .setSchemaDescriptor(new ChordNodeServiceFileDescriptorSupplier())
               .addMethod(getNotifyMethod())
               .addMethod(getFindSuccessorMethod())
-              .addMethod(getTellmePredecessorMethod())
+              .addMethod(getInquirePredecessorMethod())
               .addMethod(getPingMethod())
               .addMethod(getTransferDataMethod())
               .addMethod(getPutMethod())
               .addMethod(getGetMethod())
+              .addMethod(getInquireSuccessorsListMethod())
+              .addMethod(getLeaveMethod())
               .build();
         }
       }

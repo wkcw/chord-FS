@@ -53,11 +53,36 @@ public class ChordNodeClient {
         return true;
     }
 
+    public boolean put(){
+        PutRequest request = PutRequest.newBuilder().build();
+        PutResponse putResponse;
+        try {
+            putResponse = blockingStub.put(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+
+        return putResponse.getRet() == ReturnCode.SUCCESS;
+    }
+
+    public String get(){
+        GetRequest request = GetRequest.newBuilder().build();
+        GetResponse getResponse;
+        try {
+            getResponse = blockingStub.get(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return null;
+        }
+
+        return getResponse.getValue();
+    }
+
     public boolean notify(Identifier identifier){
         NotifyRequest request = NotifyRequest.newBuilder().setIdentifier(identifier).build();
-        NotifyResponse notifyResponse;
         try {
-            notifyResponse = blockingStub.notify(request);
+            blockingStub.notify(request);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
             return false;
@@ -90,6 +115,16 @@ public class ChordNodeClient {
         }
 
         return response.getSuccessorsListList();
+    }
+
+    public void leave() {
+        LeaveRequest request = LeaveRequest.newBuilder().build();
+
+        try {
+            blockingStub.leave(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+        }
     }
 
     public boolean transferData(String hashmapJsonString){

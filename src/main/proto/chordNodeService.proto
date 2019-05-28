@@ -16,6 +16,7 @@ service ChordNodeService{
     rpc Put(PutRequest) returns (PutResponse) {}
     rpc Get(GetRequest) returns (GetResponse) {}
     rpc InquireSuccessorsList(InquireSuccessorsListRequest) returns (InquireSuccessorsListResponse) {}
+    rpc AcceptMyData(AcceptMyDataRequest) returns (AcceptMyDataResponse){}
 }
 
 enum ReturnCode {
@@ -84,6 +85,13 @@ message TransferDataRequest {
 
 message TransferDataResponse {
     string dataJson = 1;
+}
+
+message AcceptMyDataRequest {
+    string dataJson = 1;
+}
+
+message AcceptMyDataResponse {
 }
 
 message Identifier {

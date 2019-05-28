@@ -104,6 +104,18 @@ public class ChordNodeClient {
         return response.getDataJson();
     }
 
+    public boolean acceptMyData(String dataJson){
+        AcceptMyDataRequest request = AcceptMyDataRequest.newBuilder().setDataJson(dataJson).build();
+        AcceptMyDataResponse response;
+        try{
+            response = blockingStub.acceptMyData(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
     public void close() {
         this.channel.shutdownNow();
     }

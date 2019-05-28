@@ -67,10 +67,14 @@ public class ChordNodeServer {
 
             if (predecessor == null || inRange(senderID, predecessor.getID(), selfID)) {
                 if (predecessor == null) predecessor = Identifier.newBuilder().build();
-
                 predecessor = predecessor.toBuilder().setID(senderID).setIP(address).setPort(port).build();
+                ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
+                String dataJson = generateDataJsonAndDeleteLocal(predecessor.getID());
+                predecessorClient.acceptMyData(dataJson);
             }
             NotifyResponse response = NotifyResponse.newBuilder().build();
+
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
@@ -120,19 +124,6 @@ public class ChordNodeServer {
             this.fingerTable[0] = knownNodeClient.findSuccessor(selfID);
             this.successorsList[0] = this.fingerTable[0];
             knownNodeClient.close();
-
-            ChordNodeClient successorClient = new ChordNodeClient(this.fingerTable[0].getIP(), this.fingerTable[0].getPort());
-
-            String dataJson = successorClient.transferData(selfID);
-            if(dataJson == null){
-                logger.log(Level.SEVERE, "rpc error in transferData");
-                System.exit(0);
-            }else{
-                HashMap<Integer, String> gotHashMap = JsonUtil.deserilizable(dataJson);
-                for (Map.Entry<Integer, String> entry : gotHashMap.entrySet()) {
-                    hashMap.put(entry.getKey(), entry.getValue());
-                }
-            }
         }
 
         public void stabilize() {
@@ -296,12 +287,18 @@ public class ChordNodeServer {
             responseObserver.onCompleted();
         }
 
-        private Identifier generateSelfIdentifier(){
-            Identifier identifier = Identifier.newBuilder().setID(selfID).setIP(selfIP)
-                    .setPort(selfPort).build();
-
-            return identifier;
+        @Override
+        public void acceptMyData(AcceptMyDataRequest request, StreamObserver<AcceptMyDataResponse> responseObserver) {
+            String dataJson = request.getDataJson();
+            HashMap<Integer, String> gotHashMap = JsonUtil.deserilizable(dataJson);
+            for (Map.Entry<Integer, String> entry : gotHashMap.entrySet()) {
+                hashMap.put(entry.getKey(), entry.getValue());
+            }
+            AcceptMyDataResponse response = AcceptMyDataResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
         }
+
 
         public void start(int id, String ip, int port){
             create();
@@ -391,6 +388,32 @@ public class ChordNodeServer {
                 fixFingers();
                 logger.info(String.format("Predecessor : %d", predecessor == null ? -1 : predecessor.getID()));
             }
+        }
+
+
+        private Identifier generateSelfIdentifier(){
+            Identifier identifier = Identifier.newBuilder().setID(selfID).setIP(selfIP)
+                    .setPort(selfPort).build();
+
+            return identifier;
+        }
+
+        private String generateDataJsonAndDeleteLocal(int predecessorID){
+            HashMap<Integer, String> hashMapToTransfer = new HashMap<>();
+//            prepare keys to transfer
+            for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
+                if(entry.getKey() <= predecessorID){
+                    hashMapToTransfer.put(entry.getKey(), entry.getValue());
+                }
+            }
+//            remove local keys
+            for (Map.Entry<Integer, String> entry : hashMapToTransfer.entrySet()) {
+                if(entry.getKey() <= predecessorID){
+                    hashMap.remove(entry.getKey());
+                }
+            }
+            String dataJson = JsonUtil.serilizable(hashMapToTransfer);
+            return dataJson;
         }
     }
 

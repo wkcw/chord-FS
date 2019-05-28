@@ -33,8 +33,6 @@ public class ChordNodeServer {
         logger.info("Server started, listening on " + port);
     }
 
-
-
     private static class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
 
         private static final String TAG = ChordNodeService.class.getName();

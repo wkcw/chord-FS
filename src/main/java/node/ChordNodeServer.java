@@ -107,6 +107,9 @@ public class ChordNodeServer {
             predecessor = null;
             this.fingerTable[0] = Identifier.newBuilder().setID(selfID).setIP(selfIP).setPort(selfPort).build();
             this.successorsList[0] = this.fingerTable[0];
+
+            for (int i = 1;i < ringSizeExp;i++) this.fingerTable[i] = Identifier.newBuilder().setID(-1).build();
+            for (int i = 1;i < sucListSize;i++) this.successorsList[i] = Identifier.newBuilder().setID(-1).build();
         }
 
         public void join(Identifier knownNodeIdentifier){
@@ -124,6 +127,7 @@ public class ChordNodeServer {
 
             if (successor.getID() != this.fingerTable[0].getID()) {
                 this.fingerTable[0] = successor;
+                this.successorsList[0] = successor;
             }
 
             if (successor != null) {
@@ -137,6 +141,7 @@ public class ChordNodeServer {
                     successorClient = new ChordNodeClient(successorPredecessor.getIP(), successorPredecessor.getPort());
                     if (successorClient.ping()) {
                         this.fingerTable[0] = successorPredecessor;
+                        this.successorsList[0] = this.fingerTable[0];
                     } else  {
                         successorClient = new ChordNodeClient(successor.getIP(), successor.getPort());
                     }
@@ -195,23 +200,22 @@ public class ChordNodeServer {
 
         public void updateSuccessorsList() {
             Identifier successor = this.getAliveSuccessor();
-            ChordNodeClient successorClient = new ChordNodeClient(successor.getIP(), successor.getID());
-            List<Identifier> successorsList = successorClient.inquireSuccessorsList();
+            ChordNodeClient successorClient = new ChordNodeClient(successor.getIP(), successor.getPort());
+            List<Identifier> successorsList = new ArrayList<>(successorClient.inquireSuccessorsList());
             successorClient.close();
 
             successorsList.remove(successorsList.size() - 1);
             successorsList.add(0, successor);
 
             successorsList.toArray(this.successorsList);
+
+            printSuccessorList();
         }
 
         @Override
         public void inquireSuccessorsList(InquireSuccessorsListRequest request, StreamObserver<InquireSuccessorsListResponse> responseObserver) {
-            System.out.println("123124312412");
             List<Identifier> sucList = Arrays.asList(this.successorsList);
             InquireSuccessorsListResponse response = InquireSuccessorsListResponse.newBuilder().addAllSuccessorsList(sucList).build();
-
-            System.out.println(response.getSuccessorsListList());
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -306,11 +310,17 @@ public class ChordNodeServer {
 
             StringBuilder sb = new StringBuilder();
             for (int i = 0;i < ringSizeExp;i++) {
-                if (this.fingerTable[i] == null) {
-                    sb.append(String.format("||   %d   || null\n", i));
-                } else {
-                    sb.append(String.format("||   %d   || %d\n", i, fingerTable[i].getID()));
-                }
+                sb.append(String.format("||   %d   || %d\n", i, fingerTable[i].getID()));
+            }
+            System.out.println(sb.toString());
+        }
+
+        private void printSuccessorList() {
+            logger.info("||index || value");
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0;i < sucListSize;i++) {
+                sb.append(String.format("||   %d   || %d\n", i, successorsList[i].getID()));
             }
             System.out.println(sb.toString());
         }
@@ -318,7 +328,7 @@ public class ChordNodeServer {
 
         public Identifier closestPrecedingFinger(int id) {
             for (int i = ringSizeExp - 1;i >= 0;i--) {
-                if (fingerTable[i] == null) {
+                if (fingerTable[i].getID() == -1) {
                     continue;
                 }
 

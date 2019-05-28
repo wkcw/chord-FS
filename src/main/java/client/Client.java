@@ -1,9 +1,19 @@
 package client;
 
 
-public interface Client<K, V> {
+import node.ChordNodeClient;
 
-    public V get();
-    public void put(K key, V Value);
+public class Client {
+
+    private String IP = "127.0.0.1";
+    private int port = ""
+
+    private boolean put(){
+        ChordNodeClient knownClient = new ChordNodeClient()
+    }
+
+    public static void main(String[] args){
+        while()
+    }
 
 }

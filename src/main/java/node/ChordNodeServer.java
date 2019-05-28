@@ -11,6 +11,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static common.JsonUtil.deserilizable;
+
 public class ChordNodeServer {
 
     private static final Logger logger = Logger.getLogger(ChordNodeServer.class.getName());
@@ -118,6 +120,19 @@ public class ChordNodeServer {
             this.fingerTable[0] = knownNodeClient.findSuccessor(selfID);
             this.successorsList[0] = this.fingerTable[0];
             knownNodeClient.close();
+
+            ChordNodeClient successorClient = new ChordNodeClient(this.fingerTable[0].getIP(), this.fingerTable[0].getPort());
+
+            String dataJson = successorClient.transferData(selfID);
+            if(dataJson == null){
+                logger.log(Level.SEVERE, "rpc error in transferData");
+                System.exit(0);
+            }else{
+                HashMap<Integer, String> gotHashMap = JsonUtil.deserilizable(dataJson);
+                for (Map.Entry<Integer, String> entry : gotHashMap.entrySet()) {
+                    hashMap.put(entry.getKey(), entry.getValue());
+                }
+            }
         }
 
         public void stabilize() {
@@ -268,10 +283,15 @@ public class ChordNodeServer {
 
         @Override
         public void transferData(TransferDataRequest request, StreamObserver<TransferDataResponse> responseObserver) {
-            String dataJsonString = request.getDataJson();
-            HashMap<Integer, String> dataHashMap = JsonUtil.deserilizable(dataJsonString);
-            hashMap.putAll(dataHashMap);
-            TransferDataResponse response = TransferDataResponse.newBuilder().build();
+            int requestID = request.getID();
+            HashMap<Integer, String> hashMapToTransfer = new HashMap<>();
+            for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
+                if(entry.getKey() <= requestID){
+                    hashMapToTransfer.put(entry.getKey(), entry.getValue());
+                }
+            }
+            String dataJson = JsonUtil.serilizable(hashMapToTransfer);
+            TransferDataResponse response = TransferDataResponse.newBuilder().setDataJson(dataJson).build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }

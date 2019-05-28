@@ -92,16 +92,16 @@ public class ChordNodeClient {
         return response.getSuccessorsListList();
     }
 
-    public boolean transferData(String hashmapJsonString){
-        TransferDataRequest request = TransferDataRequest.newBuilder().setDataJson(hashmapJsonString).build();
+    public String transferData(int ID){
+        TransferDataRequest request = TransferDataRequest.newBuilder().setID(ID).build();
         TransferDataResponse response;
         try{
             response = blockingStub.transferData(request);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-            return false;
+            return null;
         }
-        return true;
+        return response.getDataJson();
     }
 
     public void close() {

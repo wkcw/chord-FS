@@ -14,12 +14,8 @@ public class Hasher {
     }
 
 
-    public int hash(int key){
-        return key % total;
-    }
-
     public int hash(String key){
-        return key.hashCode() % total;
+        return sha1Digest(key).hashCode() % total;
     }
 
     private String sha1Digest(String key){

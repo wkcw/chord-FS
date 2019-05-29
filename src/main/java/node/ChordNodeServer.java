@@ -214,10 +214,29 @@ public class ChordNodeServer {
             List<Identifier> successorsList = new ArrayList<>(successorClient.inquireSuccessorsList());
             successorClient.close();
 
+
+
             Identifier[] oldSuccessorList = Arrays.copyOf(this.successorsList, this.successorsList.length);
 
             successorsList.remove(successorsList.size() - 1);
             successorsList.add(0, successor);
+
+            // deduplicate
+            HashSet<Identifier> set = new HashSet<>();
+            for (int i = 0; i < successorsList.size(); i++) {
+                // encounter -1 indicating no valid node after this point
+                if (successorsList.get(i).getID() == -1) {
+                    break;
+                }
+                // add the current identifier to the hashset for deduplication
+                if (set.add(successorsList.get(i))) {
+                    continue;
+                }
+                // if adding failed, duplicate node occurs, set the identifier to -1 (null)
+                else {
+                    successorsList.set(i, Identifier.newBuilder().setID(-1).build());
+                }
+            }
 
             successorsList.toArray(this.successorsList);
 
@@ -435,6 +454,10 @@ public class ChordNodeServer {
             ChordNodeClient selfClient = new ChordNodeClient(selfIP, selfPort);
             Identifier searchedIdentifier = selfClient.findSuccessor((selfID + (1 << this.next)) % (1 << ringSizeExp));
 
+            if (searchedIdentifier == null) {
+                searchedIdentifier = Identifier.newBuilder().setID(-1).build();
+            }
+
             selfClient.close();
 
             this.fingerTable[this.next] = searchedIdentifier;
@@ -490,7 +513,7 @@ public class ChordNodeServer {
 
             HashSet<Identifier> tmp = new HashSet<>(oldSet);
             oldSet.removeAll(newSet);
-//            newSet.removeAll(tmp);
+            newSet.removeAll(tmp);
 
 
             for(Identifier identifier : oldSet){

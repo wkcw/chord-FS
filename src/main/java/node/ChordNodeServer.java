@@ -1,5 +1,6 @@
 package node;
 
+import common.Hasher;
 import common.JsonUtil;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -39,7 +40,7 @@ public class ChordNodeServer {
 
         private static final String TAG = ChordNodeService.class.getName();
 
-        private HashMap<Integer, String> hashMap;
+        private HashMap<String, String> hashMap;
         private int selfID;
         private static int ringSizeExp = 5;
         private static int sucListSize = 3;
@@ -49,14 +50,17 @@ public class ChordNodeServer {
         private Identifier[] successorsList;
         private Identifier predecessor;
         private int next;
+        private Hasher hasher;
+
 
         public ChordNodeService(int selfID, String selfIP, int selfPort){
-            hashMap = new HashMap<>();
+            hashMap = new HashMap<String, String>();
             this.fingerTable = new Identifier[ringSizeExp];
             this.successorsList = new Identifier[sucListSize];
             this.selfID = selfID;
             this.selfIP = selfIP;
             this.selfPort = selfPort;
+            hasher = new Hasher();
         }
 
         @Override
@@ -227,17 +231,25 @@ public class ChordNodeServer {
 
         @Override
         public void put(PutRequest request, StreamObserver<PutResponse> responseObserver) {
-            int key = request.getKey();
+            String key = request.getKey();
             String value = request.getValue();
-            hashMap.put(key, value);
-            PutResponse response = PutResponse.newBuilder().setRet(ReturnCode.SUCCESS).build();
+            PutResponse response;
+
+            if (!inRange(hasher.hash(key), predecessor.getID(), selfID)) {
+                response = PutResponse.newBuilder().setRet(ReturnCode.FAILURE).build();
+            } else {
+                hashMap.put(key, value);
+                response = PutResponse.newBuilder().setRet(ReturnCode.SUCCESS).build();
+            }
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
 
         @Override
         public void get(GetRequest request, StreamObserver<GetResponse> responseObserver) {
-            int key = request.getKey();
+            String key = request.getKey();
+
             if (!hashMap.containsKey(key)) {
                 GetResponse response = GetResponse.newBuilder().setRet(ReturnCode.FAILURE).build();
                 responseObserver.onNext(response);
@@ -275,9 +287,9 @@ public class ChordNodeServer {
         @Override
         public void transferData(TransferDataRequest request, StreamObserver<TransferDataResponse> responseObserver) {
             int requestID = request.getID();
-            HashMap<Integer, String> hashMapToTransfer = new HashMap<>();
-            for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
-                if(entry.getKey() <= requestID){
+            HashMap<String, String> hashMapToTransfer = new HashMap<>();
+            for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+                if(hasher.hash(entry.getKey()) <= requestID){
                     hashMapToTransfer.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -290,8 +302,8 @@ public class ChordNodeServer {
         @Override
         public void acceptMyData(AcceptMyDataRequest request, StreamObserver<AcceptMyDataResponse> responseObserver) {
             String dataJson = request.getDataJson();
-            HashMap<Integer, String> gotHashMap = JsonUtil.deserilizable(dataJson);
-            for (Map.Entry<Integer, String> entry : gotHashMap.entrySet()) {
+            HashMap<String, String> gotHashMap = JsonUtil.deserilizable(dataJson);
+            for (Map.Entry<String, String> entry : gotHashMap.entrySet()) {
                 hashMap.put(entry.getKey(), entry.getValue());
             }
             AcceptMyDataResponse response = AcceptMyDataResponse.newBuilder().build();
@@ -399,16 +411,16 @@ public class ChordNodeServer {
         }
 
         private String generateDataJsonAndDeleteLocal(int predecessorID){
-            HashMap<Integer, String> hashMapToTransfer = new HashMap<>();
+            HashMap<String, String> hashMapToTransfer = new HashMap<>();
 //            prepare keys to transfer
-            for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
-                if(entry.getKey() <= predecessorID){
+            for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+                if(hasher.hash(entry.getKey()) <= predecessorID){
                     hashMapToTransfer.put(entry.getKey(), entry.getValue());
                 }
             }
 //            remove local keys
-            for (Map.Entry<Integer, String> entry : hashMapToTransfer.entrySet()) {
-                if(entry.getKey() <= predecessorID){
+            for (Map.Entry<String, String> entry : hashMapToTransfer.entrySet()) {
+                if(hasher.hash(entry.getKey()) <= predecessorID){
                     hashMap.remove(entry.getKey());
                 }
             }

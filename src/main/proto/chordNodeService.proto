@@ -32,7 +32,7 @@ message InquireSuccessorsListResponse {
 }
 
 message PutRequest {
-    int32 key = 1;
+    string key = 1;
     string value = 2;
 }
 
@@ -41,7 +41,7 @@ message PutResponse {
 }
 
 message GetRequest {
-    int32 key = 1;
+    string key = 1;
 }
 
 message GetResponse {

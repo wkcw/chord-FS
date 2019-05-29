@@ -116,6 +116,32 @@ public class ChordNodeClient {
         return true;
     }
 
+    public boolean put(String key, String val){
+        PutRequest request = PutRequest.newBuilder().setKey(key).setValue(val).build();
+        PutResponse putResponse;
+        try {
+            putResponse = blockingStub.put(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+
+        return putResponse.getRet() == ReturnCode.SUCCESS;
+    }
+
+    public String get(String key){
+        GetRequest request = GetRequest.newBuilder().setKey(key).build();
+        GetResponse getResponse;
+        try {
+            getResponse = blockingStub.get(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return null;
+        }
+
+        return getResponse.getRet() == ReturnCode.SUCCESS ? getResponse.getValue() : null;
+    }
+
     public void close() {
         this.channel.shutdownNow();
     }

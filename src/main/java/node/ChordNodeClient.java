@@ -116,6 +116,42 @@ public class ChordNodeClient {
         return true;
     }
 
+    public boolean addReplica(Identifier identifier, String dataJson){
+        AddReplicaRequest request = AddReplicaRequest.newBuilder().setIdentifier(identifier).setJsonData(dataJson).build();
+        AddReplicaResponse response;
+        try {
+            response = blockingStub.addReplica(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean removeReplica(Identifier identifier){
+        RemoveReplicaRequest request = RemoveReplicaRequest.newBuilder().setIdentifier(identifier).build();
+        RemoveReplicaResponse response;
+        try {
+            response = blockingStub.removeReplica(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean addScatteredReplica(Identifier identifier, String key, String value){
+        AddScatteredReplicaRequest request = AddScatteredReplicaRequest.newBuilder().setIdentifier(identifier).setKey(key).setValue(value).build();
+        AddScatteredReplicaResponse response;
+        try {
+            response = blockingStub.addScatteredReplica(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
     public boolean put(String key, String val){
         PutRequest request = PutRequest.newBuilder().setKey(key).setValue(val).build();
         PutResponse putResponse;

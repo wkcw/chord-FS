@@ -12,8 +12,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static common.JsonUtil.deserilizable;
-
 public class ChordNodeServer {
 
     private static final Logger logger = Logger.getLogger(ChordNodeServer.class.getName());
@@ -41,6 +39,7 @@ public class ChordNodeServer {
         private static final String TAG = ChordNodeService.class.getName();
 
         private HashMap<String, String> hashMap;
+        private HashMap<Integer, HashMap<String, String>> replica;
         private int selfID;
         private static int ringSizeExp = 5;
         private static int sucListSize = 3;
@@ -55,6 +54,7 @@ public class ChordNodeServer {
 
         public ChordNodeService(int selfID, String selfIP, int selfPort){
             hashMap = new HashMap<String, String>();
+            replica = new HashMap<Integer, HashMap<String, String>>();
             this.fingerTable = new Identifier[ringSizeExp];
             this.successorsList = new Identifier[sucListSize];
             this.selfID = selfID;
@@ -75,6 +75,7 @@ public class ChordNodeServer {
                 ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
                 String dataJson = generateDataJsonAndDeleteLocal(predecessor.getID());
                 predecessorClient.acceptMyData(dataJson);
+                predecessorClient.close();
             }
             NotifyResponse response = NotifyResponse.newBuilder().build();
 
@@ -82,6 +83,7 @@ public class ChordNodeServer {
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
+
 
         @Override
         public void findSuccessor(FindSuccessorRequest request, StreamObserver<FindSuccessorResponse> responseObserver) {
@@ -113,6 +115,7 @@ public class ChordNodeServer {
             predecessor = null;
             this.fingerTable[0] = Identifier.newBuilder().setID(selfID).setIP(selfIP).setPort(selfPort).build();
             this.successorsList[0] = this.fingerTable[0];
+            maintainSuccesorsReplicasExcept0();
 
             for (int i = 1;i < ringSizeExp;i++) this.fingerTable[i] = Identifier.newBuilder().setID(-1).build();
             for (int i = 1;i < sucListSize;i++) this.successorsList[i] = Identifier.newBuilder().setID(-1).build();
@@ -158,6 +161,9 @@ public class ChordNodeServer {
             }
 
             updateSuccessorsList();
+
+            printKeyValue();
+            printReplica();
         }
 
         public Identifier getAliveSuccessor() {
@@ -210,10 +216,14 @@ public class ChordNodeServer {
             List<Identifier> successorsList = new ArrayList<>(successorClient.inquireSuccessorsList());
             successorClient.close();
 
+            Identifier[] oldSuccessorList = Arrays.copyOf(this.successorsList, this.successorsList.length);
+
             successorsList.remove(successorsList.size() - 1);
             successorsList.add(0, successor);
 
             successorsList.toArray(this.successorsList);
+
+            maintainSuccesorsReplicasExcept0(oldSuccessorList, this.successorsList);
 
             printSuccessorList();
         }
@@ -238,7 +248,15 @@ public class ChordNodeServer {
             } else {
                 hashMap.put(key, value);
                 response = PutResponse.newBuilder().setRet(ReturnCode.SUCCESS).build();
+
+//                put to all successors
+                for(Identifier identifier : successorsList){
+                    ChordNodeClient successorClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
+                    successorClient.addScatteredReplica(generateSelfIdentifier(), key, value);
+                    successorClient.close();
+                }
             }
+
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -309,6 +327,42 @@ public class ChordNodeServer {
             responseObserver.onCompleted();
         }
 
+        @Override
+        public void removeReplica(RemoveReplicaRequest request, StreamObserver<RemoveReplicaResponse> responseObserver) {
+            int replicaTagID = request.getIdentifier().getID();
+
+            this.replica.remove(replicaTagID);
+            RemoveReplicaResponse response = RemoveReplicaResponse.newBuilder().build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void addReplica(AddReplicaRequest request, StreamObserver<AddReplicaResponse> responseObserver) {
+            int requestTagID = request.getIdentifier().getID();
+            String dataJson = request.getJsonData();
+            HashMap<String, String> hashMapToAdd = JsonUtil.deserilizable(dataJson);
+            this.replica.put(requestTagID, hashMapToAdd);
+
+            AddReplicaResponse response = AddReplicaResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void addScatteredReplica(AddScatteredReplicaRequest request, StreamObserver<AddScatteredReplicaResponse> responseObserver){
+            String key = request.getKey();
+            String value = request.getValue();
+            int requestTagID = request.getIdentifier().getID();
+            replica.get(requestTagID).put(key, value);
+
+            AddScatteredReplicaResponse response = AddScatteredReplicaResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+
 
         public void start(int id, String ip, int port){
             create();
@@ -338,6 +392,22 @@ public class ChordNodeServer {
                 sb.append(String.format("||   %d   || %d\n", i, fingerTable[i].getID()));
             }
             System.out.println(sb.toString());
+        }
+
+        private void printKeyValue() {
+            logger.info("||key || value");
+
+            StringBuilder sb = new StringBuilder();
+            for (String key : hashMap.keySet()) {
+                sb.append(String.format("||%s  || %s\n", key, hashMap.get(key)));
+            }
+            System.out.println(sb.toString());
+        }
+
+        private void printReplica() {
+            logger.info("||ID || value");
+
+            System.out.println(this.replica);
         }
 
         private void printSuccessorList() {
@@ -400,6 +470,35 @@ public class ChordNodeServer {
             }
         }
 
+
+//        DEBUG successor 0 hasnt been replicated
+        private void maintainSuccesorsReplicasExcept0(Identifier[] oldlist, Identifier[] newlist){
+            HashSet<Identifier> oldset = new HashSet<>(Arrays.asList(oldlist));
+            HashSet<Identifier> newset = new HashSet<>(Arrays.asList(newlist));
+
+            System.out.println(oldset);
+            System.out.println(newset);
+
+            HashSet<Identifier> tmp = new HashSet<>(oldset);
+            oldset.removeAll(newset);
+            newset.removeAll(tmp);
+
+
+            for(Identifier identifier : oldset){
+                if(identifier.getID() == -1 || identifier.getID() == selfID)continue;
+                ChordNodeClient oldSuccessorClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
+                oldSuccessorClient.removeReplica(generateSelfIdentifier());
+                oldSuccessorClient.close();
+            }
+
+            for (Identifier identifier : newset) {
+                if(identifier.getID() == -1 || identifier.getID() == selfID)continue;
+                ChordNodeClient newSuccessorClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
+                String dataJson = JsonUtil.serilizable(hashMap);
+                newSuccessorClient.addReplica(generateSelfIdentifier(), dataJson);
+                newSuccessorClient.close();
+            }
+        }
 
         private Identifier generateSelfIdentifier(){
             Identifier identifier = Identifier.newBuilder().setID(selfID).setIP(selfIP)

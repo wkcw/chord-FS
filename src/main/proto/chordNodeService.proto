@@ -16,13 +16,24 @@ service ChordNodeService{
     rpc Put(PutRequest) returns (PutResponse) {}
     rpc Get(GetRequest) returns (GetResponse) {}
     rpc InquireSuccessorsList(InquireSuccessorsListRequest) returns (InquireSuccessorsListResponse) {}
-    rpc AcceptMyData(AcceptMyDataRequest) returns (AcceptMyDataResponse){}
+    rpc AcceptMyData(AcceptMyDataRequest) returns (AcceptMyDataResponse) {}
+    rpc RemoveReplica(RemoveReplicaRequest) returns (RemoveReplicaResponse) {}
+    rpc AddReplica(AddReplicaRequest) returns (AddReplicaResponse) {}
+    rpc AddScatteredReplica(AddScatteredReplicaRequest) returns (AddScatteredReplicaResponse) {}
 }
 
 enum ReturnCode {
     SUCCESS = 0;
     FAILURE = 1;
 }
+
+message RemoveReplicaRequest {
+    Identifier identifier = 1;
+}
+
+message RemoveReplicaResponse {
+}
+
 
 message InquireSuccessorsListRequest {
 }
@@ -92,6 +103,24 @@ message AcceptMyDataRequest {
 }
 
 message AcceptMyDataResponse {
+}
+
+message AddReplicaRequest {
+    Identifier identifier = 1;
+    string jsonData = 2;
+}
+
+message AddReplicaResponse {
+}
+
+message AddScatteredReplicaRequest {
+    string key = 1;
+    string value = 2;
+    Identifier identifier = 3;
+}
+
+message AddScatteredReplicaResponse {
+
 }
 
 message Identifier {

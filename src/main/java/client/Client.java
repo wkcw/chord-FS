@@ -17,13 +17,15 @@ public class Client {
 
     private String IP = "127.0.0.1";
     private int port = 9700;
-    private Hasher hasher = new Hasher();
+    private int ringSizeExp=5;
+    private Hasher hasher = new Hasher(1 << ringSizeExp);
 
     private Identifier findSuccessor(String key) {
         int keyID = hasher.hash(key);
         ChordNodeClient knownClient = new ChordNodeClient(IP, port);
 
         Identifier successor = knownClient.findSuccessor(keyID);
+        knownClient.close();
         return successor;
     }
 
@@ -35,19 +37,21 @@ public class Client {
             ChordNodeClient destClient = new ChordNodeClient(successor.getIP(), successor.getPort());
 
             if (destClient.put(key, value)) {
+                destClient.close();
                 break;
             }
+            destClient.close();
         }
 
         return true;
     }
 
     private String get(String key) {
-            Identifier successor = findSuccessor(key);
-
-            ChordNodeClient destClient = new ChordNodeClient(successor.getIP(), successor.getPort());
-
-            return destClient.get(key);
+        Identifier successor = findSuccessor(key);
+        ChordNodeClient destClient = new ChordNodeClient(successor.getIP(), successor.getPort());
+        String response = destClient.get(key);
+        destClient.close();
+        return response;
     }
 
 
@@ -67,7 +71,7 @@ public class Client {
                     String value = ops[2];
                     boolean res = client.put(key, value);
                     if(res){
-                        System.out.printf("Put key:%s, value:%s Succeeded: ", key, value);
+                        System.out.printf("Put key:%s, value:%s Succeeded: \n", key, value);
                     }else{
                         System.out.println("Put Failed");
                     }

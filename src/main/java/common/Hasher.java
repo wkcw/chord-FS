@@ -13,6 +13,9 @@ public class Hasher {
         this.total = total;
     }
 
+    public Hasher(int total){
+        this.total = total;
+    }
 
     public int hash(String key){
         return sha1Digest(key).hashCode() % total;

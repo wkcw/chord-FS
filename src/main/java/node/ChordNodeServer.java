@@ -60,7 +60,7 @@ public class ChordNodeServer {
             this.selfID = selfID;
             this.selfIP = selfIP;
             this.selfPort = selfPort;
-            hasher = new Hasher();
+            hasher = new Hasher(1 << ringSizeExp);
         }
 
         @Override
@@ -91,8 +91,6 @@ public class ChordNodeServer {
                 FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(generateSelfIdentifier()).build();
                 responseObserver.onNext(response);
             }
-//            else if (successor != null && ((selfID == successor.getID() && this.inRange(request.getID(), selfID + 1,
-//                    successor.getID())) || this.inRange(request.getID(), selfID, successor.getID())))
             else if (successor != null && (this.inRange(request.getID(), selfID, successor.getID())))
             {
                 FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(successor).build();

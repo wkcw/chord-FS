@@ -51,7 +51,6 @@ public class ChordNodeServer {
         private int next;
         private Hasher hasher;
 
-
         public ChordNodeService(int selfID, String selfIP, int selfPort){
             hashMap = new HashMap<String, String>();
             replica = new HashMap<Integer, HashMap<String, String>>();

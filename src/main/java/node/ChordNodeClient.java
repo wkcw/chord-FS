@@ -152,6 +152,18 @@ public class ChordNodeClient {
         return true;
     }
 
+    public boolean removeMultipleScatteredReplica(Identifier identifier, List<String> keyList){
+        RemoveMultipleScatteredReplicaRequest request = RemoveMultipleScatteredReplicaRequest.newBuilder().setIdentifier(identifier).addAllKey(keyList).build();
+        RemoveMultipleScatteredReplicaResponse response;
+        try {
+            response = blockingStub.removeMultipleScatteredReplica(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
     public boolean put(String key, String val){
         PutRequest request = PutRequest.newBuilder().setKey(key).setValue(val).build();
         PutResponse putResponse;

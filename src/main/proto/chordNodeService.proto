@@ -20,6 +20,8 @@ service ChordNodeService{
     rpc RemoveReplica(RemoveReplicaRequest) returns (RemoveReplicaResponse) {}
     rpc AddReplica(AddReplicaRequest) returns (AddReplicaResponse) {}
     rpc AddScatteredReplica(AddScatteredReplicaRequest) returns (AddScatteredReplicaResponse) {}
+    rpc RemoveMultipleScatteredReplica(RemoveMultipleScatteredReplicaRequest) returns (RemoveMultipleScatteredReplicaResponse) {}
+    rpc ChangeReplicaBelonging(ChangeReplicaBelongingRequest) returns (ChangeReplicaBelongingResponse) {}
 }
 
 enum ReturnCode {
@@ -120,6 +122,24 @@ message AddScatteredReplicaRequest {
 }
 
 message AddScatteredReplicaResponse {
+
+}
+
+message RemoveMultipleScatteredReplicaRequest {
+    repeated string key = 1;
+    Identifier identifier = 2;
+}
+
+message RemoveMultipleScatteredReplicaResponse {
+
+}
+
+message ChangeReplicaBelongingRequest {
+    int32 originalOwnerID = 1;
+    int32 newOwnerID
+}
+
+message ChangeReplicaBelongingResponse {
 
 }
 

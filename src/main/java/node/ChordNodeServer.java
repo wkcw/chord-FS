@@ -73,9 +73,11 @@ public class ChordNodeServer {
                 if (predecessor == null) predecessor = Identifier.newBuilder().build();
                 predecessor = predecessor.toBuilder().setID(senderID).setIP(address).setPort(port).build();
                 ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
-                String dataJson = generateDataJsonAndDeleteLocal(predecessor.getID());
+                List<String> keyList = generateExpiredKeyList(predecessor.getID());
+                String dataJson = generateDataJsonAndDeleteLocal(keyList);
                 predecessorClient.acceptMyData(dataJson);
                 predecessorClient.close();
+                removePartialDataFromReplicas(keyList);
             }
             NotifyResponse response = NotifyResponse.newBuilder().build();
 
@@ -191,12 +193,15 @@ public class ChordNodeServer {
         private void checkPredecessor(){
             if (this.predecessor != null) {
                 logger.info("Creating client for checkPredecessor");
-                ChordNodeClient client = new ChordNodeClient(this.predecessor.getIP(), this.predecessor.getPort());
-                if (!client.ping()) {
+                ChordNodeClient predecessorClient = new ChordNodeClient(this.predecessor.getIP(), this.predecessor.getPort());
+                boolean alive = predecessorClient.ping();
+                predecessorClient.close();
+                if (!alive) {
+                    Identifier failedPredecessor = this.predecessor;
                     this.predecessor = null;
+                    inheritPredecessorData(failedPredecessor.getID());
                 }
 
-                client.close();
             }
         }
 
@@ -375,6 +380,15 @@ public class ChordNodeServer {
             responseObserver.onCompleted();
         }
 
+        @Override
+        public void removeMultipleScatteredReplica(RemoveMultipleScatteredReplicaRequest request, StreamObserver<RemoveMultipleScatteredReplicaResponse> responseObserver) {
+            List<String> keyList = request.getKeyList();
+            int requestTagID = request.getIdentifier().getID();
+            for(String key : keyList){
+                replica.get(requestTagID).remove(key);
+            }
+        }
+
 
 
         private void start(int id, String ip, int port){
@@ -532,9 +546,35 @@ public class ChordNodeServer {
             }
         }
 
+        private void removePartialDataFromReplicas(List<String> keyList){
+            Identifier selfIdentifier = generateSelfIdentifier();
+
+            for(Identifier identifier : successorsList){
+                ChordNodeClient successorClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
+                successorClient.removeMultipleScatteredReplica(selfIdentifier, keyList);
+            }
+        }
+
+
+
+        private void inheritPredecessorData(int failedPredecessorID){
+            hashMap.putAll(replica.get(failedPredecessorID));
+            replica.remove(failedPredecessorID);
+        }
+
         private Identifier generateSelfIdentifier(){
             return Identifier.newBuilder().setID(selfID).setIP(selfIP)
                     .setPort(selfPort).build();
+        }
+
+        private List<String> generateExpiredKeyList(int predecessorID){
+            List<String> keyList = new ArrayList<>();
+            for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+                if(hasher.hash(entry.getKey()) <= predecessorID){
+                    keyList.add(entry.getKey());
+                }
+            }
+            return keyList;
         }
 
         private HashMap<String, String> generateTransferredMap(int id) {
@@ -549,6 +589,16 @@ public class ChordNodeServer {
             return hashMapToTransfer;
         }
 
+        private HashMap<String, String> generateTransferredMap(List<String> keyList) {
+            HashMap<String, String> hashMapToTransfer = new HashMap<>();
+//            prepare keys to transfer
+            for (String key : keyList) {
+                hashMapToTransfer.put(key, hashMap.get(key));
+            }
+
+            return hashMapToTransfer;
+        }
+
         private String generateDataJsonAndDeleteLocal(int predecessorID){
             HashMap<String, String> hashMapToTransfer = generateTransferredMap(predecessorID);
 
@@ -557,6 +607,17 @@ public class ChordNodeServer {
                 if(hasher.hash(entry.getKey()) <= predecessorID){
                     hashMap.remove(entry.getKey());
                 }
+            }
+
+            return JsonUtil.serilizable(hashMapToTransfer);
+        }
+
+        private String generateDataJsonAndDeleteLocal(List<String> keyList){
+            HashMap<String, String> hashMapToTransfer = generateTransferredMap(keyList);
+
+//            remove local keys
+            for (String key : keyList) {
+                hashMap.remove(key);
             }
 
             return JsonUtil.serilizable(hashMapToTransfer);

@@ -132,7 +132,7 @@ public class ChordManagerServer {
 
 
         @Override
-        public void put(PutRequest putRequest, StreamObserver<PutResponse> responseObserver) {
+        public void putManager(PutRequest putRequest, StreamObserver<PutResponse> responseObserver) {
             String key = putRequest.getKey();
             String value = putRequest.getValue();
             PutResponse response;
@@ -141,44 +141,10 @@ public class ChordManagerServer {
             for (; nodeID < manager.length; nodeID++) {
                 if (manager[nodeID].getStatus()) {
                     ChordNodeClient nodeClient = new ChordNodeClient(manager[nodeID].getIP(), manager[nodeID].getPort());
-
                 }
             }
         }
+
+
     }
 }
-
-//    NodeStatus[] manager;
-//    private static int ringSizeExp = 5;
-//
-//    public ChordManagerServer() {
-//
-//        manager = new NodeStatus[(int) Math.pow(2, ringSizeExp)];
-//
-//        // Set all nodes to offline mode when initializing the manager
-//        for (int i = 0; i < Math.pow(2, ringSizeExp); i++) {
-//            Identifier node = Identifier.newBuilder().setID(i).build();
-//            manager[i] = new NodeStatus(node, false);
-//        }
-//    }
-//
-//    // when joining the network, Chord node should call ChordManager.join(id, ip, port) to notify its existence
-//    // And manager would return the first available successor to the joining node
-//    public int join(int id, String ip, int port) {
-//        manager[id].setStatus(true); // mark the joining node's ID as a online node
-//        manager[id].getNode().toBuilder().setIP(ip).setPort(port).build(); // this is necessary
-//
-//        int startPoint = id + 1; // start point for searching the successor
-//        // if the joining id is the last ID, starting from 0
-//        if (id == manager.length - 1) {
-//            startPoint = 0;
-//        }
-//
-//        for (; startPoint < manager.length - 1; startPoint++) {
-//            if (manager[startPoint].getStatus()) {
-//                break;
-//            }
-//        }
-//        return startPoint; // return the successor ID to the joining node
-//    }
-

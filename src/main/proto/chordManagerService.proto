@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "chordNodeService.proto";
 package chord;
 
 option java_multiple_files = true;
@@ -9,6 +9,7 @@ option java_package = "net.grpc.chord";
 
 service ChordManagerService{
     rpc join(JoinRequest) returns (JoinResponse){}
+    rpc putManager(PutRequest) returns (PutResponse){}
 }
 
 message JoinRequest {

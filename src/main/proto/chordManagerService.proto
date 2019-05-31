@@ -19,4 +19,6 @@ message JoinRequest {
 
 message JoinResponse {
     int32 ID = 1;
+    string address = 2;
+    int32 port = 3;
 }

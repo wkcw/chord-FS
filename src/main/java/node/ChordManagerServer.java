@@ -3,11 +3,8 @@ package node;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import net.grpc.chord.ChordManagerServiceGrpc;
-import net.grpc.chord.Identifier;
-import net.grpc.chord.JoinRequest;
-import net.grpc.chord.JoinResponse;
-
+import net.grpc.chord.*;
+import common.Hasher;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,7 +45,6 @@ public class ChordManagerServer {
 
     private ChordManagerService chordManagerService;
 
-
     private ChordManagerServer(String selfIP, int selfPort) {
         chordManagerService = new ChordManagerService();
         server = ServerBuilder.forPort(selfPort).addService(chordManagerService)
@@ -64,7 +60,7 @@ public class ChordManagerServer {
 
         NodeStatus[] manager;
         private static int ringSizeExp = 5;
-
+        private Hasher hasher = new Hasher(1 << ringSizeExp);
         public ChordManagerService() {
             manager = new NodeStatus[(int) Math.pow(2, ringSizeExp)];
 
@@ -123,10 +119,31 @@ public class ChordManagerServer {
                 }
             }
 
+            int retID= startPoint;
+            String retIP = manager[startPoint].getIP();
+            int retPort = manager[startPoint].getPort();
+
             // To Chuping: is ID sufficient? Do we need addr and port?
-            JoinResponse joinResponse = JoinResponse.newBuilder().setID(startPoint).build();
+            JoinResponse joinResponse = JoinResponse.newBuilder()
+                                        .setID(retID).setAddress(retIP).setPort(retPort).build();
             responseObserver.onNext(joinResponse);
             responseObserver.onCompleted();
+        }
+
+
+        @Override
+        public void put(PutRequest putRequest, StreamObserver<PutResponse> responseObserver) {
+            String key = putRequest.getKey();
+            String value = putRequest.getValue();
+            PutResponse response;
+            int hash = hasher.hash(key);
+            int nodeID = hash;
+            for (; nodeID < manager.length; nodeID++) {
+                if (manager[nodeID].getStatus()) {
+                    ChordNodeClient nodeClient = new ChordNodeClient(manager[nodeID].getIP(), manager[nodeID].getPort());
+
+                }
+            }
         }
     }
 }

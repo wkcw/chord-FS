@@ -14,13 +14,14 @@ import java.util.logging.Logger;
 
 public class ChordNodeServer {
 
+
     private static final Logger logger = Logger.getLogger(ChordNodeServer.class.getName());
 
     private final Server server;
     private ChordNodeService chordNodeService;
     private int port;
 
-    private ChordNodeServer(int selfID, String selfIP, int selfPort) {
+    public ChordNodeServer(int selfID, String selfIP, int selfPort) {
         this.port = selfPort;
 
         chordNodeService = new ChordNodeService(selfID, selfIP, selfPort);
@@ -67,7 +68,6 @@ public class ChordNodeServer {
             int senderID = request.getIdentifier().getID();
             String address = request.getIdentifier().getIP();
             int port = request.getIdentifier().getPort();
-
             if (predecessor == null || inRange(senderID, predecessor.getID(), selfID)) {
                 if (predecessor == null) predecessor = Identifier.newBuilder().build();
                 predecessor = predecessor.toBuilder().setID(senderID).setIP(address).setPort(port).build();

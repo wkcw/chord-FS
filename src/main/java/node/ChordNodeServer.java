@@ -427,6 +427,21 @@ public class ChordNodeServer {
         }
 
         @Override
+        public void addMultipleScatteredReplica(AddMultipleScatteredReplicaRequest request, StreamObserver<AddMultipleScatteredReplicaResponse> responseObserver) {
+            String dataJson = request.getJsonData();
+            int requestTagID = request.getIdentifier().getID();
+            Map<String, String> hashmapToAdd = JsonUtil.deserilizable(dataJson);
+            if(replica.get(requestTagID) == null){
+                replica.put(requestTagID, new HashMap<>());
+            }
+            replica.get(requestTagID).putAll(hashmapToAdd);
+
+            AddMultipleScatteredReplicaResponse response = AddMultipleScatteredReplicaResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+        @Override
         public void removeMultipleScatteredReplica(RemoveMultipleScatteredReplicaRequest request, StreamObserver<RemoveMultipleScatteredReplicaResponse> responseObserver) {
             List<String> keyList = request.getKeyList();
             int requestTagID = request.getIdentifier().getID();
@@ -659,22 +674,44 @@ public class ChordNodeServer {
             }
         }
 
+        private void addHashMapReplicaToOneReplica(Identifier targetIdentifier, Map<String, String> addedHashMap){
+            if(addedHashMap.size() != 0 && validIdentifier(targetIdentifier)){
+                ChordNodeClient targetClient = new ChordNodeClient(targetIdentifier.getIP(), targetIdentifier.getPort());
+                if(targetClient.ping()){
+                    String dataJson = JsonUtil.serilizable(addedHashMap);
+                    targetClient.addMultipleScatteredReplica(generateSelfIdentifier(), dataJson);
+                }
+                targetClient.close();
+            }
+        }
+
 
 
         private void inheritPredecessorData(int failedPredecessorID){
             logger.info(String.format("Inheriting data from %d", failedPredecessorID));
             hashMap.putAll(replica.get(failedPredecessorID));
+            Map<String, String> addedHashMap = replica.get(failedPredecessorID);
             replica.remove(failedPredecessorID);
+
+//            update last replica to have data of failed one
+            Identifier lastSuccessor = successorsList[successorsList.length-1];
+            addHashMapReplicaToOneReplica(lastSuccessor, addedHashMap);
         }
 
         private void inheritFailedPredecessorsData(int newPredecessorID){
             logger.info(String.format("Inheriting data since %d", newPredecessorID));
+//            all data inherited from failed nodes
+            Map<String, String> addedHashMap = new HashMap<>();
             for(int replicaTagID : replica.keySet()){
-                if(replicaTagID > newPredecessorID){
+                if(inRange(replicaTagID, newPredecessorID, selfID)){
                     hashMap.putAll(replica.get(replicaTagID));
+                    addedHashMap.putAll(replica.get(replicaTagID));
                     replica.remove(replicaTagID);
                 }
             }
+//            update last replica to have data of failed one
+            Identifier lastSuccessor = successorsList[successorsList.length-1];
+            addHashMapReplicaToOneReplica(lastSuccessor, addedHashMap);
         }
 
         private Identifier generateSelfIdentifier(){
@@ -736,6 +773,10 @@ public class ChordNodeServer {
             }
 
             return JsonUtil.serilizable(hashMapToTransfer);
+        }
+
+        private boolean validIdentifier(Identifier identifier){
+            return identifier != null && identifier.getID() != -1;
         }
     }
 

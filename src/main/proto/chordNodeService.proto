@@ -20,6 +20,7 @@ service ChordNodeService{
     rpc RemoveReplica(RemoveReplicaRequest) returns (RemoveReplicaResponse) {}
     rpc AddReplica(AddReplicaRequest) returns (AddReplicaResponse) {}
     rpc AddScatteredReplica(AddScatteredReplicaRequest) returns (AddScatteredReplicaResponse) {}
+    rpc AddMultipleScatteredReplica(AddMultipleScatteredReplicaRequest) returns (AddMultipleScatteredReplicaResponse) {}
     rpc RemoveMultipleScatteredReplica(RemoveMultipleScatteredReplicaRequest) returns (RemoveMultipleScatteredReplicaResponse) {}
     rpc MeasureDistance(MeasureDistanceRequest) returns (MeasureDistanceResponse) {}
 }
@@ -122,6 +123,15 @@ message AddScatteredReplicaRequest {
 }
 
 message AddScatteredReplicaResponse {
+
+}
+
+message AddMultipleScatteredReplicaRequest {
+    string jsonData = 1;
+    Identifier identifier = 2;
+}
+
+message AddMultipleScatteredReplicaResponse {
 
 }
 

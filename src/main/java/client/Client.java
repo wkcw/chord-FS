@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class Client {
 
-    private String[] addressList = {"127.0.0.1:9700", "127.0.0.1:9708", "127.0.0.1:9716", "127.0.0.1:9724", "127.0.0.1:9728"};
+    private String[] addressList = {"127.0.0.1:9700", "127.0.0.1:9704", "127.0.0.1:9708", "127.0.0.1:9712", "127.0.0.1:9716", "127.0.0.1:9720", "127.0.0.1:9724", "127.0.0.1:9728"};
     private int ringSizeExp=5;
     private Hasher hasher = new Hasher(1 << ringSizeExp);
 

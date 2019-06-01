@@ -9,21 +9,42 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Client {
 
-    private String IP = "127.0.0.1";
-    private int port = 9700;
+    private String[] addressList = {"127.0.0.1:9700", "127.0.0.1:9708", "127.0.0.1:9716", "127.0.0.1:9724", "127.0.0.1:9728"};
     private int ringSizeExp=5;
     private Hasher hasher = new Hasher(1 << ringSizeExp);
 
+    private String chooseRandomAddress(){
+        Random rand = new Random();
+        int n = rand.nextInt(this.addressList.length);
+        return addressList[n];
+    }
+
+    private ChordNodeClient newClientToRandomAddress(){
+        String address = chooseRandomAddress();
+        String ip = address.split(":")[0];
+        int port = Integer.valueOf(address.split(":")[1]);
+        ChordNodeClient knownClient = new ChordNodeClient(ip, port);
+        return knownClient;
+    }
+
     private Identifier findSuccessor(String key) {
         int keyID = hasher.hash(key);
-        ChordNodeClient knownClient = new ChordNodeClient(IP, port);
-
-        Identifier successor = knownClient.findSuccessor(keyID);
-        knownClient.close();
+        Identifier successor;
+        while(true){
+            ChordNodeClient knownClient = newClientToRandomAddress();
+            successor = knownClient.findSuccessor(keyID);
+            if(successor != null){
+                knownClient.close();
+                break;
+            }else{
+                knownClient.close();
+            }
+        }
         return successor;
     }
 

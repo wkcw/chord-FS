@@ -47,7 +47,7 @@ public class ChordNodeClient {
         try {
             pingResponse = blockingStub.ping(request);
         } catch (StatusRuntimeException e) {
-            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+//            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
             return false;
         }
         return true;
@@ -164,6 +164,18 @@ public class ChordNodeClient {
         return true;
     }
 
+    public int measureDistance(int ID){
+        MeasureDistanceRequest request = MeasureDistanceRequest.newBuilder().setID(ID).build();
+        MeasureDistanceResponse response;
+        try {
+            response = blockingStub.measureDistance(request);
+
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return Integer.MAX_VALUE;
+        }
+        return response.getDistance();
+    }
     public boolean put(String key, String val){
         PutRequest request = PutRequest.newBuilder().setKey(key).setValue(val).build();
         PutResponse putResponse;

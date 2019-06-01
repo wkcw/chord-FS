@@ -134,7 +134,7 @@ class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
 
     private void stabilize() {
         Identifier successor = this.getAliveSuccessor();
-
+        
         if (successor.getID() != this.fingerTable[0].getID()) {
             this.fingerTable[0] = successor;
             this.successorsList[0] = successor;

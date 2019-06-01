@@ -136,11 +136,11 @@ public class ChordManagerServer {
             int retPort = port;
 
             if (found) {
-                retID= startPoint;
-                retIP = manager[startPoint].getIP();
-                retPort = manager[startPoint].getPort();
+                retID= startPoint % manager.length;
+                retIP = manager[startPoint % manager.length].getIP();
+                retPort = manager[startPoint % manager.length].getPort();
             }
-            System.out.println(retID);
+            System.out.println("returning ID to calling server " + retID);
             // To Chuping: is ID sufficient? Do we need addr and port?
             JoinResponse joinResponse = JoinResponse.newBuilder()
                                         .setID(retID).setAddress(retIP).setPort(retPort).build();

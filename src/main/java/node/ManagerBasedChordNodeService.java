@@ -28,7 +28,6 @@ public class ManagerBasedChordNodeService extends ChordNodeService {
     public void join() {
         setPredecessor(null);
         logger.info("Creating client for join at " + mgrIP + " " + mgrPort);
-        logger.info("Creating client for join original ");
         ChordManagerClient chordManagerClient = new ChordManagerClient(mgrIP, mgrPort);
 
         Identifier successorIdentifier = null;
@@ -42,15 +41,16 @@ public class ManagerBasedChordNodeService extends ChordNodeService {
         setFingerTableEntry(0, successorIdentifier);
 
         maintainFirstReplica(getSuccessorsListEntry(0), getFingerTableEntry(0));
+        System.out.println("setting successor list entry " + successorIdentifier.getID());
         setSuccessorListEntry(0, successorIdentifier);
 
         chordManagerClient.close();
     }
 
     public void start() {
-        join();
         // start method of super class
         start(selfID, selfIP, selfPort);
+        join();
     }
 
 }

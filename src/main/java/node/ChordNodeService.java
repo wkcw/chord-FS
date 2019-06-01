@@ -374,12 +374,12 @@ class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplBase {
 
 
 
-    private void start(int id, String ip, int port){
+    public void start(int id, String ip, int port){
         create();
-        if (id != -1) {
-            Identifier identifier = Identifier.newBuilder().setID(id).setIP(ip).setPort(port).build();
-            join(identifier);
-        }
+//        if (id != -1) {
+//            Identifier identifier = Identifier.newBuilder().setID(id).setIP(ip).setPort(port).build();
+//            join(identifier);
+//        }
 
         this.next = 0;
         Timer timer = new Timer();

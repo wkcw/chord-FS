@@ -2,15 +2,13 @@ package node;
 
 import io.grpc.StatusRuntimeException;
 import net.grpc.chord.Identifier;
-import net.grpc.chord.JoinRequest;
-import net.grpc.chord.JoinResponse;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ManagerBasedChordNode extends ChordNodeService {
+public class ManagerBasedChordNodeService extends ChordNodeService {
 
-    private static final Logger logger = Logger.getLogger(ManagerBasedChordNode.class.getName());
+    private static final Logger logger = Logger.getLogger(ManagerBasedChordNodeService.class.getName());
 
     private int selfID;
     private String selfIP;
@@ -18,7 +16,7 @@ public class ManagerBasedChordNode extends ChordNodeService {
     private String mgrIP;
     private int mgrPort;
 
-    public ManagerBasedChordNode(int selfID, String selfIP, int selfPort, String mgrIP, int mgrPort) {
+    public ManagerBasedChordNodeService(int selfID, String selfIP, int selfPort, String mgrIP, int mgrPort) {
         super(selfID, selfIP, selfPort);
         this.selfID = selfID;
         this.selfIP = selfIP;
@@ -27,10 +25,10 @@ public class ManagerBasedChordNode extends ChordNodeService {
         this.mgrPort = mgrPort;
     }
 
-
     public void join() {
         setPredecessor(null);
-        logger.info("Creating client for join");
+        logger.info("Creating client for join at " + mgrIP + " " + mgrPort);
+        logger.info("Creating client for join original ");
         ChordManagerClient chordManagerClient = new ChordManagerClient(mgrIP, mgrPort);
 
         Identifier successorIdentifier = null;
@@ -47,6 +45,12 @@ public class ManagerBasedChordNode extends ChordNodeService {
         setSuccessorListEntry(0, successorIdentifier);
 
         chordManagerClient.close();
+    }
+
+    public void start() {
+        join();
+        // start method of super class
+        start(selfID, selfIP, selfPort);
     }
 
 }

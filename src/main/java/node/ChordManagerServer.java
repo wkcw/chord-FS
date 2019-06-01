@@ -1,13 +1,15 @@
 package node;
 
+import common.Hasher;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import net.grpc.chord.*;
-import common.Hasher;
+
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class NodeStatus {
@@ -72,6 +74,7 @@ public class ChordManagerServer {
         }
 
         public void start() {
+            System.out.print("started");
             Timer timer = new Timer();
             PingTask pingTask = new PingTask();
             timer.schedule(pingTask, 1000, 1000);
@@ -113,16 +116,29 @@ public class ChordManagerServer {
                 startPoint = 0;
             }
 
-            for (; startPoint < manager.length - 1; startPoint++) {
-                if (manager[startPoint].getStatus()) {
+            boolean found = false;
+
+            int indexToCheck = id + manager.length;
+
+
+            for (; startPoint < indexToCheck; startPoint++) {
+                int index = startPoint % manager.length;
+                if (manager[index].getStatus()) {
+                    found = true;
                     break;
                 }
             }
 
-            int retID= startPoint;
-            String retIP = manager[startPoint].getIP();
-            int retPort = manager[startPoint].getPort();
+            int retID= id;
+            String retIP = ip;
+            int retPort = port;
 
+            if (found) {
+                retID= startPoint;
+                retIP = manager[startPoint].getIP();
+                retPort = manager[startPoint].getPort();
+            }
+            System.out.println(retID);
             // To Chuping: is ID sufficient? Do we need addr and port?
             JoinResponse joinResponse = JoinResponse.newBuilder()
                                         .setID(retID).setAddress(retIP).setPort(retPort).build();
@@ -144,7 +160,19 @@ public class ChordManagerServer {
                 }
             }
         }
+    }
 
+    public static void main(String[] args) {
+        String ip = args[0];
+        int port = Integer.valueOf(args[1]);
 
+        ChordManagerServer chordManagerServer = new ChordManagerServer(ip, port);
+
+        try {
+            chordManagerServer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.log(Level.WARNING, "start server failed");
+        }
     }
 }

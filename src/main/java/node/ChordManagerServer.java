@@ -25,6 +25,8 @@ class NodeStatus {
 
     public int getPort() { return node == null? null : node.getPort(); }
 
+    public void setNode(Identifier identifier) { this.node = identifier; }
+
     public Identifier getNode() {
         return this.node;
     }
@@ -108,7 +110,7 @@ public class ChordManagerServer {
             int port = joinRequest.getPort();
 
             manager[id].setStatus(true); // mark the joining node's ID as a online node
-            manager[id].getNode().toBuilder().setIP(ip).setPort(port).build(); // this is necessary
+            this.manager[id].setNode(Identifier.newBuilder().setIP(ip).setPort(port).build());
 
             int startPoint = id + 1; // start point for searching the successor
             // if the joining id is the last ID, starting from 0

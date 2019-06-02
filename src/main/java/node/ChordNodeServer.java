@@ -70,7 +70,7 @@ public class ChordNodeServer {
             String address = request.getIdentifier().getIP();
             int port = request.getIdentifier().getPort();
 
-            if (predecessor == null || inRange(senderID, predecessor.getID(), selfID)) {
+            if (predecessor == null || (inRange(senderID, predecessor.getID(), selfID) && predecessor.getID() != senderID)) {
                 if (predecessor == null) predecessor = Identifier.newBuilder().build();
                 predecessor = predecessor.toBuilder().setID(senderID).setIP(address).setPort(port).build();
                 ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
@@ -124,7 +124,7 @@ public class ChordNodeServer {
                 distance = Integer.MAX_VALUE;
             }else if(searchingID == selfID){
                 distance = 1;
-            }else if(searchingID < selfID) {
+            }else if(inRange(searchingID, predecessor.getID(), selfID)) {
                 distance = 0;
             }else if(predecessor != null){
                 logger.info(String.format("In RPC measureDistance -> Creating client for measureDistance, to IP:%s Port:%d", predecessor.getIP(), predecessor.getPort()));
@@ -285,7 +285,10 @@ public class ChordNodeServer {
                 for(int ID : replica.keySet()){
                     int distance = predecessorClient.measureDistance(ID);
                     if(distance != Integer.MAX_VALUE){
-                        if(distance >= sucListSize){
+                        if(distance > sucListSize){
+                            if(ID==4){
+                                System.out.println("remove4");
+                            }
                             replica.remove(ID);
                         }
                     }
@@ -633,12 +636,16 @@ public class ChordNodeServer {
             HashSet<Identifier> oldSet = new HashSet<>(Arrays.asList(oldList));
             HashSet<Identifier> newSet = new HashSet<>(Arrays.asList(newList));
 
-            System.out.println(oldSet);
-            System.out.println(newSet);
+//            System.out.println(oldSet);
+//            System.out.println(newSet);
 
             HashSet<Identifier> tmp = new HashSet<>(oldSet);
             oldSet.removeAll(newSet);
             newSet.removeAll(tmp);
+
+            System.out.println("Old to remove and New to add");
+            System.out.println(oldSet);
+            System.out.println(newSet);
 
 
             for(Identifier identifier : oldSet){

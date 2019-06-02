@@ -118,8 +118,11 @@ public class ChordNodeServer {
         @Override
         public void measureDistance(MeasureDistanceRequest request, StreamObserver<MeasureDistanceResponse> responseObserver) {
             int searchingID = request.getID();
+            int startPoint = request.getStartPoint();
             int distance;
-            if(searchingID == selfID){
+            if(startPoint == selfID){
+                distance = Integer.MAX_VALUE;
+            }else if(searchingID == selfID){
                 distance = 1;
             }else if(searchingID < selfID) {
                 distance = 0;
@@ -611,13 +614,8 @@ public class ChordNodeServer {
         }
 
         private void maintainFirstReplica(Identifier oldSuccessor, Identifier newSuccessor) {
-            if (oldSuccessor != null && oldSuccessor.getID() != -1 && oldSuccessor.getID() != selfID) {
-                ChordNodeClient oldSuccessorClient = new ChordNodeClient(oldSuccessor.getIP(), oldSuccessor.getPort());
-                if(oldSuccessorClient.ping()) {
-                    oldSuccessorClient.removeReplica(generateSelfIdentifier());
-                }
-                oldSuccessorClient.close();
-            }
+//            if old and new are actually the same, do nothing
+            if(oldSuccessor != null && newSuccessor != null && oldSuccessor.getID() == newSuccessor.getID())return;
 
             if (newSuccessor != null && newSuccessor.getID() != -1 && newSuccessor.getID() != selfID) {
                 ChordNodeClient newSuccessorClient = new ChordNodeClient(newSuccessor.getIP(), newSuccessor.getPort());
@@ -806,5 +804,7 @@ public class ChordNodeServer {
             logger.log(Level.WARNING, "start server failed");
         }
     }
+
+
 
 }

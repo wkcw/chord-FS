@@ -10,6 +10,7 @@ option java_package = "net.grpc.chord";
 service ChordManagerService{
     rpc join(JoinRequest) returns (JoinResponse){}
     rpc putManager(PutRequest) returns (PutResponse){}
+    rpc getManager(GetRequest) returns (GetResponse){}
 }
 
 message JoinRequest {

@@ -1,6 +1,7 @@
 package node;
 
 import common.Hasher;
+import common.JsonUtil;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -118,36 +119,38 @@ public class ChordManagerServer {
                 startPoint = 0;
             }
 
-            boolean found = false;
 
-            int indexToCheck = id + manager.length;
-
-
-            for (; startPoint < indexToCheck; startPoint++) {
-                int index = startPoint % manager.length;
-                if (manager[index].getStatus()) {
-                    found = true;
-                    break;
-                }
+            JoinResponse joinResponse;
+            int retID = findNextAvailableNode(startPoint, id + manager.length);
+            if (retID == -1) {
+                joinResponse = JoinResponse.newBuilder().setID(id).setAddress(ip).setPort(port).build();
+            }
+            else {
+                joinResponse = JoinResponse.newBuilder().setID(retID).setAddress(manager[retID].getIP())
+                        .setPort(manager[retID].getPort()).build();
             }
 
-            int retID= id;
-            String retIP = ip;
-            int retPort = port;
-
-            if (found) {
-                retID= startPoint % manager.length;
-                retIP = manager[startPoint % manager.length].getIP();
-                retPort = manager[startPoint % manager.length].getPort();
-            }
             System.out.println("returning ID to calling server " + retID);
-            // To Chuping: is ID sufficient? Do we need addr and port?
-            JoinResponse joinResponse = JoinResponse.newBuilder()
-                                        .setID(retID).setAddress(retIP).setPort(retPort).build();
             responseObserver.onNext(joinResponse);
             responseObserver.onCompleted();
         }
 
+        public int findNextAvailableNode(int startPoint, int endPoint) {
+
+            boolean found = false;
+            for (; startPoint < endPoint; startPoint++) {
+                int index = startPoint % this.manager.length;
+                if (this.manager[index].getStatus()) {
+                    System.out.println("Found available node: " + index);
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                return startPoint % this.manager.length;
+            }
+            return -1;
+        }
 
         @Override
         public void putManager(PutRequest putRequest, StreamObserver<PutResponse> responseObserver) {
@@ -156,11 +159,45 @@ public class ChordManagerServer {
             PutResponse response;
             int hash = hasher.hash(key);
             int nodeID = hash;
-            for (; nodeID < manager.length; nodeID++) {
-                if (manager[nodeID].getStatus()) {
-                    ChordNodeClient nodeClient = new ChordNodeClient(manager[nodeID].getIP(), manager[nodeID].getPort());
-                }
+            System.out.println("The hash of the key is: " + nodeID);
+            int nextNode = findNextAvailableNode(nodeID, nodeID + manager.length);
+            System.out.println("The next available node for put is: " + nextNode);
+            PutResponse putResponse;
+            if (nextNode == -1) {
+                putResponse = PutResponse.newBuilder().setRet(ReturnCode.FAILURE).build();
             }
+            else {
+                ChordNodeClient nodeClient = new ChordNodeClient(manager[nextNode].getIP(),
+                        manager[nextNode].getPort());
+                nodeClient.put(key, value);
+                nodeClient.close();
+                putResponse = PutResponse.newBuilder().setRet(ReturnCode.SUCCESS).build();
+            }
+            responseObserver.onNext(putResponse);
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void getManager(GetRequest getRequest, StreamObserver<GetResponse> responseStreamObserver) {
+            String key = getRequest.getKey();
+            int hash = hasher.hash(key);
+            int nodeID = hash;
+
+            int nextNode = findNextAvailableNode(nodeID, nodeID + manager.length);
+            GetResponse getResponse;
+            if (nextNode == -1) {
+                getResponse = GetResponse.newBuilder().setRet(ReturnCode.FAILURE).build();
+            }
+            else {
+                ChordNodeClient nodeClient = new ChordNodeClient(manager[nextNode].getIP(),
+                        manager[nextNode].getPort());
+                String value = nodeClient.get(key);
+                nodeClient.close();
+                getResponse = GetResponse.newBuilder().setValue(value).setRet(ReturnCode.SUCCESS).build();
+            }
+
+            responseStreamObserver.onNext(getResponse);
+            responseStreamObserver.onCompleted();
         }
     }
 

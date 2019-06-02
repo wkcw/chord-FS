@@ -3,10 +3,7 @@ package node;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
-import net.grpc.chord.ChordManagerServiceGrpc;
-import net.grpc.chord.Identifier;
-import net.grpc.chord.JoinRequest;
-import net.grpc.chord.JoinResponse;
+import net.grpc.chord.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,6 +51,32 @@ public class ChordManagerClient {
 
     public void close() {
         this.channel.shutdownNow();
+    }
+
+    public boolean put(String key, String val){
+        PutRequest request = PutRequest.newBuilder().setKey(key).setValue(val).build();
+        PutResponse putResponse;
+        try {
+            putResponse = blockingStub.putManager(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC from manager failed: {0}", e.getStatus());
+            return false;
+        }
+
+        return putResponse.getRet() == ReturnCode.SUCCESS;
+    }
+
+    public String get(String key){
+        GetRequest request = GetRequest.newBuilder().setKey(key).build();
+        GetResponse getResponse;
+        try {
+            getResponse = blockingStub.getManager(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC from manager failed: {0}", e.getStatus());
+            return null;
+        }
+
+        return getResponse.getRet() == ReturnCode.SUCCESS ? getResponse.getValue() : null;
     }
 
 

@@ -780,6 +780,27 @@ public class ChordNodeServer {
         private boolean validIdentifier(Identifier identifier){
             return identifier != null && identifier.getID() != -1;
         }
+
+
+
+
+
+
+
+
+
+
+
+        @Override
+        public void tellmeKeyNumber(TellmeKeyNumberRequest request, StreamObserver<TellmeKeyNumberResponse> responseObserver) {
+            TellmeKeyNumberResponse response = TellmeKeyNumberResponse.newBuilder().setNumber(hashMap.size()).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+
+
+
     }
 //
 //    public static void main(String[] args) {

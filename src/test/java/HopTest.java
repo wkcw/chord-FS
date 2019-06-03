@@ -41,7 +41,7 @@ public class HopTest extends TestCase {
 //        }
 //        hasher = new Hasher(ringSize);
         // create client
-        nodeClient = new ChordNodeClient("54.187.249.159", 9700);
+        nodeClient = new ChordNodeClient("100.82.144.170", 9700);
         hasher = new Hasher(ringSize);
 
     }

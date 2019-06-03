@@ -8,6 +8,7 @@ option objc_class_prefix = "CN";
 option java_package = "net.grpc.chord";
 
 service ChordNodeService{
+//    function
     rpc Notify(NotifyRequest) returns  (NotifyResponse){}
     rpc FindSuccessor(FindSuccessorRequest) returns (FindSuccessorResponse){}
     rpc InquirePredecessor(InquirePredecessorRequest) returns (InquirePredecessorResponse){}
@@ -23,6 +24,9 @@ service ChordNodeService{
     rpc AddMultipleScatteredReplica(AddMultipleScatteredReplicaRequest) returns (AddMultipleScatteredReplicaResponse) {}
     rpc RemoveMultipleScatteredReplica(RemoveMultipleScatteredReplicaRequest) returns (RemoveMultipleScatteredReplicaResponse) {}
     rpc MeasureDistance(MeasureDistanceRequest) returns (MeasureDistanceResponse) {}
+
+//    for evalution
+    rpc TellmeKeyNumber(TellmeKeyNumberRequest) returns (TellmeKeyNumberResponse) {}
 }
 
 enum ReturnCode {
@@ -159,4 +163,16 @@ message Identifier {
     string IP = 1;
     int32 port = 2;
     int32 ID = 3;
+}
+
+
+
+
+//for evalution
+message TellmeKeyNumberRequest {
+
+}
+
+message TellmeKeyNumberResponse {
+    int32 number = 1;
 }

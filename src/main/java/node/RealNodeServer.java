@@ -59,7 +59,7 @@ public class RealNodeServer {
             knownPort = Integer.valueOf(args[4]);
         }
 
-        RealNodeServer realNodeServer = new RealNodeServer(10, ip, port);
+        RealNodeServer realNodeServer = new RealNodeServer(50, ip, port);
 
 
         try {

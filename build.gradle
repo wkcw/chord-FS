@@ -47,7 +47,9 @@ buildscript {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
     }
 }
-
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0' // version required
+}
 sourceSets {
     main {
         java {

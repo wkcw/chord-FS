@@ -1,6 +1,7 @@
 package client;
 
 import common.Hasher;
+import common.IdentifierWithHop;
 import common.JsonUtil;
 import net.grpc.chord.Identifier;
 import node.ChordNodeClient;
@@ -46,6 +47,22 @@ public class Client {
             }
         }
         return successor;
+    }
+
+    private IdentifierWithHop findSuccessorWithHop(String key) {
+        int keyID = hasher.hash(key);
+        IdentifierWithHop successorWithHop;
+        while(true){
+            ChordNodeClient knownClient = newClientToRandomAddress();
+            successorWithHop = knownClient.findSuccessorWithHop(keyID, 0);
+            if(successorWithHop.identifier.getID() != -1){
+                knownClient.close();
+                break;
+            }else{
+                knownClient.close();
+            }
+        }
+        return successorWithHop;
     }
 
 

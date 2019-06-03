@@ -18,7 +18,7 @@ public class Hasher {
     }
 
     public int hash(String key){
-        return sha1Digest(key).hashCode() % total;
+        return Math.abs(sha1Digest(key).hashCode()) % total;
     }
 
     private String sha1Digest(String key){

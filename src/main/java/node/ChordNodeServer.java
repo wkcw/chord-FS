@@ -10,7 +10,6 @@ import net.grpc.chord.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ChordNodeServer {
@@ -21,7 +20,7 @@ public class ChordNodeServer {
     private ChordNodeService chordNodeService;
     private int port;
 
-    private ChordNodeServer(int selfID, String selfIP, int selfPort) {
+    public ChordNodeServer(int selfID, String selfIP, int selfPort) {
         this.port = selfPort;
 
         chordNodeService = new ChordNodeService(selfID, selfIP, selfPort);
@@ -29,7 +28,7 @@ public class ChordNodeServer {
                 .build();
     }
 
-    private void start(int knownID, String knownIP, int knownPort) throws IOException {
+    public void start(int knownID, String knownIP, int knownPort) throws IOException {
         server.start();
         chordNodeService.start(knownID, knownIP, knownPort);
         logger.info("Server started, listening on " + port);
@@ -42,7 +41,7 @@ public class ChordNodeServer {
         private Map<String, String> hashMap;
         private Map<Integer, Map<String, String>> replica;
         private int selfID;
-        private static int ringSizeExp = 5;
+        private static int ringSizeExp = 10;
         private static int sucListSize = 3;
         private String selfIP;
         private int selfPort;
@@ -124,7 +123,7 @@ public class ChordNodeServer {
                 distance = Integer.MAX_VALUE;
             }else if(searchingID == selfID){
                 distance = 1;
-            }else if(inRange(searchingID, predecessor.getID(), selfID)) {
+            }else if(predecessor != null && inRange(searchingID, predecessor.getID(), selfID)) {
                 distance = 0;
             }else if(predecessor != null){
                 logger.info(String.format("In RPC measureDistance -> Creating client for measureDistance, to IP:%s Port:%d", predecessor.getIP(), predecessor.getPort()));
@@ -146,7 +145,6 @@ public class ChordNodeServer {
             predecessor = null;
             this.fingerTable[0] = Identifier.newBuilder().setID(selfID).setIP(selfIP).setPort(selfPort).build();
 
-            maintainFirstReplica(this.successorsList[0], this.fingerTable[0]);
             this.successorsList[0] = this.fingerTable[0];
 
             for (int i = 1;i < ringSizeExp;i++) this.fingerTable[i] = Identifier.newBuilder().setID(-1).build();
@@ -489,6 +487,7 @@ public class ChordNodeServer {
         }
 
         private void printFingerTable() {
+            logger.info("Current Node ID:" + selfID);
             logger.info("||index || value");
 
             StringBuilder sb = new StringBuilder();
@@ -570,10 +569,6 @@ public class ChordNodeServer {
             ChordNodeClient selfClient = new ChordNodeClient(selfIP, selfPort);
             Identifier searchedIdentifier = selfClient.findSuccessor((selfID + (1 << this.next)) % (1 << ringSizeExp));
 
-            if (searchedIdentifier == null) {
-                searchedIdentifier = Identifier.newBuilder().setID(-1).build();
-            }
-
             selfClient.close();
 
             this.fingerTable[this.next] = searchedIdentifier;
@@ -618,7 +613,7 @@ public class ChordNodeServer {
 
         private void maintainFirstReplica(Identifier oldSuccessor, Identifier newSuccessor) {
 //            if old and new are actually the same, do nothing
-            if(oldSuccessor != null && newSuccessor != null && oldSuccessor.getID() == newSuccessor.getID())return;
+            if(oldSuccessor != null && newSuccessor != null && oldSuccessor.getID() == newSuccessor.getID()) return;
 
             if (newSuccessor != null && newSuccessor.getID() != -1 && newSuccessor.getID() != selfID) {
                 ChordNodeClient newSuccessorClient = new ChordNodeClient(newSuccessor.getIP(), newSuccessor.getPort());
@@ -784,33 +779,33 @@ public class ChordNodeServer {
             return identifier != null && identifier.getID() != -1;
         }
     }
-
-    public static void main(String[] args) {
-        int id = Integer.valueOf(args[0]);
-        String ip = args[1];
-        int port = Integer.valueOf(args[2]);
-        int knownID = Integer.valueOf(args[3]);
-        String knownIP = null;
-        int knownPort = -1;
-        if(knownID != -1){
-            knownIP = args[4];
-            knownPort = Integer.valueOf(args[5]);
-        }
-
-        ChordNodeServer chordNodeServer = new ChordNodeServer(id, ip, port);
-
-        try {
-            if(knownID == -1) {
-                chordNodeServer.start(-1, null, -1);
-
-            } else{
-                chordNodeServer.start(knownID, knownIP, knownPort);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.log(Level.WARNING, "start server failed");
-        }
-    }
+//
+//    public static void main(String[] args) {
+//        int id = Integer.valueOf(args[0]);
+//        String ip = args[1];
+//        int port = Integer.valueOf(args[2]);
+//        int knownID = Integer.valueOf(args[3]);
+//        String knownIP = null;
+//        int knownPort = -1;
+//        if(knownID != -1){
+//            knownIP = args[4];
+//            knownPort = Integer.valueOf(args[5]);
+//        }
+//
+//        ChordNodeServer chordNodeServer = new ChordNodeServer(id, ip, port);
+//
+//        try {
+//            if(knownID == -1) {
+//                chordNodeServer.start(-1, null, -1);
+//
+//            } else{
+//                chordNodeServer.start(knownID, knownIP, knownPort);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            logger.log(Level.WARNING, "start server failed");
+//        }
+//    }
 
 
 

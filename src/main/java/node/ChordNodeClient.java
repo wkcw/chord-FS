@@ -36,7 +36,7 @@ public class ChordNodeClient {
             findSuccessorResponse = blockingStub.findSuccessor(request);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-            return null;
+            return Identifier.newBuilder().setID(-1).build();
         }
         return findSuccessorResponse.getIdentifier();
     }

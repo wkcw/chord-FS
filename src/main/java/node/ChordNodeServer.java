@@ -1,6 +1,7 @@
 package node;
 
 import common.Hasher;
+import common.IdentifierWithHop;
 import common.JsonUtil;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -91,24 +92,25 @@ public class ChordNodeServer {
         @Override
         public void findSuccessor(FindSuccessorRequest request, StreamObserver<FindSuccessorResponse> responseObserver) {
             Identifier successor = this.getAliveSuccessor();
+            int newHop = request.getHop() + 1;
 
             if (predecessor != null && this.inRange(request.getID(), predecessor.getID(), selfID)) {
-                FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(generateSelfIdentifier()).build();
+                FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(generateSelfIdentifier()).setHop(newHop).build();
                 responseObserver.onNext(response);
             }
             else if (successor != null && (this.inRange(request.getID(), selfID, successor.getID())))
             {
-                FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(successor).build();
+                FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(successor).setHop(newHop).build();
                 responseObserver.onNext(response);
             } else{
                 int searchedID = request.getID();
                 Identifier nextIdentifier = closestPrecedingFinger(searchedID);
 
                 ChordNodeClient client = new ChordNodeClient(nextIdentifier.getIP(), nextIdentifier.getPort());
-                Identifier searchedIdentifier = client.findSuccessor(searchedID);
+                IdentifierWithHop searchedIdentifierWithHop = client.findSuccessorWithHop(searchedID, newHop);
                 client.close();
 
-                FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(searchedIdentifier).build();
+                FindSuccessorResponse response = FindSuccessorResponse.newBuilder().setIdentifier(searchedIdentifierWithHop.identifier).setHop(searchedIdentifierWithHop.hop).build();
                 responseObserver.onNext(response);
             }
             responseObserver.onCompleted();

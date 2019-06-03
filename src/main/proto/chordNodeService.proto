@@ -80,10 +80,12 @@ message NotifyResponse {
 
 message FindSuccessorRequest {
     int32 ID = 1;
+    int32 hop = 2;
 }
 
 message FindSuccessorResponse {
     Identifier identifier = 1;
+    int32 hop = 2;
 }
 
 message InquirePredecessorRequest {

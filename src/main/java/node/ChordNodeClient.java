@@ -1,5 +1,6 @@
 package node;
 
+import common.IdentifierWithHop;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -39,6 +40,19 @@ public class ChordNodeClient {
             return Identifier.newBuilder().setID(-1).build();
         }
         return findSuccessorResponse.getIdentifier();
+    }
+
+    public IdentifierWithHop findSuccessorWithHop(int id, int hop){
+        FindSuccessorRequest request = FindSuccessorRequest.newBuilder().setID(id).setHop(hop).build();
+        FindSuccessorResponse findSuccessorResponse;
+        try {
+            findSuccessorResponse = blockingStub.findSuccessor(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            Identifier identifier = Identifier.newBuilder().setID(-1).build();
+            return new IdentifierWithHop(identifier, -1);
+        }
+        return new IdentifierWithHop(findSuccessorResponse.getIdentifier(), findSuccessorResponse.getHop());
     }
 
     public boolean ping(){

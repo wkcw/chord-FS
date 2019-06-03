@@ -16,28 +16,28 @@ public class FingerTest extends TestCase {
 
 
         // read config
-        Properties prop = new Properties();
-        InputStream input = null;
-
-        try {
-
-            input = new FileInputStream("config.properties");
-            prop.load(input);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        Properties prop = new Properties();
+//        InputStream input = null;
+//
+//        try {
+//
+//            input = new FileInputStream("config.properties");
+//            prop.load(input);
+//
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } finally {
+//            if (input != null) {
+//                try {
+//                    input.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
         // create client
-        nodeClient = new ChordNodeClient(prop.getProperty("testIP"), Integer.valueOf(prop.getProperty("testPort")));
+        nodeClient = new ChordNodeClient("localhost", 9700);
 
 
     }

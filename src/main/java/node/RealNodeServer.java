@@ -40,8 +40,10 @@ public class RealNodeServer {
                 } else {
                     virtualNodeServer[i].start(virtualIDs[0], ip, virtualNodePorts[0]);
                 }
+            } else {
+                virtualNodeServer[i].start(knownID, knownIP, knownPort);
             }
-            logger.info("Server started, listening on " + virtualNodePorts[i]);
+            logger.info("dabaole Server started, listening on " + virtualNodePorts[i]);
         }
     }
 

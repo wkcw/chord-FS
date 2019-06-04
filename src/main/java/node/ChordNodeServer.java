@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class ChordNodeServer {
 
@@ -799,7 +800,16 @@ public class ChordNodeServer {
         }
 
 
-
+        @Override
+        public void tellmeFingerTable(TellmeFingerTableRequest request, StreamObserver<TellmeFingerTableResponse> responseObserver) {
+            StringBuilder sb = new StringBuilder();
+            for (Identifier node : this.fingerTable) {
+                sb.append(node.getID() + " ");
+            }
+            TellmeFingerTableResponse tellmeFingerTableResponse = TellmeFingerTableResponse.newBuilder().setFingerTable(sb.toString()).build();
+            responseObserver.onNext(tellmeFingerTableResponse);
+            responseObserver.onCompleted();
+        }
 
     }
 //

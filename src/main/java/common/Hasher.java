@@ -1,6 +1,8 @@
 package common;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.IOException;
+
 public class Hasher {
 
     private int total;
@@ -25,4 +27,14 @@ public class Hasher {
         return DigestUtils.sha1Hex(key);
     }
 
+
+
+    public static void main (String[] args) {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec("ls");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

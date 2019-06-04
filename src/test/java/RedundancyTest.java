@@ -77,8 +77,13 @@ public class RedundancyTest extends TestCase {
             System.out.println("done " + index);
         }
 
-
-
+        String[] ipArray = new String[30];
+        int[] portArray = new int[30];
+        for(int i=0; i<30; i++){
+            ChordNodeClient nodeClient = new ChordNodeClient(ipArray[i], portArray[i]);
+            int replicaKeyNumber = nodeClient.tellmeReplicaKeyNumber();
+            int primaryKeyNumber = nodeClient.tellmeKey
+        }
 
         try {
             runtime.exec("java -jar ./classes/artifacts/chord_main_jar/chord_main.jar localhost 9700 0 localhost 9800 >> log31to50");

@@ -228,6 +228,18 @@ public class ChordNodeClient {
         return getResponse.getRet() == ReturnCode.SUCCESS ? getResponse.getValue() : null;
     }
 
+    public String tellMeFingerTable() {
+        TellmeFingerTableRequest tellmeFingerTableRequest = TellmeFingerTableRequest.newBuilder().build();
+        TellmeFingerTableResponse tellmeFingerTableResponse;
+        try {
+            tellmeFingerTableResponse = blockingStub.tellmeFingerTable(tellmeFingerTableRequest);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return "-1";
+        }
+        return tellmeFingerTableResponse.getFingerTable();
+    }
+
 
     public int tellmeKeyNumber() {
         TellmeKeyNumberRequest request = TellmeKeyNumberRequest.newBuilder().build();
@@ -264,8 +276,6 @@ public class ChordNodeClient {
         }
         return true;
     }
-
-
 
 
 

@@ -44,7 +44,7 @@ public class ChordNodeServer {
         private Map<String, String> hashMap;
         private Map<Integer, Map<String, String>> replica;
         private int selfID;
-        private int ringSizeExp = 10;
+        private int ringSizeExp;
         private static int sucListSize = 3;
         private String selfIP;
         private int selfPort;
@@ -53,7 +53,6 @@ public class ChordNodeServer {
         private Identifier predecessor;
         private int next;
         private Hasher hasher;
-
 
         public ChordNodeService(int selfID, String selfIP, int selfPort, int ringSizeExp){
             hashMap = new ConcurrentHashMap<>();

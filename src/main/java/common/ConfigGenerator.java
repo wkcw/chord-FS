@@ -1,44 +1,51 @@
 package common;
 
-import common.Hasher;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import net.grpc.chord.Identifier;
+import java.io.*;
+import java.util.*;
 
 public class ConfigGenerator {
+    public static List<Identifier> generateRingList() {
+        Properties prop = new Properties();
+        InputStream input = null;
+        List<Identifier> ret = new ArrayList<>();
 
-    public static void main(String[] args) {
-        Hasher hasher = new Hasher(1 << Integer.valueOf(args[0]));
-        List<Integer> list = new ArrayList<>();
+        try {
+            input = new FileInputStream("src/main/resources/Config.properties");
+            prop.load(input);
 
-        while(true){
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            int ringSize = Integer.valueOf(prop.get("ringSize").toString());
 
-            try {
-                String lineInput = br.readLine();
-                String[] ops = lineInput.split(" ");
+            Hasher hasher = new Hasher(1 << ringSize);
 
-                if (ops[0].equals("exit")) break;
+            for (int i = 0;i < 5;i++) {
+                String ip = prop.get("ip" + i).toString();
+                int port = Integer.valueOf(prop.get("port" + i).toString());
 
-                if (ops.length != 2) continue;
-
-                for (int i = 0; i < Integer.valueOf(args[0]); i++) {
-                    int id = hasher.hash(ops[0] + (Integer.valueOf(ops[1]) + i));
-
-                    list.add(id);
-                    System.out.println(args[0] + " " + (Integer.valueOf(ops[1]) + i) + " " + id);
+                for (int j = 0;j < 10;j++) {
+                    ret.add(Identifier.newBuilder().setID(hasher.hash(ip + (port + j))).setIP(ip).setPort(port + j).build());
                 }
+            }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        Collections.sort(list);
+        ret.sort(Comparator.comparing(Identifier::getID));
 
-        System.out.println(list);
+        return ret;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(ConfigGenerator.generateRingList());
     }
 }

@@ -58,6 +58,12 @@ public class ChordNodeServer {
         private int next;
         private Hasher hasher;
         private Server server;
+        private StabilizeTask stabilizeTask;
+        private CheckPredecessorTask checkPredecessorTask;
+        private FixFingersTask fixFingersTask;
+        private InspectRedundancyTask inspectRedundancyTask;
+        private PrintStatusTask printStatusTask;
+
 
         public ChordNodeService(int selfID, String selfIP, int selfPort, int ringSizeExp){
             hashMap = new ConcurrentHashMap<>();
@@ -483,20 +489,20 @@ public class ChordNodeServer {
             this.next = 0;
             Timer timer = new Timer();
 
-            StabilizeTask stabilizeTask = new StabilizeTask();
-            timer.schedule(stabilizeTask, 1000, 1000);
+            this.stabilizeTask = new StabilizeTask();
+            timer.schedule(stabilizeTask, 1000, 500);
 
-            CheckPredecessorTask checkPredecessorTask = new CheckPredecessorTask();
-            timer.schedule(checkPredecessorTask, 1000, 1000);
+            this.checkPredecessorTask = new CheckPredecessorTask();
+            timer.schedule(checkPredecessorTask, 1000, 500);
 
-            FixFingersTask fixFingersTask = new FixFingersTask();
-            timer.schedule(fixFingersTask, 1000, 500);
+            this.fixFingersTask = new FixFingersTask();
+            timer.schedule(fixFingersTask, 1000, 250);
 
-            InspectRedundancyTask inspectRedundancyTask = new InspectRedundancyTask();
-            timer.schedule(inspectRedundancyTask, 1000, 500);
+            this.inspectRedundancyTask = new InspectRedundancyTask();
+            timer.schedule(inspectRedundancyTask, 1000, 250);
 
-            PrintStatusTask printStatusTask = new PrintStatusTask();
-            timer.schedule(printStatusTask, 1000, 500);
+            this.printStatusTask = new PrintStatusTask();
+            timer.schedule(printStatusTask, 1000, 250);
         }
 
         private void printFingerTable() {
@@ -835,6 +841,12 @@ public class ChordNodeServer {
         @Override
         public void kill(KillRequest request, StreamObserver<KillResponse> responseObserver) {
             responseObserver.onCompleted();
+
+            this.checkPredecessorTask.cancel();
+            this.fixFingersTask.cancel();
+            this.inspectRedundancyTask.cancel();
+            this.printStatusTask.cancel();
+            this.stabilizeTask.cancel();
 
             this.server.shutdownNow();
 

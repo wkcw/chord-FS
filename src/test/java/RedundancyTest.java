@@ -4,6 +4,7 @@ import net.grpc.chord.Identifier;
 import node.ChordNodeClient;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,11 +57,16 @@ public class RedundancyTest extends TestCase {
 
         int index = 0;
 
-        long startTime = System.currentTimeMillis();
 
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec("java -jar ./classes/artifacts/chord_main_jar/chord_main.jar localhost 9700 -1 30 >> log30");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("1 to 30 start done");
 
-
-        while (index < 10 * Math.pow(2, ringSizeExp)) {
+        while (index < Math.pow(2, ringSizeExp)) {
             String value = String.valueOf(System.currentTimeMillis());
             String key = hasher.sha1Digest(value);
             int nodeID = hasher.hash(key);
@@ -73,12 +79,14 @@ public class RedundancyTest extends TestCase {
 
 
 
-        long endTime = System.currentTimeMillis();
 
-        long elapsed = endTime - startTime;
+        try {
+            runtime.exec("java -jar ./classes/artifacts/chord_main_jar/chord_main.jar localhost 9700 0 localhost 9800 >> log31to50");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("31 to 50 start done");
 
-
-        System.out.println("Time Elapsed: " + elapsed);
     }
 
 }

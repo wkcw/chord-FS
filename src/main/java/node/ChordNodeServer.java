@@ -814,6 +814,18 @@ public class ChordNodeServer {
         }
 
         @Override
+        public void tellmeReplicaKeyNumber(TellmeReplicaKeyNumberRequest request, StreamObserver<TellmeReplicaKeyNumberResponse> responseObserver) {
+            int replicaKeyNum = 0;
+            for(int tagID : replica.keySet()){
+                replicaKeyNum += replica.get(tagID).size();
+            }
+            TellmeReplicaKeyNumberResponse response = TellmeReplicaKeyNumberResponse.newBuilder().setNumber(replicaKeyNum).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+
+        }
+
+        @Override
         public void kill(KillRequest request, StreamObserver<KillResponse> responseObserver) {
             responseObserver.onCompleted();
             System.exit(0);

@@ -54,12 +54,16 @@ public class RealNodeServer {
         int knownID = Integer.valueOf(args[2]);
         String knownIP = null;
         int knownPort = -1;
+        int nodeNum;
         if(knownID != -1){
             knownIP = args[3];
             knownPort = Integer.valueOf(args[4]);
+            nodeNum = Integer.valueOf(args[5]);
+        }else{
+            nodeNum = Integer.valueOf(args[3]);
         }
 
-        RealNodeServer realNodeServer = new RealNodeServer(13, ip, port, 50);
+        RealNodeServer realNodeServer = new RealNodeServer(13, ip, port, nodeNum);
 
 
         try {

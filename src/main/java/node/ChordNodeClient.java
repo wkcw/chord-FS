@@ -228,6 +228,20 @@ public class ChordNodeClient {
         return getResponse.getRet() == ReturnCode.SUCCESS ? getResponse.getValue() : null;
     }
 
+
+    public int tellmeReplicaKeyNumber() {
+        TellmeReplicaKeyNumberRequest request = TellmeReplicaKeyNumberRequest.newBuilder().build();
+        TellmeReplicaKeyNumberResponse response;
+        try {
+            response = blockingStub.tellmeReplicaKeyNumber(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return -1;
+        }
+        return response.getNumber();
+
+    }
+
     public boolean kill(){
         KillRequest request = KillRequest.newBuilder().build();
         KillResponse response;

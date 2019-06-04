@@ -241,6 +241,33 @@ public class ChordNodeClient {
     }
 
 
+    public int tellmeReplicaKeyNumber() {
+        TellmeReplicaKeyNumberRequest request = TellmeReplicaKeyNumberRequest.newBuilder().build();
+        TellmeReplicaKeyNumberResponse response;
+        try {
+            response = blockingStub.tellmeReplicaKeyNumber(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return -1;
+        }
+        return response.getNumber();
+
+    }
+
+    public boolean kill(){
+        KillRequest request = KillRequest.newBuilder().build();
+        KillResponse response;
+        try {
+            response = blockingStub.kill(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
+
+
     public void close() {
         this.channel.shutdownNow();
     }

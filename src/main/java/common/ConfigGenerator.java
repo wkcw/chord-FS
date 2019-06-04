@@ -1,7 +1,6 @@
 package common;
 
 import net.grpc.chord.Identifier;
-
 import java.io.*;
 import java.util.*;
 
@@ -42,14 +41,11 @@ public class ConfigGenerator {
 
         ret.sort(Comparator.comparing(Identifier::getID));
 
-
         return ret;
     }
 
 
     public static void main(String[] args) {
-        ConfigGenerator generator = new ConfigGenerator();
-
-        System.out.println(generator.generateRingList());
+        System.out.println(ConfigGenerator.generateRingList());
     }
 }

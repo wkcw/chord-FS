@@ -41,7 +41,13 @@ public class FingerTest extends TestCase {
             fingerTableMap.put(nodeList.get(index), new ArrayList<>());
             // get all fingers for this node
             for (int i = 0; i < ringSizeExp; i++) {
-                fingerTableMap.get(nodeList.get(index)).add(nodeList.get((startPoint + i) % nodeList.size()));
+                int nextItem = (startPoint + (1 << i)) % (1 << ringSizeExp);
+
+                int nextPos = Collections.binarySearch(nodeList, Identifier.newBuilder().setID(nextItem).build(), Comparator.comparing(Identifier::getID));
+
+                if (nextPos < 0) nextPos = -(nextPos + 1);
+
+                fingerTableMap.get(nodeList.get(index)).add(nodeList.get(nextPos));
             }
             index++;
         }

@@ -21,10 +21,10 @@ public class ChordNodeServer {
     private ChordNodeService chordNodeService;
     private int port;
 
-    public ChordNodeServer(int selfID, String selfIP, int selfPort) {
+    public ChordNodeServer(int selfID, String selfIP, int selfPort, int ringSizeExp) {
         this.port = selfPort;
 
-        chordNodeService = new ChordNodeService(selfID, selfIP, selfPort);
+        chordNodeService = new ChordNodeService(selfID, selfIP, selfPort, ringSizeExp);
         server = ServerBuilder.forPort(selfPort).addService(chordNodeService)
                 .build();
     }
@@ -42,7 +42,7 @@ public class ChordNodeServer {
         private Map<String, String> hashMap;
         private Map<Integer, Map<String, String>> replica;
         private int selfID;
-        private static int ringSizeExp = 10;
+        private int ringSizeExp = 10;
         private static int sucListSize = 3;
         private String selfIP;
         private int selfPort;
@@ -53,7 +53,7 @@ public class ChordNodeServer {
         private Hasher hasher;
 
 
-        public ChordNodeService(int selfID, String selfIP, int selfPort){
+        public ChordNodeService(int selfID, String selfIP, int selfPort, int ringSizeExp){
             hashMap = new ConcurrentHashMap<>();
             replica = new ConcurrentHashMap<>();
             this.fingerTable = new Identifier[ringSizeExp];
@@ -62,6 +62,7 @@ public class ChordNodeServer {
             this.selfIP = selfIP;
             this.selfPort = selfPort;
             hasher = new Hasher(1 << ringSizeExp);
+            this.ringSizeExp = ringSizeExp;
         }
 
         @Override

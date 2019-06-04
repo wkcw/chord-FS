@@ -23,7 +23,7 @@ public class Hasher {
         return Math.abs(sha1Digest(key).hashCode()) % total;
     }
 
-    private String sha1Digest(String key){
+    public String sha1Digest(String key){
         return DigestUtils.sha1Hex(key);
     }
 

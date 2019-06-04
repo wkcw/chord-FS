@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+
 public class ChordNodeServer {
 
     private static final Logger logger = Logger.getLogger(ChordNodeServer.class.getName());
@@ -790,7 +791,7 @@ public class ChordNodeServer {
 
 
 
-
+//        for test
 
 
         @Override
@@ -810,6 +811,12 @@ public class ChordNodeServer {
             TellmeFingerTableResponse tellmeFingerTableResponse = TellmeFingerTableResponse.newBuilder().setFingerTable(sb.toString()).build();
             responseObserver.onNext(tellmeFingerTableResponse);
             responseObserver.onCompleted();
+        }
+
+        @Override
+        public void kill(KillRequest request, StreamObserver<KillResponse> responseObserver) {
+            responseObserver.onCompleted();
+            System.exit(0);
         }
 
     }

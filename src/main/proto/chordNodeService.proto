@@ -27,6 +27,7 @@ service ChordNodeService{
 //    for evalution
     rpc TellmeKeyNumber(TellmeKeyNumberRequest) returns (TellmeKeyNumberResponse) {}
     rpc TellmeFingerTable(TellmeFingerTableRequest) returns (TellmeFingerTableResponse) {}
+    rpc Kill(KillRequest) returns (KillResponse) {}
 }
 
 enum ReturnCode {
@@ -159,6 +160,8 @@ message MeasureDistanceResponse {
     int32 distance = 1;
 }
 
+
+
 message Identifier {
     string IP = 1;
     int32 port = 2;
@@ -180,6 +183,15 @@ message TellmeKeyNumberResponse {
 message TellmeFingerTableRequest {
 
 }
+
 message TellmeFingerTableResponse {
     string fingerTable = 1;
+}
+
+message KillRequest {
+
+}
+
+message KillResponse {
+
 }

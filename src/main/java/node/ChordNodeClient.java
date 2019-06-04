@@ -228,6 +228,22 @@ public class ChordNodeClient {
         return getResponse.getRet() == ReturnCode.SUCCESS ? getResponse.getValue() : null;
     }
 
+    public boolean kill(){
+        KillRequest request = KillRequest.newBuilder().build();
+        KillResponse response;
+        try {
+            response = blockingStub.kill(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+
     public void close() {
         this.channel.shutdownNow();
     }

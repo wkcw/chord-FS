@@ -11,6 +11,7 @@ import net.grpc.chord.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -27,8 +28,11 @@ public class ChordNodeServer {
         this.port = selfPort;
 
         chordNodeService = new ChordNodeService(selfID, selfIP, selfPort, ringSizeExp);
+
         server = ServerBuilder.forPort(selfPort).addService(chordNodeService)
                 .build();
+
+        chordNodeService.setServer(server);
     }
 
     public void start(int knownID, String knownIP, int knownPort) throws IOException {
@@ -53,6 +57,7 @@ public class ChordNodeServer {
         private Identifier predecessor;
         private int next;
         private Hasher hasher;
+        private Server server;
 
         public ChordNodeService(int selfID, String selfIP, int selfPort, int ringSizeExp){
             hashMap = new ConcurrentHashMap<>();
@@ -64,6 +69,10 @@ public class ChordNodeServer {
             this.selfPort = selfPort;
             hasher = new Hasher(1 << ringSizeExp);
             this.ringSizeExp = ringSizeExp;
+        }
+
+        public void setServer(Server server) {
+            this.server = server;
         }
 
         @Override
@@ -690,7 +699,6 @@ public class ChordNodeServer {
         }
 
 
-
         private void inheritPredecessorData(int failedPredecessorID){
             logger.info(String.format("Inheriting data from %d", failedPredecessorID));
             hashMap.putAll(replica.get(failedPredecessorID));
@@ -827,37 +835,39 @@ public class ChordNodeServer {
         @Override
         public void kill(KillRequest request, StreamObserver<KillResponse> responseObserver) {
             responseObserver.onCompleted();
-            System.exit(0);
+
+            this.server.shutdownNow();
+
         }
 
     }
-//
-//    public static void main(String[] args) {
-//        int id = Integer.valueOf(args[0]);
-//        String ip = args[1];
-//        int port = Integer.valueOf(args[2]);
-//        int knownID = Integer.valueOf(args[3]);
-//        String knownIP = null;
-//        int knownPort = -1;
-//        if(knownID != -1){
-//            knownIP = args[4];
-//            knownPort = Integer.valueOf(args[5]);
-//        }
-//
-//        ChordNodeServer chordNodeServer = new ChordNodeServer(id, ip, port);
-//
-//        try {
-//            if(knownID == -1) {
-//                chordNodeServer.start(-1, null, -1);
-//
-//            } else{
-//                chordNodeServer.start(knownID, knownIP, knownPort);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            logger.log(Level.WARNING, "start server failed");
-//        }
-//    }
+
+    public static void main(String[] args) {
+        int id = Integer.valueOf(args[0]);
+        String ip = args[1];
+        int port = Integer.valueOf(args[2]);
+        int knownID = Integer.valueOf(args[3]);
+        String knownIP = null;
+        int knownPort = -1;
+        if(knownID != -1){
+            knownIP = args[4];
+            knownPort = Integer.valueOf(args[5]);
+        }
+
+        ChordNodeServer chordNodeServer = new ChordNodeServer(id, ip, port, 13);
+
+        try {
+            if(knownID == -1) {
+                chordNodeServer.start(-1, null, -1);
+
+            } else{
+                chordNodeServer.start(knownID, knownIP, knownPort);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.log(Level.WARNING, "start server failed");
+        }
+    }
 
 
 

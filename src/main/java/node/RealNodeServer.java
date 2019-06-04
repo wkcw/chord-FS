@@ -16,6 +16,7 @@ public class RealNodeServer {
     public RealNodeServer(int ringSizeExp, String ip, int port, int nodeNum) {
         this.virtualIDs = new int[nodeNum];
         this.virtualNodePorts = new int[nodeNum];
+
         this.ip = ip;
         Hasher hasher = new Hasher(1 << ringSizeExp);
 
@@ -24,7 +25,7 @@ public class RealNodeServer {
             this.virtualNodePorts[i] = port + i;
         }
 
-        this.virtualNodeServer = new ChordNodeServer[ringSizeExp];
+        this.virtualNodeServer = new ChordNodeServer[nodeNum];
 
         for (int i = 0;i < nodeNum;i++) {
             this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], ringSizeExp);

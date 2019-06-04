@@ -24,7 +24,7 @@ public class RealNodeServer {
             this.virtualNodePorts[i] = port + i;
         }
 
-        this.virtualNodeServer = new ChordNodeServer[ringSizeExp];
+        this.virtualNodeServer = new ChordNodeServer[nodeNum];
 
         for (int i = 0;i < nodeNum;i++) {
             this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], ringSizeExp);

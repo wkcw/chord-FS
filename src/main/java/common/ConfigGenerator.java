@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.*;
 
 public class ConfigGenerator {
-    public List<Identifier> generateRingList() {
+    public static List<Identifier> generateRingList() {
         Properties prop = new Properties();
         InputStream input = null;
         List<Identifier> ret = new ArrayList<>();

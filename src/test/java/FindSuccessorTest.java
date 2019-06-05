@@ -1,37 +1,38 @@
 import common.ConfigGenerator;
 import junit.framework.TestCase;
 import net.grpc.chord.Identifier;
+import node.ChordManagerClient;
 import node.ChordNodeClient;
 import org.junit.Test;
 
 import java.util.*;
 
 public class FindSuccessorTest extends TestCase {
-    private ChordNodeClient nodeClient;
+    private ChordManagerClient managerClient;
     private int ringSizeExp = 13;
 
     public void setUp() {
         // create client
-        nodeClient = new ChordNodeClient("localhost", 9700);
+        managerClient = new ChordManagerClient("localhost", 9527);
     }
 
     public void tearDown() {
         // close client
-        nodeClient.close();
+        managerClient.close();
     }
 
     @Test
     public void testSuccessor() {
         Random random = new Random();
         List<Identifier> nodeList = ConfigGenerator.generateRingList();
-
+        long startTime = System.currentTimeMillis();
         for (int i = 0;i < 100;i++) {
 
             System.out.println("Iteration " + i);
 
             int id = random.nextInt(1 << this.ringSizeExp);
 
-            Identifier identifier = nodeClient.findSuccessor(id);
+            Identifier identifier = managerClient.findSuccessor(id);
 
             int index = Collections.binarySearch(nodeList,
                     Identifier.newBuilder().setID(id).build(), Comparator.comparing(Identifier::getID));
@@ -44,6 +45,8 @@ public class FindSuccessorTest extends TestCase {
 
             assert(destNode.getID() == identifier.getID());
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total Time: " + (endTime - startTime) / (1000.0) + "s");
     }
 
     @Test

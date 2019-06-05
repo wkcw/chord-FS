@@ -65,10 +65,10 @@ public class ChordManagerServer {
         private static int ringSizeExp = 13;
         private Hasher hasher = new Hasher(1 << ringSizeExp);
         public ChordManagerService() {
-            manager = new NodeStatus[(int) Math.pow(2, ringSizeExp)];
+            manager = new NodeStatus[1 << ringSizeExp];
 
             // Set all nodes to offline mode when initializing the manager
-            for (int i = 0; i < Math.pow(2, ringSizeExp); i++) {
+            for (int i = 0; i < 1 << ringSizeExp; i++) {
                 Identifier node = Identifier.newBuilder().setID(i).build();
                 manager[i] = new NodeStatus(node, false);
             }
@@ -175,6 +175,14 @@ public class ChordManagerServer {
             responseObserver.onCompleted();
         }
 
+        @Override
+        public void findSuccessor(FindRequest findRequest, StreamObserver<FindResponse> responseObserver) {
+            int id = findRequest.getID();
+            int nextNode = findNextAvailableNode(id, id + manager.length);
+            FindResponse findResponse = FindResponse.newBuilder().setID(nextNode).setAddress(manager[nextNode].getIP()).setPort(manager[nextNode].getPort()).build();
+            responseObserver.onNext(findResponse);
+            responseObserver.onCompleted();
+        }
         @Override
         public void getManager(GetRequest getRequest, StreamObserver<GetResponse> responseStreamObserver) {
             String key = getRequest.getKey();

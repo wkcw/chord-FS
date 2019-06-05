@@ -25,6 +25,23 @@ public class ChordManagerClient {
         asyncStub = ChordManagerServiceGrpc.newStub(channel);
     }
 
+    public Identifier findSuccessor(int id) {
+        FindRequest findRequest = FindRequest.newBuilder().setID(id).build();
+        FindResponse findResponse;
+        try {
+            findResponse = blockingStub.findSuccessor(findRequest);
+        } catch (StatusRuntimeException e){
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return null;
+        }
+        int successorID = findResponse.getID();
+        String successorIP = findResponse.getAddress();
+        int successorPort = findResponse.getPort();
+        Identifier successorIdentifier = Identifier.newBuilder()
+                .setID(successorID).setIP(successorIP).setPort(successorPort).build();
+
+        return successorIdentifier;
+    }
     public Identifier join(int ID, String IP, int port) {
         JoinRequest joinRequest = JoinRequest.newBuilder().setID(ID)
                 .setAddress(IP).setPort(port).build();

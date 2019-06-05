@@ -15,14 +15,19 @@ public class ConfigGenerator {
             prop.load(input);
 
             int ringSize = Integer.valueOf(prop.get("ringSize").toString());
+            int nodeNum = Integer.valueOf(prop.get("nodeNum").toString());
+            int virNodeNum = Integer.valueOf(prop.get("virNodeNum").toString());
+
 
             Hasher hasher = new Hasher(1 << ringSize);
 
-            for (int i = 0;i < 5;i++) {
+
+
+            for (int i = 0;i < nodeNum;i++) {
                 String ip = prop.get("ip" + i).toString();
                 int port = Integer.valueOf(prop.get("port" + i).toString());
 
-                for (int j = 0;j < 10;j++) {
+                for (int j = 0;j < virNodeNum;j++) {
                     ret.add(Identifier.newBuilder().setID(hasher.hash(ip + (port + j))).setIP(ip).setPort(port + j).build());
                 }
             }

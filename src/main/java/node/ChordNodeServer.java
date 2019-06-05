@@ -139,7 +139,7 @@ public class ChordNodeServer {
             int count = request.getCount();
             int distance;
             if(count > sucListSize){
-                distance = Integer.MAX_VALUE;
+                distance = -1;
             }else if(searchingID == selfID){
                 distance = 1;
             }else if(predecessor != null && inRange(searchingID, predecessor.getID(), selfID)) {
@@ -147,7 +147,7 @@ public class ChordNodeServer {
             }else if(predecessor != null){
                 logger.info(String.format("In RPC measureDistance -> Creating client for measureDistance, to IP:%s Port:%d", predecessor.getIP(), predecessor.getPort()));
                 ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
-                distance = predecessorClient.measureDistance(searchingID);
+                distance = predecessorClient.measureDistance(searchingID, count+1);
                 predecessorClient.close();
                 if(distance != Integer.MAX_VALUE){
                     distance++;
@@ -300,12 +300,9 @@ public class ChordNodeServer {
                 logger.info(String.format("Creating client for measureDistance, to IP:%s Port:%d", predecessor.getIP(), predecessor.getPort()));
                 ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
                 for(int ID : replica.keySet()){
-                    int distance = predecessorClient.measureDistance(ID);
+                    int distance = predecessorClient.measureDistance(ID, 0);
                     if(distance != Integer.MAX_VALUE){
-                        if(distance > sucListSize){
-                            if(ID==4){
-                                System.out.println("remove4");
-                            }
+                        if(distance == -1){
                             replica.remove(ID);
                         }
                     }
@@ -496,13 +493,13 @@ public class ChordNodeServer {
             timer.schedule(checkPredecessorTask, 1000, 500);
 
             this.fixFingersTask = new FixFingersTask();
-            timer.schedule(fixFingersTask, 1000, 250);
+            timer.schedule(fixFingersTask, 1000, 500);
 
             this.inspectRedundancyTask = new InspectRedundancyTask();
-            timer.schedule(inspectRedundancyTask, 1000, 250);
+            timer.schedule(inspectRedundancyTask, 1000, 500);
 
             this.printStatusTask = new PrintStatusTask();
-            timer.schedule(printStatusTask, 1000, 250);
+            timer.schedule(printStatusTask, 1000, 500);
         }
 
         private void printFingerTable() {

@@ -24,7 +24,12 @@ public class FindSuccessorTest extends TestCase {
     public void testSuccessor() {
         Random random = new Random();
         List<Identifier> nodeList = ConfigGenerator.generateRingList();
+        for(Identifier iden : nodeList){
+            System.out.println(iden.getID());
+        }
 
+
+        long startTime = System.currentTimeMillis();
         for (int i = 0;i < 100;i++) {
 
             System.out.println("Iteration " + i);
@@ -38,12 +43,14 @@ public class FindSuccessorTest extends TestCase {
 
             if (index < 0) index = -(index + 1);
 
-            if (index == 50) index = 0;
+            if (index == 5) index = 0;
 
             Identifier destNode = nodeList.get(index);
 
             assert(destNode.getID() == identifier.getID());
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total time: " + (endTime - startTime) / 1000.0 + "s");
     }
 
     @Test

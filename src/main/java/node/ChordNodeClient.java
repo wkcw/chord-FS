@@ -190,8 +190,8 @@ public class ChordNodeClient {
         return true;
     }
 
-    public int measureDistance(int ID){
-        MeasureDistanceRequest request = MeasureDistanceRequest.newBuilder().setID(ID).setCount(0).build();
+    public int measureDistance(int ID, int count){
+        MeasureDistanceRequest request = MeasureDistanceRequest.newBuilder().setID(ID).setCount(count).build();
         MeasureDistanceResponse response;
         try {
             response = blockingStub.measureDistance(request);

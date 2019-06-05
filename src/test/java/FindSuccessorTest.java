@@ -47,8 +47,45 @@ public class FindSuccessorTest extends TestCase {
     }
 
     @Test
-    public void testFingerTableContent() {
+    public void testSuccessorAfterKilling() {
+        Random random = new Random();
+        int index = 0;
 
+        List<Identifier> nodeList = ConfigGenerator.generateRingList();
+
+        while (index == 0) index = random.nextInt(nodeList.size());
+
+        ChordNodeClient client = new ChordNodeClient(nodeList.get(index).getIP(), nodeList.get(index).getPort());
+        client.kill();
+        client.close();
+
+        nodeList.remove(index);
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0;i < 100;i++) {
+
+            System.out.println("Iteration " + i);
+
+            int id = random.nextInt(1 << this.ringSizeExp);
+
+            Identifier identifier = nodeClient.findSuccessor(id);
+
+            index = Collections.binarySearch(nodeList,
+                    Identifier.newBuilder().setID(id).build(), Comparator.comparing(Identifier::getID));
+
+            if (index < 0) index = -(index + 1);
+
+            if (index == 49) index = 0;
+
+            Identifier destNode = nodeList.get(index);
+
+            assert(destNode.getID() == identifier.getID());
+        }
     }
 
 }

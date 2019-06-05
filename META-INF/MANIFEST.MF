@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Class-Path: grpc-protobuf-lite-1.20.0.jar opencensus-contrib-grpc-metr
+ ics-0.19.2.jar error_prone_annotations-2.3.2.jar opencensus-api-0.19.
+ 2.jar annotations-4.1.1.4.jar gson-2.7.jar grpc-stub-1.20.0.jar j2obj
+ c-annotations-1.1.jar guava-26.0-android.jar grpc-protobuf-1.20.0.jar
+  protobuf-java-util-3.7.1.jar grpc-core-1.20.0.jar animal-sniffer-ann
+ otations-1.17.jar grpc-netty-shaded-1.20.0.jar jsr305-3.0.2.jar check
+ er-compat-qual-2.5.2.jar proto-google-common-protos-1.12.0.jar protob
+ uf-java-3.7.1.jar grpc-context-1.20.0.jar commons-codec-1.12.jar
+Main-Class: node.RealNodeServer
+

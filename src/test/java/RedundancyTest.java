@@ -82,7 +82,7 @@ public class RedundancyTest extends TestCase {
         for(int i=0; i<30; i++){
             ChordNodeClient nodeClient = new ChordNodeClient(ipArray[i], portArray[i]);
             int replicaKeyNumber = nodeClient.tellmeReplicaKeyNumber();
-            int primaryKeyNumber = nodeClient.tellmeKey
+            int primaryKeyNumber = nodeClient.tellmeKeyNumber();
         }
 
         try {

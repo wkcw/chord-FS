@@ -28,7 +28,7 @@ public class RealNodeServer {
         this.virtualNodeServer = new ChordNodeServer[nodeNum];
 
         for (int i = 0;i < nodeNum;i++) {
-            this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], ringSizeExp);
+            this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], "localhost", 9527, ringSizeExp);
         }
 
     }

@@ -181,4 +181,98 @@ public class RedundancyTest extends TestCase {
 
     }
 
+    @Test
+    public void testRedundancyPhase2() {
+        Hasher hasher = new Hasher(1<<ringSizeExp);
+
+        System.out.println("0 to 29 start done");
+
+        // read config
+        Properties prop = new Properties();
+        InputStream input = null;
+
+        try {
+
+            input = new FileInputStream("./start9700-30.properties");
+            prop.load(input);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        String[] ipArray = new String[50];
+        int[] portArray = new int[50];
+        for(int i=0; i<30; i++){
+            ipArray[i] = prop.getProperty("ip"+i);
+            portArray[i] = Integer.valueOf(prop.getProperty("port"+i));
+        }
+
+        // read config
+        prop = new Properties();
+        input = null;
+
+        try {
+
+            input = new FileInputStream("./start9800-20.properties");
+            prop.load(input);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        for(int i=30; i<50; i++){
+            ipArray[i] = prop.getProperty("ip"+(i-30));
+            portArray[i] = Integer.valueOf(prop.getProperty("port"+(i-30)));
+        }
+//
+//
+        Set<String> dataSet = new HashSet<>();
+        double attemptNum = 1 << (ringSizeExp-3);
+        for(int index=0; index < attemptNum; index++) {
+            String value = String.valueOf(index);
+            String key = hasher.sha1Digest(value);
+            int nodeID = hasher.hash(key);
+            System.out.println("Key ID: "+nodeID);
+            if(dataSet.contains(key)){
+                continue;
+            }else{
+                dataSet.add(key);
+            }
+        }
+        int dataNum = dataSet.size();
+
+
+
+        int totalKeyNumOn50Nodes = 0;
+        for(int i=0; i<50; i++){
+            ChordNodeClient nodeClient = new ChordNodeClient(ipArray[i], portArray[i]);
+            int replicaKeyNumber = nodeClient.tellmeReplicaKeyNumber();
+            int primaryKeyNumber = nodeClient.tellmeKeyNumber();
+            System.out.println(portArray[i]+" has primary Key "+primaryKeyNumber+" and ReplicaKey "+replicaKeyNumber);
+            nodeClient.close();
+            totalKeyNumOn50Nodes += replicaKeyNumber;
+            totalKeyNumOn50Nodes += primaryKeyNumber;
+        }
+
+        System.out.println("Ratio on 50 nodes: " + totalKeyNumOn50Nodes / dataNum);
+
+
+        System.out.println("31 to 50 start done");
+
+    }
+
 }

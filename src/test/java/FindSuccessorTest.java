@@ -12,7 +12,7 @@ public class FindSuccessorTest extends TestCase {
 
     public void setUp() {
         // create client
-        nodeClient = new ChordNodeClient("localhost", 9700);
+        nodeClient = new ChordNodeClient("localhost", 10000);
     }
 
     public void tearDown() {
@@ -43,7 +43,7 @@ public class FindSuccessorTest extends TestCase {
 
             if (index < 0) index = -(index + 1);
 
-            if (index == 5) index = 0;
+            if (index == 50) index = 0;
 
             Identifier destNode = nodeList.get(index);
 

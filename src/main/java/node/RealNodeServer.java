@@ -13,7 +13,7 @@ public class RealNodeServer {
     ChordNodeServer[] virtualNodeServer;
     private static final Logger logger = Logger.getLogger(ChordNodeServer.class.getName());
 
-    public RealNodeServer(int ringSizeExp, String ip, int port, int nodeNum) {
+    public RealNodeServer(int ringSizeExp, String ip, int port, int nodeNum, String managerIP, int managerPort) {
         this.virtualIDs = new int[nodeNum];
         this.virtualNodePorts = new int[nodeNum];
 
@@ -28,7 +28,7 @@ public class RealNodeServer {
         this.virtualNodeServer = new ChordNodeServer[nodeNum];
 
         for (int i = 0;i < nodeNum;i++) {
-            this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], "localhost", 9527, ringSizeExp);
+            this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i],managerIP, managerPort, ringSizeExp);
         }
 
     }
@@ -64,7 +64,7 @@ public class RealNodeServer {
             nodeNum = Integer.valueOf(args[3]);
         }
 
-        RealNodeServer realNodeServer = new RealNodeServer(13, ip, port, nodeNum);
+        RealNodeServer realNodeServer = new RealNodeServer(13, ip, port, nodeNum, "localhost", 9527);
 
 
         try {

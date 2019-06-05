@@ -62,7 +62,7 @@ public class ChordManagerServer {
     private static class ChordManagerService extends ChordManagerServiceGrpc.ChordManagerServiceImplBase {
 
         NodeStatus[] manager;
-        private static int ringSizeExp = 5;
+        private static int ringSizeExp = 13;
         private Hasher hasher = new Hasher(1 << ringSizeExp);
         public ChordManagerService() {
             manager = new NodeStatus[(int) Math.pow(2, ringSizeExp)];

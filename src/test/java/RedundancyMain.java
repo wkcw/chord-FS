@@ -1,4 +1,3 @@
-import common.ConfigGenerator;
 import common.Hasher;
 import junit.framework.TestCase;
 import net.grpc.chord.Identifier;
@@ -8,9 +7,11 @@ import org.junit.Test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
-public class RedundancyTest extends TestCase {
+public class RedundancyMain extends TestCase {
     private ChordNodeClient nodeClient;
     private int ringSizeExp = 13;
 
@@ -18,7 +19,7 @@ public class RedundancyTest extends TestCase {
     public void setUp() {
 
         // create client
-        nodeClient = new ChordNodeClient("localhost", 9700);
+        nodeClient = new ChordNodeClient("34.209.184.136", 9700);
 
         System.out.println("Preperation done!");
 
@@ -190,7 +191,7 @@ public class RedundancyTest extends TestCase {
         }
 
         System.out.println("dataNum: "+dataNum + " " + "primaryKeyCnt: " + primaryKeyCnt);
-        System.out.println("Ratio on 50 nodes: " + totalKeyNumOn50Nodes * 1.0 / dataNum);
+        System.out.println("Ratio on 50 nodes: " + totalKeyNumOn50Nodes / dataNum);
 
 
     }

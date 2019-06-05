@@ -136,9 +136,9 @@ public class ChordNodeServer {
         @Override
         public void measureDistance(MeasureDistanceRequest request, StreamObserver<MeasureDistanceResponse> responseObserver) {
             int searchingID = request.getID();
-            int startPoint = request.getStartPoint();
+            int count = request.getCount();
             int distance;
-            if(startPoint == selfID){
+            if(count > sucListSize){
                 distance = Integer.MAX_VALUE;
             }else if(searchingID == selfID){
                 distance = 1;
@@ -666,7 +666,7 @@ public class ChordNodeServer {
                 if(identifier.getID() == -1 || identifier.getID() == selfID)continue;
                 ChordNodeClient oldSuccessorClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
                 if(oldSuccessorClient.ping()){
-                    oldSuccessorClient.removeReplica(generateSelfIdentifier());
+//                    oldSuccessorClient.removeReplica(generateSelfIdentifier());
                 }
                 oldSuccessorClient.close();
             }

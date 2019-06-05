@@ -191,7 +191,7 @@ public class ChordNodeClient {
     }
 
     public int measureDistance(int ID){
-        MeasureDistanceRequest request = MeasureDistanceRequest.newBuilder().setID(ID).build();
+        MeasureDistanceRequest request = MeasureDistanceRequest.newBuilder().setID(ID).setCount(0).build();
         MeasureDistanceResponse response;
         try {
             response = blockingStub.measureDistance(request);
@@ -248,7 +248,7 @@ public class ChordNodeClient {
             response = blockingStub.tellmeKeyNumber(request);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-            return -1;
+            return 0;
         }
         return response.getNumber();
     }
@@ -260,7 +260,7 @@ public class ChordNodeClient {
             response = blockingStub.tellmeReplicaKeyNumber(request);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-            return -1;
+            return 0;
         }
         return response.getNumber();
     }

@@ -36,7 +36,8 @@ public class ChordNodeClient {
         try {
             findSuccessorResponse = blockingStub.findSuccessor(request);
         } catch (StatusRuntimeException e) {
-            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            logger.log(Level.INFO, "RPC failed: {0}", e.getStatus());
+            System.out.println("Got here");
             return Identifier.newBuilder().setID(-1).build();
         }
         return findSuccessorResponse.getIdentifier();
@@ -190,8 +191,8 @@ public class ChordNodeClient {
         return true;
     }
 
-    public int measureDistance(int ID, int count){
-        MeasureDistanceRequest request = MeasureDistanceRequest.newBuilder().setID(ID).setCount(count).build();
+    public int measureDistance(int ID, int count, int startPoint){
+        MeasureDistanceRequest request = MeasureDistanceRequest.newBuilder().setID(ID).setCount(count).setStartPoint(startPoint).build();
         MeasureDistanceResponse response;
         try {
             response = blockingStub.measureDistance(request);

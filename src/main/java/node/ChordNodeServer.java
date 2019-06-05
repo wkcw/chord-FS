@@ -136,22 +136,22 @@ public class ChordNodeServer {
         @Override
         public void measureDistance(MeasureDistanceRequest request, StreamObserver<MeasureDistanceResponse> responseObserver) {
             int searchingID = request.getID();
-            int count = request.getCount();
+            int count = request.getCount() + 1;
+            int startPoint = request.getStartPoint();
             int distance;
-            if(count > sucListSize){
+            if(startPoint == selfID){
+                distance = Integer.MAX_VALUE;
+            }else if(count > sucListSize){
                 distance = -1;
             }else if(searchingID == selfID){
-                distance = 1;
+                distance = count;
             }else if(predecessor != null && inRange(searchingID, predecessor.getID(), selfID)) {
-                distance = 0;
+                distance = count;
             }else if(predecessor != null){
                 logger.info(String.format("In RPC measureDistance -> Creating client for measureDistance, to IP:%s Port:%d", predecessor.getIP(), predecessor.getPort()));
                 ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
-                distance = predecessorClient.measureDistance(searchingID, count+1);
+                distance = predecessorClient.measureDistance(searchingID, count, startPoint);
                 predecessorClient.close();
-                if(distance != Integer.MAX_VALUE){
-                    distance++;
-                }
             }else{
                 distance = Integer.MAX_VALUE;
             }
@@ -297,19 +297,22 @@ public class ChordNodeServer {
         }
 
         private void inspectRedundancy() {
-//            if(predecessor != null){
-//                logger.info(String.format("Creating client for measureDistance, to IP:%s Port:%d", predecessor.getIP(), predecessor.getPort()));
-//                ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
-//                for(int ID : replica.keySet()){
-//                    int distance = predecessorClient.measureDistance(ID, 0);
-//                    if(distance != Integer.MAX_VALUE){
-//                        if(distance == -1){
-//                            replica.remove(ID);
-//                        }
-//                    }
-//                }
-//                predecessorClient.close();
-//            }
+            if(predecessor != null){
+                logger.info(String.format("Creating client for measureDistance, to IP:%s Port:%d", predecessor.getIP(), predecessor.getPort()));
+                ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
+                for(int ID : replica.keySet()){
+                    int distance = predecessorClient.measureDistance(ID, 0, selfID);
+                    if(ID == 854 && selfID == 4757){
+                        System.out.println(ID + " : " + distance);
+                    }
+                    if(distance != Integer.MAX_VALUE){
+                        if(distance == -1){
+                            replica.remove(ID);
+                        }
+                    }
+                }
+                predecessorClient.close();
+            }
         }
 
         @Override
@@ -497,7 +500,7 @@ public class ChordNodeServer {
             timer.schedule(fixFingersTask, 1000, 500);
 
             this.inspectRedundancyTask = new InspectRedundancyTask();
-            timer.schedule(inspectRedundancyTask, 1000, 500);
+            timer.schedule(inspectRedundancyTask, 1000, 2000);
 
             this.printStatusTask = new PrintStatusTask();
             timer.schedule(printStatusTask, 1000, 500);
@@ -660,14 +663,14 @@ public class ChordNodeServer {
             System.out.println(newSet);
 
 
-            for(Identifier identifier : oldSet){
-                if(identifier.getID() == -1 || identifier.getID() == selfID)continue;
-                ChordNodeClient oldSuccessorClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
-                if(oldSuccessorClient.ping()){
-                    oldSuccessorClient.removeReplica(generateSelfIdentifier());
-                }
-                oldSuccessorClient.close();
-            }
+//            for(Identifier identifier : oldSet){
+//                if(identifier.getID() == -1 || identifier.getID() == selfID)continue;
+//                ChordNodeClient oldSuccessorClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
+//                if(oldSuccessorClient.ping()){
+//                    oldSuccessorClient.removeReplica(generateSelfIdentifier());
+//                }
+//                oldSuccessorClient.close();
+//            }
 
             for (Identifier identifier : newSet) {
                 if(identifier.getID() == -1 || identifier.getID() == selfID)continue;

@@ -32,6 +32,7 @@ public class RealNodeServer {
             sb.append("ip"+i+"="+"localhost\n");
             this.virtualNodePorts[i] = port + i;
             sb.append("port"+i+"="+this.virtualNodePorts[i]+"\n");
+            sb.append("ID"+i+"="+this.virtualIDs[i]+"\n");
         }
         ConfigGenerator.generateProperties("start"+port+"-"+nodeNum, sb.toString());
 

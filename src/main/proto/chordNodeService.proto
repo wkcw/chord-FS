@@ -155,6 +155,7 @@ message RemoveMultipleScatteredReplicaResponse {
 message MeasureDistanceRequest {
     int32 ID = 1;
     int32 count = 2;
+    int32 startPoint = 3;
 }
 
 message MeasureDistanceResponse {

@@ -1,5 +1,6 @@
 package node;
 
+import common.ConfigGenerator;
 import common.Hasher;
 
 import java.io.IOException;
@@ -25,7 +26,18 @@ public class RealNodeServer {
             this.virtualNodePorts[i] = port + i;
         }
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("nodeNum="+nodeNum+"\n\n");
+        for (int i = 0;i < nodeNum;i++) {
+            sb.append("ip"+i+"="+"localhost\n");
+            this.virtualNodePorts[i] = port + i;
+            sb.append("port"+i+"="+this.virtualNodePorts[i]+"\n");
+        }
+        ConfigGenerator.generateProperties("start"+port+"-"+nodeNum, sb.toString());
+
         this.virtualNodeServer = new ChordNodeServer[nodeNum];
+
+
 
         for (int i = 0;i < nodeNum;i++) {
             this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], ringSizeExp);

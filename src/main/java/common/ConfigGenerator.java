@@ -44,6 +44,22 @@ public class ConfigGenerator {
         return ret;
     }
 
+    public static void generateProperties(String fileName, String content){
+        try {
+            System.out.println("generating file");
+            File writeName = new File("./"+fileName+".properties");
+            writeName.createNewFile();
+            try (FileWriter writer = new FileWriter(writeName);
+                 BufferedWriter out = new BufferedWriter(writer)
+            ) {
+                out.write(content);
+                out.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void main(String[] args) {
         System.out.println(ConfigGenerator.generateRingList());

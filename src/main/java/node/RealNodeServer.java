@@ -12,9 +12,15 @@ public class RealNodeServer {
     String ip;
     int[] virtualNodePorts;
     ChordNodeServer[] virtualNodeServer;
+    private String managerIP;
     private static final Logger logger = Logger.getLogger(ChordNodeServer.class.getName());
 
-    public RealNodeServer(int ringSizeExp, String ip, int port, int nodeNum) {
+    public RealNodeServer(int ringSizeExp, String ip, int port, int nodeNum){
+        this(ringSizeExp, ip, port, nodeNum, "", 0);
+    }
+
+    public RealNodeServer(int ringSizeExp, String ip, int port, int nodeNum, String managerIP, int managerPort) {
+        this.managerIP = managerIP;
         this.virtualIDs = new int[nodeNum];
         this.virtualNodePorts = new int[nodeNum];
 
@@ -41,7 +47,7 @@ public class RealNodeServer {
 
 
         for (int i = 0;i < nodeNum;i++) {
-            this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], ringSizeExp);
+            this.virtualNodeServer[i] = new ChordNodeServer(virtualIDs[i], ip, virtualNodePorts[i], ringSizeExp, managerIP, managerPort);
         }
 
     }
@@ -50,12 +56,24 @@ public class RealNodeServer {
         for (int i = 0;i < virtualNodeServer.length;i++) {
             if (knownID == -1) {
                 if (i == 0) {
-                    virtualNodeServer[i].start(knownID, knownIP, knownPort);
+                    if(managerIP.equals("")){
+                        virtualNodeServer[i].start(knownID, knownIP, knownPort);
+                    }else{
+                        virtualNodeServer[i].start(knownID, knownIP, knownPort, "manager");
+                    }
                 } else {
-                    virtualNodeServer[i].start(virtualIDs[0], ip, virtualNodePorts[0]);
+                    if(managerIP.equals("")){
+                        virtualNodeServer[i].start(virtualIDs[0], ip, virtualNodePorts[0]);
+                    }else{
+                        virtualNodeServer[i].start(virtualIDs[0], ip, virtualNodePorts[0], "manager");
+                    }
                 }
             } else {
-                virtualNodeServer[i].start(knownID, knownIP, knownPort);
+                if(managerIP.equals("")){
+                    virtualNodeServer[i].start(knownID, knownIP, knownPort);
+                }else{
+                    virtualNodeServer[i].start(knownID, knownIP, knownPort, "manager");
+                }
             }
             logger.info("dabaole Server started, listening on " + virtualNodePorts[i]);
         }
@@ -69,15 +87,29 @@ public class RealNodeServer {
         String knownIP = null;
         int knownPort = -1;
         int nodeNum;
+        String managerIP = "";
+        int managerPort = 0;
         if(knownID != -1){
             knownIP = args[3];
             knownPort = Integer.valueOf(args[4]);
             nodeNum = Integer.valueOf(args[5]);
+            if(args.length > 6){
+                managerIP = args[6];
+                managerPort = Integer.valueOf(args[7]);
+            }
         }else{
             nodeNum = Integer.valueOf(args[3]);
+            if(args.length > 4){
+                managerIP = args[4];
+                managerPort = Integer.valueOf(args[5]);
+            }
         }
-
-        RealNodeServer realNodeServer = new RealNodeServer(13, ip, port, nodeNum);
+        RealNodeServer realNodeServer;
+        if(managerPort == 0 && !managerIP.equals("")){
+            realNodeServer = new RealNodeServer(13, ip, port, nodeNum);
+        }else{
+            realNodeServer = new RealNodeServer(13, ip, port, nodeNum, managerIP, managerPort);
+        }
 
 
         try {

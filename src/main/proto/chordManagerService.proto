@@ -1,0 +1,36 @@
+syntax = "proto3";
+import "chordNodeService.proto";
+package chord;
+
+option java_multiple_files = true;
+option java_outer_classname = "ChordManagerProto";
+option objc_class_prefix = "CM";
+option java_package = "net.grpc.chord";
+
+service ChordManagerService{
+    rpc Join(JoinRequest) returns (JoinResponse){}
+    rpc PutManager(PutRequest) returns (PutResponse){}
+    rpc GetManager(GetRequest) returns (GetResponse){}
+    rpc FindSuccessor(FindRequest) returns (FindResponse) {}
+}
+message FindRequest {
+    int32 ID = 1;
+}
+
+message FindResponse {
+    int32 ID = 1;
+    string address = 2;
+    int32 port = 3;
+}
+
+message JoinRequest {
+    int32 ID = 1;
+    string address = 2;
+    int32 port = 3;
+}
+
+message JoinResponse {
+    int32 ID = 1;
+    string address = 2;
+    int32 port = 3;
+}

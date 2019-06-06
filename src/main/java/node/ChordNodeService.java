@@ -376,6 +376,13 @@ public class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplB
         for (Map.Entry<String, String> entry : gotHashMap.entrySet()) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
+        for (Identifier successor : this.successorsList) {
+            if (successor != null && successor.getID() != -1) {
+                ChordNodeClient client = new ChordNodeClient(successor.getIP(), successor.getPort());
+                client.addMultipleScatteredReplica(generateSelfIdentifier(), dataJson);
+                client.close();
+            }
+        }
         AcceptMyDataResponse response = AcceptMyDataResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -545,7 +552,14 @@ public class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplB
             }
 
             if (inRange(fingerTable[i].getID(), selfID, id)) {
-                return fingerTable[i];
+                ChordNodeClient client = new ChordNodeClient(fingerTable[i].getIP(), fingerTable[i].getPort());
+
+                if (client.ping()) {
+                    client.close();
+                    return fingerTable[i];
+                }
+
+                client.close();
             }
         }
 

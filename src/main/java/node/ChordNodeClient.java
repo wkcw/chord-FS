@@ -6,6 +6,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import net.grpc.chord.*;
 
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -53,6 +54,7 @@ public class ChordNodeClient {
             Identifier identifier = Identifier.newBuilder().setID(-1).build();
             return new IdentifierWithHop(identifier, -1);
         }
+
         return new IdentifierWithHop(findSuccessorResponse.getIdentifier(), findSuccessorResponse.getHop());
     }
 

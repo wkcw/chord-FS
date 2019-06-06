@@ -139,6 +139,7 @@ public class ChordNodeServer {
             int count = request.getCount() + 1;
             int startPoint = request.getStartPoint();
             int distance;
+
             if(startPoint == selfID){
                 distance = Integer.MAX_VALUE;
             }else if(count > sucListSize){
@@ -302,9 +303,7 @@ public class ChordNodeServer {
                 ChordNodeClient predecessorClient = new ChordNodeClient(predecessor.getIP(), predecessor.getPort());
                 for(int ID : replica.keySet()){
                     int distance = predecessorClient.measureDistance(ID, 0, selfID);
-                    if(ID == 854 && selfID == 4757){
-                        System.out.println(ID + " : " + distance);
-                    }
+
                     if(distance != Integer.MAX_VALUE){
                         if(distance == -1){
                             replica.remove(ID);
@@ -407,6 +406,15 @@ public class ChordNodeServer {
             for (Map.Entry<String, String> entry : gotHashMap.entrySet()) {
                 hashMap.put(entry.getKey(), entry.getValue());
             }
+
+            for (Identifier successor : this.successorsList) {
+                if (successor != null && successor.getID() != -1) {
+                    ChordNodeClient client = new ChordNodeClient(successor.getIP(), successor.getPort());
+                    client.addMultipleScatteredReplica(generateSelfIdentifier(), dataJson);
+                    client.close();
+                }
+            }
+
             AcceptMyDataResponse response = AcceptMyDataResponse.newBuilder().build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -414,12 +422,12 @@ public class ChordNodeServer {
 
         @Override
         public void removeReplica(RemoveReplicaRequest request, StreamObserver<RemoveReplicaResponse> responseObserver) {
-            int replicaTagID = request.getIdentifier().getID();
-
-            this.replica.remove(replicaTagID);
-            RemoveReplicaResponse response = RemoveReplicaResponse.newBuilder().build();
-
-            responseObserver.onNext(response);
+//            int replicaTagID = request.getIdentifier().getID();
+//
+//            this.replica.remove(replicaTagID);
+//            RemoveReplicaResponse response = RemoveReplicaResponse.newBuilder().build();
+//
+//            responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
 
@@ -576,7 +584,14 @@ public class ChordNodeServer {
                 }
 
                 if (inRange(fingerTable[i].getID(), selfID, id)) {
-                    return fingerTable[i];
+                    ChordNodeClient client = new ChordNodeClient(fingerTable[i].getIP(), fingerTable[i].getPort());
+
+                    if (client.ping()) {
+                        client.close();
+                        return fingerTable[i];
+                    }
+
+                    client.close();
                 }
             }
 

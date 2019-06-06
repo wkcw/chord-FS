@@ -28,7 +28,6 @@ public class FindSuccessorTest extends TestCase {
             System.out.println(iden.getID());
         }
 
-
         long startTime = System.currentTimeMillis();
         for (int i = 0;i < 100;i++) {
 
@@ -50,6 +49,7 @@ public class FindSuccessorTest extends TestCase {
             assert(destNode.getID() == identifier.getID());
         }
         long endTime = System.currentTimeMillis();
+
         System.out.println("Total time: " + (endTime - startTime) / 1000.0 + "s");
     }
 

@@ -65,6 +65,7 @@ public class RedundancyTest extends TestCase {
 
         double attemptNum = 1 << (ringSizeExp-3);
         int dataNum = 0;
+
         for(int index=0; index < attemptNum; index++) {
             String value = String.valueOf(index);
             String key = hasher.sha1Digest(value);
@@ -74,7 +75,7 @@ public class RedundancyTest extends TestCase {
             ChordNodeClient putClient = new ChordNodeClient(identifier.getIP(), identifier.getPort());
             putClient.put(key, value);
             putClient.close();
-            dataNum ++;
+            dataNum++;
             System.out.println("done " + index);
 //            try {
 //                Thread.sleep(100);
@@ -99,7 +100,7 @@ public class RedundancyTest extends TestCase {
             primaryKeyCnt += primaryKeyNumber;
         }
         System.out.println("dataNum: "+dataNum + " " + "primaryKeyCnt: " + primaryKeyCnt);
-        System.out.println("Ratio on 30 nodes: " + totalKeyNumOn30Nodes / dataNum);
+        System.out.println("Ratio on 30 nodes: " + totalKeyNumOn30Nodes * 1.0 / dataNum);
 
 
 

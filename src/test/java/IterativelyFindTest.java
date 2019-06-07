@@ -27,9 +27,9 @@ public class IterativelyFindTest extends TestCase {
     @Test
     public void testSuccessorIteratively() {
         Random random = new Random(System.nanoTime());
-
         long startTime = System.currentTimeMillis();
-        for (int i = 0;i < 100;i++) {
+
+        for (int i = 0;i < 1000;i++) {
 
             System.out.println("Iteration " + i);
 
@@ -37,21 +37,25 @@ public class IterativelyFindTest extends TestCase {
 
             FindSuccessorIterativelyResponse response = nodeClient.findSuccessorIteratively(id);
 
-            while (response.getIsCompleted()) {
+            while (!response.getIsCompleted()) {
                 assertTrue(response.getIdentifier().getID() != -1);
-
+                nodeClient.close();
                 nodeClient = new ChordNodeClient(response.getIdentifier().getIP(), response.getIdentifier().getPort());
                 response = nodeClient.findSuccessorIteratively(id);
             }
+
         }
+
+        nodeClient.close();
 
         long endTime = System.currentTimeMillis();
 
-        System.out.println("Total time: " + (endTime - startTime) / 1000.0 + "s");
+        System.out.println("Iterative Total time: " + (endTime - startTime) / 1000.0 + "s");
 
+        nodeClient = new ChordNodeClient("34.209.184.136", 9700);
 
         startTime = System.currentTimeMillis();
-        for (int i = 0;i < 100;i++) {
+        for (int i = 0;i < 1000;i++) {
 
             System.out.println("Iteration " + i);
 
@@ -62,7 +66,7 @@ public class IterativelyFindTest extends TestCase {
 
         endTime = System.currentTimeMillis();
 
-        System.out.println("Total time: " + (endTime - startTime) / 1000.0 + "s");
+        System.out.println("Recursive Total time: " + (endTime - startTime) / 1000.0 + "s");
     }
 
 

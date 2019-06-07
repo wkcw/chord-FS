@@ -29,11 +29,23 @@ service ChordNodeService{
     rpc TellmeFingerTable(TellmeFingerTableRequest) returns (TellmeFingerTableResponse) {}
     rpc TellmeReplicaKeyNumber(TellmeReplicaKeyNumberRequest) returns (TellmeReplicaKeyNumberResponse) {}
     rpc Kill(KillRequest) returns (KillResponse) {}
+    rpc FindSuccessorIteratively(FindSuccessorIterativelyRequest) returns (FindSuccessorIterativelyResponse) {}
 }
 
 enum ReturnCode {
     SUCCESS = 0;
     FAILURE = 1;
+}
+
+
+message FindSuccessorIterativelyRequest {
+    int32 ID = 1;
+}
+
+message FindSuccessorIterativelyResponse {
+    Identifier identifier = 1;
+    bool isCompleted = 2;
+    int32 hop = 3;
 }
 
 message RemoveReplicaRequest {

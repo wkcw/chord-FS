@@ -31,7 +31,7 @@ public class FractionKilledTest extends TestCase {
     public void testFractionKillingNode() {
         List<Identifier> nodeList = ConfigGenerator.generateRingList();
         Random random = new Random(System.nanoTime());
-        int fraction = 2;
+        int fraction = 3;
 
         for (int j = 0; j < fraction * 5; j++) {
             int killedNodeIndex = 0;

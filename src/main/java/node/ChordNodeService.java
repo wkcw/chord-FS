@@ -74,6 +74,27 @@ public class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplB
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void findSuccessorIteratively(FindSuccessorIterativelyRequest request, StreamObserver<FindSuccessorIterativelyResponse> responseObserver) {
+        Identifier successor = this.getAliveSuccessor();
+
+        if (predecessor != null && this.inRange(request.getID(), predecessor.getID(), selfID)) {
+            FindSuccessorIterativelyResponse response = FindSuccessorIterativelyResponse.newBuilder().setIdentifier(generateSelfIdentifier()).setIsCompleted(true).build();
+            responseObserver.onNext(response);
+        } else if (successor != null && (this.inRange(request.getID(), selfID, successor.getID())))
+        {
+            FindSuccessorIterativelyResponse response = FindSuccessorIterativelyResponse.newBuilder().setIdentifier(successor).setIsCompleted(true).build();
+            responseObserver.onNext(response);
+        } else{
+            int searchedID = request.getID();
+            Identifier nextIdentifier = closestPrecedingFinger(searchedID);
+
+            FindSuccessorIterativelyResponse response = FindSuccessorIterativelyResponse.newBuilder().setIdentifier(nextIdentifier).setIsCompleted(false).build();
+            responseObserver.onNext(response);
+        }
+        responseObserver.onCompleted();
+    }
+
 
     @Override
     public void findSuccessor(FindSuccessorRequest request, StreamObserver<FindSuccessorResponse> responseObserver) {
@@ -567,16 +588,18 @@ public class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplB
     }
 
     private void fixFingers() {
-        this.next = (this.next + 1) % ringSizeExp;
+        if (this.next < 500) {
+            this.next = this.next + 1;
 
-        ChordNodeClient selfClient = new ChordNodeClient(selfIP, selfPort);
-        Identifier searchedIdentifier = selfClient.findSuccessor((selfID + (1 << this.next)) % (1 << ringSizeExp));
+            ChordNodeClient selfClient = new ChordNodeClient(selfIP, selfPort);
+            Identifier searchedIdentifier = selfClient.findSuccessor((selfID + (1 << (this.next % ringSizeExp))) % (1 << ringSizeExp));
 
-        selfClient.close();
+            selfClient.close();
 
-        this.fingerTable[this.next % ringSizeExp] = searchedIdentifier;
+            this.fingerTable[this.next % ringSizeExp] = searchedIdentifier;
 
-        printFingerTable();
+            printFingerTable();
+        }
     }
 
 

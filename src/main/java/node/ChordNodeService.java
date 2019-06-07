@@ -574,7 +574,7 @@ public class ChordNodeService extends ChordNodeServiceGrpc.ChordNodeServiceImplB
 
         selfClient.close();
 
-        this.fingerTable[this.next] = searchedIdentifier;
+        this.fingerTable[this.next % ringSizeExp] = searchedIdentifier;
 
         printFingerTable();
     }

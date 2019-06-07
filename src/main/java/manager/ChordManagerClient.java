@@ -1,5 +1,6 @@
 package manager;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -14,6 +15,7 @@ public class ChordManagerClient {
     private final ManagedChannel channel;
     private final ChordManagerServiceGrpc.ChordManagerServiceBlockingStub blockingStub;
     private final ChordManagerServiceGrpc.ChordManagerServiceStub asyncStub;
+    private final ChordManagerServiceGrpc.ChordManagerServiceFutureStub futureStub;
 
     public ChordManagerClient(String host, int port) {
         this(ManagedChannelBuilder.forAddress(host, port).usePlaintext());
@@ -23,6 +25,7 @@ public class ChordManagerClient {
         channel = channelBuilder.build();
         blockingStub = ChordManagerServiceGrpc.newBlockingStub(channel);
         asyncStub = ChordManagerServiceGrpc.newStub(channel);
+        futureStub = ChordManagerServiceGrpc.newFutureStub(channel);
     }
 
     public Identifier findSuccessor(int id) {
@@ -95,6 +98,74 @@ public class ChordManagerClient {
 
         return getResponse.getRet() == ReturnCode.SUCCESS ? getResponse.getValue() : null;
     }
+
+    public ListenableFuture<PutResponse> putFuture(String key, String val){
+        PutRequest request = PutRequest.newBuilder().setKey(key).setValue(val).build();
+        ListenableFuture<PutResponse> putResponseFuture;
+        try {
+            putResponseFuture = futureStub.putManager(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC from manager failed: {0}", e.getStatus());
+            return null;
+        }
+
+        return putResponseFuture;
+    }
+
+
+    public ListenableFuture<FindResponse> findSuccessorFuture(int id) {
+        FindRequest findRequest = FindRequest.newBuilder().setID(id).build();
+        ListenableFuture<FindResponse> findResponseFuture;
+        try {
+            findResponseFuture = futureStub.findSuccessor(findRequest);
+        } catch (StatusRuntimeException e){
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return null;
+        }
+
+        return findResponseFuture;
+    }
+
+    public String ls(String dirPath) {
+        lsRequest request = lsRequest.newBuilder().setDir(dirPath).build();
+        lsResponse response;
+        try {
+            response = blockingStub.ls(request);
+        } catch (StatusRuntimeException e){
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return "";
+        }
+
+        return response.getDirs() + "dirFileDivider" + response.getFiles();
+    }
+
+
+    public boolean writeFileKey(String absPath, String fileKey) {
+        WriteFileKeyRequest request = WriteFileKeyRequest.newBuilder().setAbsPath(absPath).setFileKey(fileKey).build();
+        WriteFileKeyResponse response;
+        try {
+            response = blockingStub.writeFileKey(request);
+        } catch (StatusRuntimeException e){
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return false;
+        }
+        return true;
+    }
+
+    public String readFileKey(String absPath) {
+        ReadFileKeyRequest request = ReadFileKeyRequest.newBuilder().setAbsPath(absPath).build();
+        ReadFileKeyResponse response;
+        try {
+            response = blockingStub.readFileKey(request);
+        } catch (StatusRuntimeException e){
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return "";
+        }
+
+        return response.getFileKey();
+    }
+
+
 
 
 }

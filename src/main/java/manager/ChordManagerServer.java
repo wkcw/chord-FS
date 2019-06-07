@@ -1,6 +1,8 @@
 package manager;
 
+import common.FileNode;
 import common.Hasher;
+import common.TreeNode;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -16,6 +18,7 @@ import java.util.logging.Logger;
 class NodeStatus {
     private Identifier node; // Chord node
     private boolean status; // true -> online, false -> offline
+
 
     public NodeStatus(Identifier node, boolean status) {
         this.node = node;
@@ -65,6 +68,12 @@ public class ChordManagerServer {
         NodeStatus[] manager;
         private static int ringSizeExp = 13;
         private Hasher hasher = new Hasher(1 << ringSizeExp);
+
+
+        private TreeNode rootDir;
+
+
+
         public ChordManagerService() {
             manager = new NodeStatus[1 << ringSizeExp];
 
@@ -73,6 +82,8 @@ public class ChordManagerServer {
                 Identifier node = Identifier.newBuilder().setID(i).build();
                 manager[i] = new NodeStatus(node, false);
             }
+
+            this.rootDir = new TreeNode("root");
         }
 
         public void start() {
@@ -206,6 +217,44 @@ public class ChordManagerServer {
             responseStreamObserver.onNext(getResponse);
             responseStreamObserver.onCompleted();
         }
+
+
+        @Override
+        public void ls(lsRequest request, StreamObserver<lsResponse> responseObserver) {
+            String dirPath = request.getDir();
+            String thingsInDir = rootDir.listDir(dirPath);
+            String dirsInDir = thingsInDir.split("dirFileDivider")[0];
+            String filesInDir = thingsInDir.split("dirFileDivider")[1];
+            lsResponse response = lsResponse.newBuilder().setDirs(dirsInDir).setFiles(filesInDir).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void readFileKey(ReadFileKeyRequest request, StreamObserver<ReadFileKeyResponse> responseObserver) {
+            String absFilePath = request.getAbsPath();
+            int fileNameStartIndex = absFilePath.lastIndexOf("/");
+            String pathBeforeFilename = absFilePath.substring(0, fileNameStartIndex);
+            String fileName = absFilePath.substring(fileNameStartIndex);
+            TreeNode targetDir = rootDir.reachNode(pathBeforeFilename);
+            String fileKey = targetDir.getFileKey(fileName);
+            ReadFileKeyResponse response = ReadFileKeyResponse.newBuilder().setFileKey(fileKey).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void writeFileKey(WriteFileKeyRequest request, StreamObserver<WriteFileKeyResponse> responseObserver) {
+            String absFilePath = request.getAbsPath();
+            String fileKey = request.getFileKey();
+            int fileNameStartIndex = absFilePath.lastIndexOf("/");
+            String fileName = absFilePath.substring(fileNameStartIndex);
+            rootDir.addFile(absFilePath, new FileNode(fileName, fileKey));
+            WriteFileKeyResponse response = WriteFileKeyResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
     }
 
     public static void main(String[] args) {

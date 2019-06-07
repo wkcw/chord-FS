@@ -12,6 +12,11 @@ service ChordManagerService{
     rpc PutManager(PutRequest) returns (PutResponse){}
     rpc GetManager(GetRequest) returns (GetResponse){}
     rpc FindSuccessor(FindRequest) returns (FindResponse) {}
+
+
+    rpc ls(lsRequest) returns (lsResponse) {}
+    rpc readFileKey(ReadFileKeyRequest) returns (ReadFileKeyResponse) {}
+    rpc writeFileKey(WriteFileKeyRequest) returns (WriteFileKeyResponse) {}
 }
 message FindRequest {
     int32 ID = 1;
@@ -33,4 +38,29 @@ message JoinResponse {
     int32 ID = 1;
     string address = 2;
     int32 port = 3;
+}
+
+message lsRequest {
+    string dir = 1;
+}
+
+message lsResponse {
+    string dirs = 1;
+    string files = 2;
+}
+
+message ReadFileKeyRequest {
+    string absPath = 1;
+}
+
+message ReadFileKeyResponse {
+    string fileKey = 2;
+}
+
+message WriteFileKeyRequest {
+    string absPath = 1;
+    string fileKey = 2;
+}
+
+message WriteFileKeyResponse {
 }

@@ -268,6 +268,19 @@ public class ChordNodeClient {
         return response.getNumber();
     }
 
+    public FindSuccessorIterativelyResponse findSuccessorIteratively(int id) {
+        FindSuccessorIterativelyRequest request = FindSuccessorIterativelyRequest.newBuilder().build();
+        FindSuccessorIterativelyResponse response;
+
+        try {
+            response = blockingStub.findSuccessorIteratively(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return FindSuccessorIterativelyResponse.newBuilder().setIsCompleted(false).build();
+        }
+        return response;
+    }
+
     public boolean kill(){
         KillRequest request = KillRequest.newBuilder().build();
         KillResponse response;

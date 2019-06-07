@@ -1,5 +1,6 @@
 package node;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import common.IdentifierWithHop;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -19,6 +20,7 @@ public class ChordNodeClient {
     private final ManagedChannel channel;
     private final ChordNodeServiceGrpc.ChordNodeServiceBlockingStub blockingStub;
     private final ChordNodeServiceGrpc.ChordNodeServiceStub asyncStub;
+    private final ChordNodeServiceGrpc.ChordNodeServiceFutureStub futureStub;
 
     private Random random = new Random();
     public ChordNodeClient(String host, int port){
@@ -29,6 +31,7 @@ public class ChordNodeClient {
         channel = channelBuilder.build();
         blockingStub = ChordNodeServiceGrpc.newBlockingStub(channel);
         asyncStub = ChordNodeServiceGrpc.newStub(channel);
+        futureStub = ChordNodeServiceGrpc.newFutureStub(channel);
     }
 
     public Identifier findSuccessor(int id){
@@ -278,6 +281,19 @@ public class ChordNodeClient {
             return false;
         }
         return true;
+    }
+
+    public ListenableFuture<FindSuccessorResponse> findSuccessorFuture(int id) {
+        FindSuccessorRequest findRequest = FindSuccessorRequest.newBuilder().setID(id).build();
+        ListenableFuture<FindSuccessorResponse> findResponseFuture;
+        try {
+            findResponseFuture = futureStub.findSuccessor(findRequest);
+        } catch (StatusRuntimeException e){
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return null;
+        }
+
+        return findResponseFuture;
     }
 
 
